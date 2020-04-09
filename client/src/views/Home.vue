@@ -7,7 +7,10 @@
                 <send-file></send-file>
             </v-col>
             <v-col cols="12" md="8">
-
+                <v-fade-transition group>
+                    <received-item v-for="item in $root.received" :key="item.id" :meta="item"></received-item>
+                </v-fade-transition>
+                <div class="text-center caption text--secondary py-2">{{$root.received.length ? '已经到底了哦～' : '这里空空的'}}</div>
             </v-col>
         </v-row>
 
@@ -54,26 +57,18 @@
 <script>
 import SendText from '@/components/SendText.vue';
 import SendFile from '@/components/SendFile.vue';
+import ReceivedItem from '@/components/ReceivedItem.vue';
 
 export default {
     components: {
         SendText,
         SendFile,
+        ReceivedItem,
     },
     data() {
         return {
             dialog: false,
         };
-    },
-    methods: {
-    },
-    watch: {
-        text(newval, oldval) {
-            console.log('home', newval, oldval);
-        },
-        file(newval) {
-            console.log('home', newval);
-        },
     },
 }
 </script>

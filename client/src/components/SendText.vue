@@ -3,7 +3,7 @@
         <div class="headline text--primary mb-4">发送文本</div>
         <v-textarea
             no-resize
-            outline
+            outlined
             dense
             rows="6"
             placeholder="请输入需要发送的文本"
