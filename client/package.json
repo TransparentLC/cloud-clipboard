@@ -13,11 +13,13 @@
     "vuetify": "^2.2.11"
   },
   "devDependencies": {
+    "@mdi/font": "^5.0.45",
     "@vue/cli-plugin-babel": "~4.3.0",
     "@vue/cli-plugin-router": "~4.3.0",
     "@vue/cli-service": "~4.3.0",
     "sass": "^1.19.0",
     "sass-loader": "^8.0.0",
+    "typeface-roboto": "^0.0.75",
     "vue-cli-plugin-vuetify": "~2.0.5",
     "vue-cli-plugin-webpack-bundle-analyzer": "^2.0.0",
     "vue-template-compiler": "^2.6.11",

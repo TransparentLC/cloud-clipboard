@@ -3,6 +3,9 @@ import App from './App.vue';
 import router from './router';
 import vuetify from './plugins/vuetify';
 
+import '@mdi/font/css/materialdesignicons.css';
+import 'typeface-roboto/index.css';
+
 Vue.config.productionTip = false;
 
 Vue.filter('prettyFileSize', size => {
