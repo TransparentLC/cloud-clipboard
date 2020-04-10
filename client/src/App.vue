@@ -17,7 +17,7 @@
 
             <v-divider></v-divider>
 
-            <v-list dense>
+            <v-list>
                 <v-list-item link href="#/">
                     <v-list-item-action>
                         <v-icon>mdi-content-paste</v-icon>

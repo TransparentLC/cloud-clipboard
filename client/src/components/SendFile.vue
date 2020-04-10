@@ -24,7 +24,10 @@
             </template>
         </v-card>
         <div class="text-right">
-            <v-btn color="primary" :disabled="!$root.send.file">发送</v-btn>
+            <v-btn
+                color="primary"
+                :disabled="!$root.send.file || !$root.websocket"
+            >发送</v-btn>
         </div>
     </div>
 </template>

@@ -12,7 +12,7 @@
         <div class="text-right">
             <v-btn
                 color="primary"
-                :disabled="!$root.send.text"
+                :disabled="!$root.send.text || !$root.websocket"
             >发送</v-btn>
         </div>
     </div>

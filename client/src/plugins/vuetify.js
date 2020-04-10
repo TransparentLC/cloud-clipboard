@@ -12,7 +12,6 @@ Vue.use(Vuetify, {
 Vue.use(VuetifyToast, {
     x: '',
     color: '',
-    showClose: true,
     closeText: '关闭',
     closeColor: 'accent',
 });

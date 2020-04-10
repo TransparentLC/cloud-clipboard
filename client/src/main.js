@@ -2,11 +2,16 @@ import Vue from 'vue';
 import App from './App.vue';
 import router from './router';
 import vuetify from './plugins/vuetify';
+import websocket from './websocket';
+import axios from 'axios';
+import VueAxios from 'vue-axios';
 
 import '@mdi/font/css/materialdesignicons.css';
 import 'typeface-roboto/index.css';
 
 Vue.config.productionTip = false;
+
+Vue.use(VueAxios, axios);
 
 Vue.filter('prettyFileSize', size => {
     let units = ['TB', 'GB', 'MB', 'KB'];
@@ -19,32 +24,14 @@ Vue.filter('prettyFileSize', size => {
 });
 
 new Vue({
+    mixins: [websocket],
     data() {
         return {
             send: {
                 text: '',
                 file: null,
             },
-            // TODO 测试用数据
-            received: [
-                {
-                    id: 1,
-                    type: 'text',
-                    content: ''.padStart(256, 'The quickly brown fox jumps over a lazy dog. '),
-                },
-                {
-                    id: 2,
-                    type: 'file',
-                    name: 'php-7.4.4.tar.gz',
-                    size: 16477200,
-                    cache: '691d44a42de68d9da10f99d85fbd1d21',
-                },
-                {
-                    id: 3,
-                    type: 'text',
-                    content: ''.padStart(128, '我能吞下玻璃而不伤身体'),
-                },
-            ],
+            received: [],
         };
     },
     router,
