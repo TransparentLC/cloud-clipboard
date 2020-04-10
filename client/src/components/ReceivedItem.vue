@@ -52,17 +52,6 @@
                         <span>删除</span>
                     </v-tooltip>
                 </div>
-
-                <v-snackbar
-                    v-model="snackbar.show"
-                >
-                    {{snackbar.text}}
-                    <v-btn
-                        text
-                        color="accent"
-                        @click="snackbar.show = false"
-                    >关闭</v-btn>
-                </v-snackbar>
             </v-card-text>
         </v-card>
     </v-hover>
@@ -82,10 +71,6 @@ export default {
     data() {
         return {
             expand: false,
-            snackbar: {
-                show: false,
-                text: '',
-            },
         };
     },
     methods: {
@@ -98,8 +83,7 @@ export default {
             el.select();
             document.execCommand('copy');
             document.body.removeChild(el);
-            this.snackbar.show = true;
-            this.snackbar.text = '复制成功';
+            this.$toast('复制成功');
         },
         getFile() {
             // TODO
@@ -108,14 +92,13 @@ export default {
         deleteItem() {
             // TODO
             console.log('Delete item:', this.meta.id);
-            this.snackbar.show = true;
             this.$root.received.splice(this.$root.received.indexOf(this.meta), 1);
             switch (this.meta.type) {
                 case 'text':
-                    this.snackbar.text = '已删除文本消息';
+                    this.$toast('已删除文本消息');
                     break;
                 case 'file':
-                    this.snackbar.text = `已删除文件 ${this.meta.name}`;
+                    this.$toast(`已删除文件 ${this.meta.name}`);
                     break;
                 default:
                     break;
