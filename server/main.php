@@ -37,6 +37,7 @@ $server->on('workerStart', function (\Swoole\WebSocket\Server $server) use ($con
     // 所有的依赖都可以挂在这个对象里面
     $server->require = new \stdClass;
     $server->config = $config;
+    $server->message_count = 0;
 
     $is_windows = in_array(strtoupper(PHP_OS), ['WINDOWS', 'WIN32', 'WINNT', 'CYGWIN']);
 });
@@ -88,25 +89,25 @@ $server->on('close', function ($ser, $fd) {
 
 $server->on('message', function (\Swoole\WebSocket\Server $server, \Swoole\WebSocket\Frame $frame) {
     echo "receive from {$frame->fd}:{$frame->data},opcode:{$frame->opcode},fin:{$frame->finish}\n";
-    $test = [
-        'event' => 'receive',
-        'data' => [
-            'id' => mt_rand(10, 1000),
-            'type' => 'text',
-            'content' => 'akarin',
-        ],
-    ];
-    $test = [
-        'event' => 'receive',
-        'data' => [
-            'id' => mt_rand(10, 1000),
-            'type' => 'file',
-            'name' => 'akarin.jpg',
-            'size' => mt_rand(100000, 500000),
-            'cache' => bin2hex(random_bytes(16)),
-        ],
-    ];
-    $server->push($frame->fd, json_encode($test));
+    // $test = [
+    //     'event' => 'receive',
+    //     'data' => [
+    //         'id' => mt_rand(10, 1000),
+    //         'type' => 'text',
+    //         'content' => 'akarin',
+    //     ],
+    // ];
+    // $test = [
+    //     'event' => 'receive',
+    //     'data' => [
+    //         'id' => mt_rand(10, 1000),
+    //         'type' => 'file',
+    //         'name' => 'akarin.jpg',
+    //         'size' => mt_rand(100000, 500000),
+    //         'cache' => bin2hex(random_bytes(16)),
+    //     ],
+    // ];
+    // $server->push($frame->fd, json_encode($test));
 });
 
 echo "Server listening on port {$config->server->port} ...\n";

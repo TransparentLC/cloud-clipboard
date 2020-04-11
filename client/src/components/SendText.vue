@@ -13,6 +13,7 @@
             <v-btn
                 color="primary"
                 :disabled="!$root.send.text || !$root.websocket"
+                @click="send"
             >发送</v-btn>
         </div>
     </div>
@@ -21,5 +22,19 @@
 <script>
 export default {
     name: 'send-text',
+    methods: {
+        send() {
+            this.$http.post('/text', this.$root.send.text).then(response => {
+                this.$toast('发送成功');
+                this.$root.send.text = '';
+            }).catch(error => {
+                if (error.response && error.response.data.msg) {
+                    this.$toast(`发送失败：${error.response.data.msg}`);
+                } else {
+                    this.$toast('发送失败');
+                }
+            });
+        },
+    },
 }
 </script>

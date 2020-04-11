@@ -6,7 +6,7 @@
             <v-card-text class="d-flex">
                 <div class="flex-grow-1 mr-2" style="min-width: 0">
                     <template v-if="meta.type === 'text'">
-                        <div class="title text-truncate text--primary">文本消息</div>
+                        <div class="title text-truncate text--primary">#{{meta.id}} 文本消息</div>
                         <div :class="{'text-truncate': $vuetify.breakpoint.smAndDown}" @click="expand = !expand">
                             {{meta.content}}
                         </div>
@@ -19,7 +19,7 @@
                     </template>
 
                     <template v-if="meta.type === 'file'">
-                        <div class="title text-truncate text--primary" :title="meta.name">{{meta.name}}</div>
+                        <div class="title text-truncate text--primary" :title="meta.name">#{{meta.id}} {{meta.name}}</div>
                         <div class="caption">{{meta.size | prettyFileSize}}</div>
                     </template>
                 </div>
