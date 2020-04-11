@@ -17,7 +17,7 @@ export default {
                 dismissable: false,
                 timeout: 0,
             });
-            this.$http.get('/ws-url.txt', {responseType: 'text'}).then(response => {
+            this.$http.get('/server', {responseType: 'text'}).then(response => {
                 return new Promise((resolve, reject) => {
                     let ws = new WebSocket(response.data);
                     ws.onopen = () => {resolve(ws)};

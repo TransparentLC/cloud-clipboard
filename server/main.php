@@ -1,7 +1,31 @@
 <?php
 require_once __DIR__ . '/vendor/autoload.php';
 
-$server = new \Swoole\WebSocket\Server('0.0.0.0', 9501);
+// 读取设置，创建临时存储文件夹
+$config = json_decode(file_get_contents('config.json'));
+if (empty($config->file->storage)) exit('Please set a valid storage path in "config.json".');
+$config->file->storage = __DIR__ . $config->file->storage;
+
+// 清空或创建临时存储文件夹
+if (is_dir($config->file->storage)) {
+    echo 'Press enter to CLEAR ALL FILES in storage path and continue:' . PHP_EOL;
+    echo realpath($config->file->storage) . PHP_EOL;
+    fgets(STDIN);
+
+    // How do I recursively delete a directory and its entire contents (files + sub dirs) in PHP?
+    // https://stackoverflow.com/questions/3338123/how-do-i-recursively-delete-a-directory-and-its-entire-contents-files-sub-dir#answer-3352564
+    $files = new RecursiveIteratorIterator(
+        new RecursiveDirectoryIterator($config->file->storage, RecursiveDirectoryIterator::SKIP_DOTS),
+        RecursiveIteratorIterator::CHILD_FIRST
+    );
+    foreach ($files as $fileinfo) {
+        ($fileinfo->isDir() ? 'rmdir' : 'unlink')($fileinfo->getRealPath());
+    }
+} else {
+    mkdir($config->file->storage);
+}
+
+$server = new \Swoole\WebSocket\Server('0.0.0.0', $config->server->port);
 
 $server->set([
     'http_compression' => false,
@@ -9,18 +33,21 @@ $server->set([
     'enable_static_handler' => true,
 ]);
 
-$server->on('workerStart', function (\Swoole\WebSocket\Server $server) {
+$server->on('workerStart', function (\Swoole\WebSocket\Server $server) use ($config) {
     // 所有的依赖都可以挂在这个对象里面
     $server->require = new \stdClass;
+    $server->config = $config;
 
     $is_windows = in_array(strtoupper(PHP_OS), ['WINDOWS', 'WIN32', 'WINNT', 'CYGWIN']);
 });
-$server->on('workerExit', function (\Swoole\WebSocket\Server $server) {
+
+$server->on('workerStop', function (\Swoole\WebSocket\Server $server) {
 
 });
 
 $dispatcher = FastRoute\simpleDispatcher(function (\FastRoute\RouteCollector $r) {
-    $r->addRoute('GET', '/user/{id:\d+}', 'User/index');
+    $r->addRoute('GET', '/server', 'ServerURI/index');
+    $r->addRoute('POST', '/text', 'Text/index');
 });
 
 $server->on('request', function (\Swoole\Http\Request $request, \Swoole\Http\Response $response) use ($dispatcher, $server) {
@@ -43,15 +70,23 @@ $server->on('request', function (\Swoole\Http\Request $request, \Swoole\Http\Res
     }
 });
 
-$server->on('open', function (Swoole\WebSocket\Server $server, \Swoole\Http\Request $request) {
+$server->on('open', function (\Swoole\WebSocket\Server $server, \Swoole\Http\Request $request) {
     echo "server: handshake success with fd{$request->fd}\n";
+
+    $device = new \DeviceDetector\DeviceDetector($request->header['user-agent']);
+    $device->skipBotDetection();
+    $device->parse();
+    foreach ($server->connections as $fd) {
+        if (!$server->isEstablished($fd)) continue;
+        $server->push($fd, "{$device->getOs()['name']} {$device->getOs()['version']} ({$device->getClient()['name']} {$device->getClient()['version']})");
+    }
 });
 
 $server->on('close', function ($ser, $fd) {
     echo "client {$fd} closed\n";
 });
 
-$server->on('message', function (Swoole\WebSocket\Server $server, \Swoole\WebSocket\Frame $frame) {
+$server->on('message', function (\Swoole\WebSocket\Server $server, \Swoole\WebSocket\Frame $frame) {
     echo "receive from {$frame->fd}:{$frame->data},opcode:{$frame->opcode},fin:{$frame->finish}\n";
     $test = [
         'event' => 'receive',
@@ -74,4 +109,5 @@ $server->on('message', function (Swoole\WebSocket\Server $server, \Swoole\WebSoc
     $server->push($frame->fd, json_encode($test));
 });
 
+echo "Server listening on port {$config->server->port} ...\n";
 $server->start();

@@ -464,3 +464,4 @@ composer.lock
 /watcher/
 start.bat
 start-dev.bat
+config.json

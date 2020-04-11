@@ -1,0 +1,15 @@
+{
+    "server": {
+        "host": "192.168.1.136",
+        "port": 9501,
+        "wss": false
+    },
+    "text": {
+        "limit": 4096
+    },
+    "file": {
+        "storage": "/.storage/",
+        "expire": 3600,
+        "limit": 104857600
+    }
+}

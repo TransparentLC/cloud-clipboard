@@ -8,6 +8,7 @@
         "eaglewu/swoole-ide-helper": "dev-master"
     },
     "require": {
-        "nikic/fast-route": "^1.3"
+        "nikic/fast-route": "^1.3",
+        "piwik/device-detector": "^3.12"
     }
 }
