@@ -53,6 +53,16 @@
             <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
             <v-toolbar-title>云剪贴板</v-toolbar-title>
             <v-spacer></v-spacer>
+            <v-tooltip left>
+                <template v-slot:activator="{ on }">
+                    <v-btn icon v-on="on" @click="if (!$root.websocket) {$root.retry = 0; $root.connect();}">
+                        <v-icon v-if="$root.websocket">mdi-lan-connect</v-icon>
+                        <v-icon v-else>mdi-lan-disconnect</v-icon>
+                    </v-btn>
+                </template>
+                <span v-if="$root.websocket">已连接</span>
+                <span v-else>未连接，点击重连</span>
+            </v-tooltip>
         </v-app-bar>
 
         <v-content>
