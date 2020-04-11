@@ -25,7 +25,7 @@ abstract class HttpController {
         } catch (\Throwable $th) {
             $this->onException($th);
         }
-        $this->response->end();
+        @$this->response->end();
     }
 
     /**

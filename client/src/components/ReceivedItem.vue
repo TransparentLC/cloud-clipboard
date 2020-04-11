@@ -6,7 +6,7 @@
             <v-card-text class="d-flex">
                 <div class="flex-grow-1 mr-2" style="min-width: 0">
                     <template v-if="meta.type === 'text'">
-                        <div class="title text-truncate text--primary">#{{meta.id}} 文本消息</div>
+                        <div class="title text-truncate text--primary">文本消息</div>
                         <div :class="{'text-truncate': $vuetify.breakpoint.smAndDown}" @click="expand = !expand">
                             {{meta.content}}
                         </div>
@@ -19,7 +19,7 @@
                     </template>
 
                     <template v-if="meta.type === 'file'">
-                        <div class="title text-truncate text--primary" :title="meta.name">#{{meta.id}} {{meta.name}}</div>
+                        <div class="title text-truncate text--primary" :title="meta.name">{{meta.name}}</div>
                         <div class="caption">{{meta.size | prettyFileSize}}</div>
                     </template>
                 </div>
@@ -90,7 +90,6 @@ export default {
             console.log('Get file:', this.meta.cache);
         },
         deleteItem() {
-            // TODO
             console.log('Delete item:', this.meta.id);
             this.$root.received.splice(this.$root.received.indexOf(this.meta), 1);
             switch (this.meta.type) {
@@ -98,6 +97,7 @@ export default {
                     this.$toast('已删除文本消息');
                     break;
                 case 'file':
+                    // TODO
                     this.$toast(`已删除文件 ${this.meta.name}`);
                     break;
                 default:

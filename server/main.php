@@ -49,6 +49,7 @@ $server->on('workerStop', function (\Swoole\WebSocket\Server $server) {
 $dispatcher = FastRoute\simpleDispatcher(function (\FastRoute\RouteCollector $r) {
     $r->addRoute('GET', '/server', 'ServerURI/index');
     $r->addRoute('POST', '/text', 'Text/index');
+    $r->addRoute(['GET', 'POST', 'DELETE'], '/file[/{hash:[0-9a-f]{32}}]', 'File/index');
 });
 
 $server->on('request', function (\Swoole\Http\Request $request, \Swoole\Http\Response $response) use ($dispatcher, $server) {

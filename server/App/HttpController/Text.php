@@ -9,17 +9,18 @@ class Text extends \App\AbstractInterface\HttpController {
         $this->writeJson();
 
         $this->server()->message_count++;
-        $broadcast = json_encode([
+        $broadcast = [
             'event' => 'receive',
             'data' => [
                 'id' => $this->server()->message_count,
                 'type' => 'text',
                 'content' => $this->request()->rawContent(),
             ],
-        ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        ];
+        $broadcast_json = json_encode($broadcast, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
         foreach ($this->server()->connections as $fd) {
             if (!$this->server()->isEstablished($fd)) continue;
-            $this->server()->push($fd, $broadcast);
+            $this->server()->push($fd, $broadcast_json);
         }
     }
 }
