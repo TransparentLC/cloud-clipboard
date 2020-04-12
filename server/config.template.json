@@ -8,8 +8,9 @@
         "limit": 4096
     },
     "file": {
-        "storage": "/.storage/",
-        "expire": 3600,
+        "storage": ".storage",
+        "expire": 3600000,
+        "chunk": 1048576,
         "limit": 104857600
     }
 }

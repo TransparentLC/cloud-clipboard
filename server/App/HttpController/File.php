@@ -1,34 +1,27 @@
 <?php
 namespace App\HttpController;
 class File extends \App\AbstractInterface\HttpController {
-    function index() {
-        if (in_array($this->request()->server['request_method'], ['GET', 'POST', 'DELETE'])) {
-            return strtolower($this->request()->server['request_method']);
-        }
-    }
-
     function get() {
-        $path = $this->server()->config->file->storage . $this->param()['hash'];
-        if (file_exists($path)) {
-            $fp = fopen($path, 'r');
-            $filename = str_replace(["\r", "\n"], '', fgets($fp));
-            $offset = ftell($fp);
-            fclose($fp);
+        $storage = $this->server()->config->file->storage;
+        /** @var \Swoole\Table */
+        $upload_table = $this->server()->upload_table;
+        $uuid = $this->param()['uuid'];
 
-            $this->response()->header('Content-Disposition', 'attachment; filename=' . urlencode($filename));
-            $this->response()->sendFile($path, $offset);
+        if ($upload_table->exist($uuid) && file_exists("{$storage}/{$uuid}")) {
+            $this->response()->header('Content-Disposition', 'attachment;filename="' . rawurlencode($upload_table->get($uuid, 'name')) . '"');
+            $this->response()->sendFile("{$storage}/{$uuid}");
         } else {
             $this->response()->status(404);
         }
     }
 
-    function post() {
-        // TODO
-    }
-
     function delete() {
-        $path = $this->server()->config->file->storage . $this->param()['hash'];
-        if (unlink($path)) {
+        $storage = $this->server()->config->file->storage;
+        /** @var \Swoole\Table */
+        $upload_table = $this->server()->upload_table;
+        $uuid = $this->param()['uuid'];
+
+        if ($upload_table->del($uuid) && unlink("{$storage}/{$uuid}")) {
             $this->writeJson();
         } else {
             $this->writeJson(404, [], '删除失败');

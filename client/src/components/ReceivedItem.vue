@@ -86,8 +86,22 @@ export default {
             this.$toast('复制成功');
         },
         getFile() {
-            // TODO
-            console.log('Get file:', this.meta.cache);
+            this.$http.get(`/file/${this.meta.cache}`, {responseType: 'arraybuffer'}).then(response => {
+                let blobURL = URL.createObjectURL(new Blob([response.data]));
+                let cd = response.headers['content-disposition'];
+                let el = document.createElement('a');
+                el.href = blobURL;
+                el.setAttribute('download', decodeURIComponent(cd.substring(cd.indexOf('"') + 1, cd.lastIndexOf('"'))));
+                el.click();
+                URL.revokeObjectURL(blobURL);
+            }).catch(error => {
+                if (error.response && error.response.data.msg) {
+                    this.$toast(`文件获取失败：${error.response.data.msg}`);
+                } else {
+                    this.$toast('文件获取失败');
+                }
+            });
+
         },
         deleteItem() {
             console.log('Delete item:', this.meta.id);

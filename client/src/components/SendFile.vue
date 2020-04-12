@@ -27,6 +27,7 @@
             <v-btn
                 color="primary"
                 :disabled="!$root.send.file || !$root.websocket"
+                @click="send"
             >发送</v-btn>
         </div>
     </div>
@@ -35,5 +36,30 @@
 <script>
 export default {
     name: 'send-file',
+    methods: {
+        async send() {
+            const chunk_size = 49152; // 48KB
+            let file = this.$root.send.file;
+
+            try {
+                let response = await this.$http.post('/upload', file.name, {headers: {'Content-Type': 'text/plain'}});
+                let uuid = response.data.result.uuid;
+
+                let offset = 0;
+                while (offset < file.size) {
+                    let chunk = file.slice(offset, offset + chunk_size);
+                    offset += chunk_size;
+                    await this.$http.post(`/upload/chunk/${uuid}`, chunk, {headers: {'Content-Type': 'application/octet-stream'}});
+                }
+                await this.$http.post(`/upload/finish/${uuid}`);
+            } catch (error) {
+                if (error.response && error.response.data.msg) {
+                    this.$toast(`发送失败：${error.response.data.msg}`);
+                } else {
+                    this.$toast('发送失败');
+                }
+            }
+        }
+    },
 }
 </script>

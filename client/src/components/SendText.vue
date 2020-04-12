@@ -24,7 +24,7 @@ export default {
     name: 'send-text',
     methods: {
         send() {
-            this.$http.post('/text', this.$root.send.text).then(response => {
+            this.$http.post('/text', this.$root.send.text, {headers: {'Content-Type': 'text/plain'}}).then(response => {
                 this.$toast('发送成功');
                 this.$root.send.text = '';
             }).catch(error => {
