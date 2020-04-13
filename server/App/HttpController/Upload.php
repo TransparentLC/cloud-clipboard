@@ -71,11 +71,10 @@ class Upload extends \App\AbstractInterface\HttpController {
         }
 
         rename("{$storage}/~{$uuid}", "{$storage}/{$uuid}");
-        $this->server()->message_count++;
         $broadcast = [
             'event' => 'receive',
             'data' => [
-                'id' => $this->server()->message_count,
+                'id' => $this->server()->message_count->add(),
                 'type' => 'file',
                 'name' => $upload_table->get($uuid, 'name'),
                 'size' => filesize("{$storage}/{$uuid}"),

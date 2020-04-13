@@ -1,31 +1,31 @@
 <?php
-require_once __DIR__ . '/vendor/autoload.php';
+if (php_sapi_name() !== 'cli') exit('Use CLI to run this application.');
+if (!extension_loaded('swoole')) exit('Swoole is not installed.');
 
-$config = require_once './App/Config.php';
-$upload_table = require_once './App/UploadTable.php';
+require_once __DIR__ . '/vendor/autoload.php';
 
 $server = new \Swoole\WebSocket\Server('0.0.0.0', $config->server->port);
 
 $server->set([
-    'http_compression' => false,
     'package_max_length' => 10485760,
     'document_root' => './static',
     'enable_static_handler' => true,
 ]);
 
-$server->config = $config;
-$server->upload_table = $upload_table;
+$server->config = require_once './App/Config.php';
+$server->upload_table = require_once './App/UploadTable.php';
+$server->message_count = require_once './App/MessageCounter.php';
+// 所有的依赖都可以挂在这个对象里面
+// 现在好像还用不到
+// $server->require = new \stdClass;
 
 $server->on('workerStart', function (\Swoole\WebSocket\Server $server) {
-    // 所有的依赖都可以挂在这个对象里面
-    $server->require = new \stdClass;
-    $server->message_count = 0;
-
-    $is_windows = in_array(strtoupper(PHP_OS), ['WINDOWS', 'WIN32', 'WINNT', 'CYGWIN']);
+    // 所有的数据库连接都要在这里创建
+    // https://wiki.swoole.com/#/question/use?id=是否可以共用1个redis或mysql连接
 });
 
 $server->on('workerStop', function (\Swoole\WebSocket\Server $server) {
-
+    // 数据库连接在这里关闭
 });
 
 $dispatcher = \FastRoute\simpleDispatcher(function (\FastRoute\RouteCollector $r) {

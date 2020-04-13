@@ -8,11 +8,10 @@ class Text extends \App\AbstractInterface\HttpController {
         }
         $this->writeJson();
 
-        $this->server()->message_count++;
         $broadcast = [
             'event' => 'receive',
             'data' => [
-                'id' => $this->server()->message_count,
+                'id' => $this->server()->message_count->add(),
                 'type' => 'text',
                 'content' => $this->request()->rawContent(),
             ],
