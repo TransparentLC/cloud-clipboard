@@ -82,7 +82,7 @@ abstract class HttpController {
     function writeJson($status = 200, $result = [], $msg = '') {
         $this->response->header('Content-Type', 'application/json;charset=utf-8');
         $this->response->status($status);
-        $this->response->write(json_encode([
+        $this->response->end(json_encode([
             'code' => $status,
             'msg' => $msg ?? '',
             'result' => (object)($result ?? []),

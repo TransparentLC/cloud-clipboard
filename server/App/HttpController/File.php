@@ -21,10 +21,14 @@ class File extends \App\AbstractInterface\HttpController {
         $upload_table = $this->server()->upload_table;
         $uuid = $this->param()['uuid'];
 
-        if ($upload_table->del($uuid) && unlink("{$storage}/{$uuid}")) {
-            $this->writeJson();
+        if ($upload_table->del($uuid)) {
+            if (unlink("{$storage}/{$uuid}")) {
+                $this->writeJson();
+            } else {
+                $this->writeJson(400);
+            }
         } else {
-            $this->writeJson(404, [], '删除失败');
+            $this->writeJson(404, [], '文件不存在');
         }
     }
 }

@@ -104,15 +104,21 @@ export default {
 
         },
         deleteItem() {
-            console.log('Delete item:', this.meta.id);
             this.$root.received.splice(this.$root.received.indexOf(this.meta), 1);
             switch (this.meta.type) {
                 case 'text':
                     this.$toast('已删除文本消息');
                     break;
                 case 'file':
-                    // TODO
-                    this.$toast(`已删除文件 ${this.meta.name}`);
+                    this.$http.delete(`/file/${this.meta.cache}`).then(() => {
+                        this.$toast(`已删除文件 ${this.meta.name}`);
+                    }).catch(error => {
+                        if (error.response && error.response.data.msg) {
+                            this.$toast(`文件删除失败：${error.response.data.msg}`);
+                        } else {
+                            this.$toast('文件删除失败');
+                        }
+                    });
                     break;
                 default:
                     break;

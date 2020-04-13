@@ -4,6 +4,7 @@ if (!extension_loaded('swoole')) exit('Swoole is not installed.');
 
 require_once __DIR__ . '/vendor/autoload.php';
 
+$config = require_once './App/Config.php';
 $server = new \Swoole\WebSocket\Server('0.0.0.0', $config->server->port);
 
 $server->set([
@@ -12,7 +13,7 @@ $server->set([
     'enable_static_handler' => true,
 ]);
 
-$server->config = require_once './App/Config.php';
+$server->config = $config;
 $server->upload_table = require_once './App/UploadTable.php';
 $server->message_count = require_once './App/MessageCounter.php';
 // 所有的依赖都可以挂在这个对象里面

@@ -22,6 +22,9 @@ Vue.filter('prettyFileSize', size => {
     };
     return `${Math.floor(100 * size) / 100} ${unit}`;
 });
+Vue.filter('percentage', (value, decimal = 2) => {
+    return (value * 100).toFixed(decimal) + '%';
+});
 
 new Vue({
     mixins: [websocket],

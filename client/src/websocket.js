@@ -7,6 +7,11 @@ export default {
                 receive: data => {
                     this.$root.received.unshift(data);
                 },
+                revoke: data => {
+                    let index = this.$root.received.findIndex(e => e.id === data.id);
+                    if (index === -1) return;
+                    this.$root.received.splice(index, 1);
+                },
             },
         };
     },
