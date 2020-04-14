@@ -37,6 +37,7 @@ $dispatcher = \FastRoute\simpleDispatcher(function (\FastRoute\RouteCollector $r
     $r->addRoute('POST', '/upload', 'Upload/index');
     $r->addRoute('POST', '/upload/chunk/{uuid:[0-9a-f]{32}}', 'Upload/chunk');
     $r->addRoute('POST', '/upload/finish/{uuid:[0-9a-f]{32}}', 'Upload/finish');
+    $r->addRoute('DELETE', '/revoke/{id:\d+}', 'Revoke/index');
 });
 
 $server->on('request', function (\Swoole\Http\Request $request, \Swoole\Http\Response $response) use ($dispatcher, $server) {

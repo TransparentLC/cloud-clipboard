@@ -131,25 +131,30 @@ export default {
 
         },
         deleteItem() {
-            this.$root.received.splice(this.$root.received.indexOf(this.meta), 1);
-            switch (this.meta.type) {
-                case 'text':
-                    this.$toast('已删除文本消息');
-                    break;
-                case 'file':
-                    this.$http.delete(`/file/${this.meta.cache}`).then(() => {
-                        this.$toast(`已删除文件 ${this.meta.name}`);
-                    }).catch(error => {
-                        if (error.response && error.response.data.msg) {
-                            this.$toast(`文件删除失败：${error.response.data.msg}`);
-                        } else {
-                            this.$toast('文件删除失败');
-                        }
-                    });
-                    break;
-                default:
-                    break;
-            }
+            this.$http.delete(`/revoke/${this.meta.id}`).then(() => {
+                switch (this.meta.type) {
+                    case 'text':
+                        this.$toast('已删除文本消息');
+                        break;
+                    case 'file':
+                        this.$http.delete(`/file/${this.meta.cache}`).then(() => {
+                            this.$toast(`已删除文件 ${this.meta.name}`);
+                        }).catch(error => {
+                            if (error.response && error.response.data.msg) {
+                                this.$toast(`文件删除失败：${error.response.data.msg}`);
+                            } else {
+                                this.$toast('文件删除失败');
+                            }
+                        });
+                        break;
+                }
+            }).catch(error => {
+                if (error.response && error.response.data.msg) {
+                    this.$toast(`消息删除失败：${error.response.data.msg}`);
+                } else {
+                    this.$toast('消息删除失败');
+                }
+            });
         },
     },
 }
