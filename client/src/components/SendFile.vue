@@ -18,7 +18,7 @@
                     </div>
                     <div class="align-self-center">
                         <v-btn icon color="grey" @click="$root.send.file = null">
-                            <v-icon>mdi-close</v-icon>
+                            <v-icon>{{mdiClose}}</v-icon>
                         </v-btn>
                     </div>
                 </template>
@@ -45,12 +45,17 @@
 </template>
 
 <script>
+import {
+    mdiClose,
+} from '@mdi/js';
+
 export default {
     name: 'send-file',
     data() {
         return {
             progress: false,
             uploadedSize: 0,
+            mdiClose,
         };
     },
     computed: {

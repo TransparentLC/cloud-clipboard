@@ -6,7 +6,6 @@ import websocket from './websocket';
 import axios from 'axios';
 import VueAxios from 'vue-axios';
 
-import '@mdi/font/css/materialdesignicons.css';
 import 'typeface-roboto/index.css';
 
 Vue.config.productionTip = false;

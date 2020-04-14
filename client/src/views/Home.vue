@@ -31,14 +31,14 @@
                     dark
                     color="primary"
                 >
-                    <v-icon>mdi-plus</v-icon>
+                    <v-icon>{{mdiPlus}}</v-icon>
                 </v-btn>
             </template>
             <v-btn fab dark small color="primary" @click="dialog = true; mode = 'file'">
-                <v-icon>mdi-file-document-outline</v-icon>
+                <v-icon>{{mdiFileDocumentOutline}}</v-icon>
             </v-btn>
             <v-btn fab dark small color="primary" @click="dialog = true; mode = 'text'">
-                <v-icon>mdi-text</v-icon>
+                <v-icon>{{mdiText}}</v-icon>
             </v-btn>
         </v-speed-dial>
         <v-dialog
@@ -51,7 +51,7 @@
             <v-card>
                 <v-toolbar dark color="primary" class="flex-grow-0">
                     <v-btn icon @click="dialog = false">
-                        <v-icon>mdi-close</v-icon>
+                        <v-icon>{{mdiClose}}</v-icon>
                     </v-btn>
                     <v-toolbar-title v-if="mode === 'text'">发送文本</v-toolbar-title>
                     <v-toolbar-title v-if="mode === 'file'">发送文件</v-toolbar-title>
@@ -72,6 +72,12 @@
 import SendText from '@/components/SendText.vue';
 import SendFile from '@/components/SendFile.vue';
 import ReceivedItem from '@/components/ReceivedItem.vue';
+import {
+    mdiPlus,
+    mdiFileDocumentOutline,
+    mdiText,
+    mdiClose,
+} from '@mdi/js';
 
 export default {
     components: {
@@ -84,6 +90,10 @@ export default {
             fab: false,
             dialog: false,
             mode: null,
+            mdiPlus,
+            mdiFileDocumentOutline,
+            mdiText,
+            mdiClose,
         };
     },
 }

@@ -7,7 +7,7 @@
                 <div class="flex-grow-1 mr-2" style="min-width: 0">
                     <template v-if="meta.type === 'text'">
                         <div class="title text-truncate text--primary" @click="expand = !expand">
-                            文本消息<v-icon>{{expand ? 'mdi-chevron-up' : 'mdi-chevron-down'}}</v-icon>
+                            文本消息<v-icon>{{expand ? mdiChevronUp : mdiChevronDown}}</v-icon>
                         </div>
                         <div class="text-truncate">
                             <template v-if="isLink">
@@ -37,7 +37,7 @@
                     <v-tooltip v-if="meta.type === 'text'" bottom>
                         <template v-slot:activator="{ on }">
                             <v-btn v-on="on" icon color="grey" @click="copyText">
-                                <v-icon>mdi-content-copy</v-icon>
+                                <v-icon>{{mdiContentCopy}}</v-icon>
                             </v-btn>
                         </template>
                         <span>复制</span>
@@ -46,7 +46,7 @@
                     <v-tooltip v-if="meta.type === 'file'" bottom>
                         <template v-slot:activator="{ on }">
                             <v-btn v-on="on" icon color="grey" @click="getFile">
-                                <v-icon>mdi-download</v-icon>
+                                <v-icon>{{mdiDownload}}</v-icon>
                             </v-btn>
                         </template>
                         <span>下载</span>
@@ -55,7 +55,7 @@
                     <v-tooltip bottom>
                         <template v-slot:activator="{ on }">
                             <v-btn v-on="on" icon color="grey" @click="deleteItem">
-                                <v-icon>mdi-close</v-icon>
+                                <v-icon>{{mdiClose}}</v-icon>
                             </v-btn>
                         </template>
                         <span>删除</span>
@@ -67,6 +67,14 @@
 </template>
 
 <script>
+import {
+    mdiChevronUp,
+    mdiChevronDown,
+    mdiContentCopy,
+    mdiDownload,
+    mdiClose,
+} from '@mdi/js';
+
 export default {
     name: 'received-item',
     props: {
@@ -80,6 +88,11 @@ export default {
     data() {
         return {
             expand: false,
+            mdiChevronUp,
+            mdiChevronDown,
+            mdiContentCopy,
+            mdiDownload,
+            mdiClose,
         };
     },
     computed: {

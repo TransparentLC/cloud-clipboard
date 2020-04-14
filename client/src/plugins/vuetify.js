@@ -17,4 +17,7 @@ Vue.use(VuetifyToast, {
 });
 
 export default new Vuetify({
+    icons: {
+        iconfont: 'mdiSvg',
+    },
 });

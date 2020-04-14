@@ -20,7 +20,7 @@
             <v-list>
                 <v-list-item link href="#/">
                     <v-list-item-action>
-                        <v-icon>mdi-content-paste</v-icon>
+                        <v-icon>{{mdiContentPaste}}</v-icon>
                     </v-list-item-action>
                     <v-list-item-content>
                         <v-list-item-title>剪贴板</v-list-item-title>
@@ -28,7 +28,7 @@
                 </v-list-item>
                 <v-list-item link href="#/device">
                     <v-list-item-action>
-                        <v-icon>mdi-devices</v-icon>
+                        <v-icon>{{mdiDevices}}</v-icon>
                     </v-list-item-action>
                     <v-list-item-content>
                         <v-list-item-title>设备列表</v-list-item-title>
@@ -36,7 +36,7 @@
                 </v-list-item>
                 <v-list-item link href="#/about">
                     <v-list-item-action>
-                        <v-icon>mdi-information</v-icon>
+                        <v-icon>{{mdiInformation}}</v-icon>
                     </v-list-item-action>
                     <v-list-item-content>
                         <v-list-item-title>关于</v-list-item-title>
@@ -56,8 +56,7 @@
             <v-tooltip left>
                 <template v-slot:activator="{ on }">
                     <v-btn icon v-on="on" @click="if (!$root.websocket) {$root.retry = 0; $root.connect();}">
-                        <v-icon v-if="$root.websocket">mdi-lan-connect</v-icon>
-                        <v-icon v-else>mdi-lan-disconnect</v-icon>
+                        <v-icon>{{$root.websocket ? mdiLanConnect : mdiLanDisconnect}}</v-icon>
                     </v-btn>
                 </template>
                 <span v-if="$root.websocket">已连接</span>
@@ -75,10 +74,23 @@
 </template>
 
 <script>
+import {
+    mdiContentPaste,
+    mdiDevices,
+    mdiInformation,
+    mdiLanConnect,
+    mdiLanDisconnect,
+} from '@mdi/js';
+
 export default {
     data() {
         return {
             drawer: false,
+            mdiContentPaste,
+            mdiDevices,
+            mdiInformation,
+            mdiLanConnect,
+            mdiLanDisconnect,
         };
     },
 };
