@@ -6,14 +6,23 @@
             <v-card-text class="d-flex">
                 <div class="flex-grow-1 mr-2" style="min-width: 0">
                     <template v-if="meta.type === 'text'">
-                        <div class="title text-truncate text--primary">文本消息</div>
-                        <div :class="{'text-truncate': $vuetify.breakpoint.smAndDown}" @click="expand = !expand">
-                            {{meta.content}}
+                        <div class="title text-truncate text--primary" @click="expand = !expand">
+                            文本消息<v-icon>{{expand ? 'mdi-chevron-up' : 'mdi-chevron-down'}}</v-icon>
+                        </div>
+                        <div class="text-truncate">
+                            <template v-if="isLink">
+                                <a :href="meta.content" target="_blank">{{meta.content}}</a>
+                            </template>
+                            <template v-else>
+                                {{meta.content}}
+                            </template>
                         </div>
                         <v-expand-transition>
-                            <div v-if="$vuetify.breakpoint.smAndDown" v-show="expand" @click="expand = !expand">
+                            <div v-show="expand">
                                 <v-divider class="my-2"></v-divider>
-                                {{meta.content}}
+                                <template v-for="(item, index) in meta.content.split('\n')">
+                                    <br v-if="index" :key="index">{{item}}
+                                </template>
                             </div>
                         </v-expand-transition>
                     </template>
@@ -72,6 +81,11 @@ export default {
         return {
             expand: false,
         };
+    },
+    computed: {
+        isLink() {
+            return this.meta.content.match(new RegExp(/^https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)$/));
+        },
     },
     methods: {
         copyText() {

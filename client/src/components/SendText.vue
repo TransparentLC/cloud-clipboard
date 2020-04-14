@@ -12,6 +12,7 @@
         <div class="text-right">
             <v-btn
                 color="primary"
+                :block="$vuetify.breakpoint.smAndDown"
                 :disabled="!$root.send.text || !$root.websocket"
                 @click="send"
             >发送</v-btn>

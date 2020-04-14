@@ -14,6 +14,33 @@
             </v-col>
         </v-row>
 
+        <v-speed-dial
+            v-model="fab"
+            bottom
+            right
+            fixed
+            direction="top"
+            open-on-hover
+            transition="scale-transition"
+            class="hidden-md-and-up"
+        >
+            <template v-slot:activator>
+                <v-btn
+                    v-model="fab"
+                    fab
+                    dark
+                    color="primary"
+                >
+                    <v-icon>mdi-plus</v-icon>
+                </v-btn>
+            </template>
+            <v-btn fab dark small color="primary" @click="dialog = true; mode = 'file'">
+                <v-icon>mdi-file-document-outline</v-icon>
+            </v-btn>
+            <v-btn fab dark small color="primary" @click="dialog = true; mode = 'text'">
+                <v-icon>mdi-text</v-icon>
+            </v-btn>
+        </v-speed-dial>
         <v-dialog
             v-model="dialog"
             fullscreen
@@ -21,32 +48,19 @@
             transition="dialog-bottom-transition"
             scrollable
         >
-            <template v-slot:activator="{ on }">
-                <v-btn
-                    fab
-                    fixed
-                    right
-                    bottom
-                    color="primary"
-                    class="hidden-md-and-up"
-                    v-on="on"
-                >
-                    <v-icon>mdi-plus</v-icon>
-                </v-btn>
-            </template>
             <v-card>
                 <v-toolbar dark color="primary" class="flex-grow-0">
                     <v-btn icon @click="dialog = false">
                         <v-icon>mdi-close</v-icon>
                     </v-btn>
-                    <v-toolbar-title>发送文本 / 文件</v-toolbar-title>
+                    <v-toolbar-title v-if="mode === 'text'">发送文本</v-toolbar-title>
+                    <v-toolbar-title v-if="mode === 'file'">发送文件</v-toolbar-title>
                     <v-spacer></v-spacer>
                 </v-toolbar>
                 <v-card-text class="px-4">
                     <div class="my-4">
-                        <send-text></send-text>
-                        <v-divider class="my-4"></v-divider>
-                        <send-file></send-file>
+                        <send-text v-if="mode === 'text'"></send-text>
+                        <send-file v-if="mode === 'file'"></send-file>
                     </div>
                 </v-card-text>
             </v-card>
@@ -67,7 +81,9 @@ export default {
     },
     data() {
         return {
+            fab: false,
             dialog: false,
+            mode: null,
         };
     },
 }
