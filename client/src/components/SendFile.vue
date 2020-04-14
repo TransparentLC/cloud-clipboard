@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="headline text--primary mb-4">发送文件</div>
-        <v-card outlined class="pa-4 mb-6 d-flex">
+        <v-card outlined class="pa-4 mb-6 d-flex" @drop="handleSelectFile($event.dataTransfer.files[0])">
             <template v-if="$root.send.file">
                 <template v-if="progress">
                     <div class="flex-grow-1">
@@ -27,10 +27,20 @@
                 <v-btn
                     text
                     color="primary"
+                    large
                     class="d-block mx-auto"
                     @click="$refs.selectFile.click()"
-                >选择要发送的文件</v-btn>
-                <input ref="selectFile" type="file" class="d-none" @change="$root.send.file = $event.target.files[0]">
+                >
+                    <div>
+                        选择要发送的文件<br><span class="hidden-sm-and-down text--secondary">（支持拖拽）</span>
+                    </div>
+                </v-btn>
+                <input
+                    ref="selectFile"
+                    type="file"
+                    class="d-none"
+                    @change="handleSelectFile($event.target.files[0])"
+                >
             </template>
         </v-card>
         <div class="text-right">
@@ -67,6 +77,13 @@ export default {
         },
     },
     methods: {
+        handleSelectFile(file) {
+            if (file.size) {
+                this.$root.send.file = file;
+            } else {
+                this.$toast('不能发送空文件');
+            }
+        },
         async send() {
             const chunkSize = 49152; // 48KB
             let file = this.$root.send.file;
