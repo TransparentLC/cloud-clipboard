@@ -32,7 +32,9 @@
                     @click="$refs.selectFile.click()"
                 >
                     <div>
-                        选择要发送的文件<br><span class="hidden-sm-and-down text--secondary">（支持拖拽）</span>
+                        选择要发送的文件<span class="hidden-sm-and-down">（支持拖拽）</span>
+                        <br>
+                        <small class="text--secondary">文件大小限制：{{$root.config.file.limit | prettyFileSize}}</small>
                     </div>
                 </v-btn>
                 <input
@@ -56,6 +58,9 @@
 
 <script>
 import {
+    prettyFileSize,
+}from '@/util.js';
+import {
     mdiClose,
 } from '@mdi/js';
 
@@ -78,14 +83,16 @@ export default {
     },
     methods: {
         handleSelectFile(file) {
-            if (file.size) {
-                this.$root.send.file = file;
-            } else {
+            if (!file.size) {
                 this.$toast('不能发送空文件');
+            } else if (file.size > this.$root.config.file.limit) {
+                this.$toast(`文件大小超过限制（${prettyFileSize(this.$root.config.file.limit)}）`);
+            } else {
+                this.$root.send.file = file;
             }
         },
         async send() {
-            const chunkSize = 49152; // 48KB
+            const chunkSize = this.$root.config.file.chunk;
             let file = this.$root.send.file;
             try {
                 let response = await this.$http.post('/upload', file.name, {headers: {'Content-Type': 'text/plain'}});

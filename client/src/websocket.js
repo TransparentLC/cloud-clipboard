@@ -12,6 +12,9 @@ export default {
                     if (index === -1) return;
                     this.$root.received.splice(index, 1);
                 },
+                config: data => {
+                    this.$root.config = data;
+                },
             },
         };
     },

@@ -2,13 +2,13 @@
     "server": {
         "host": "192.168.1.136",
         "port": 9501,
-        "wss": false
+        "wss": false,
+        "storage": ".storage"
     },
     "text": {
         "limit": 4096
     },
     "file": {
-        "storage": ".storage",
         "expire": 3600000,
         "chunk": 1048576,
         "limit": 104857600

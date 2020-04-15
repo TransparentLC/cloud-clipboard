@@ -62,7 +62,13 @@ $server->on('request', function (\Swoole\Http\Request $request, \Swoole\Http\Res
 
 $server->on('open', function (\Swoole\WebSocket\Server $server, \Swoole\Http\Request $request) {
     echo "server: handshake success with fd{$request->fd}\n";
-
+    $server->push($request->fd, json_encode([
+        'event' => 'config',
+        'data' => [
+            'text' => $server->config->text,
+            'file' => $server->config->file,
+        ],
+    ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
     // $device = new \DeviceDetector\DeviceDetector($request->header['user-agent']);
     // $device->skipBotDetection();
     // $device->parse();

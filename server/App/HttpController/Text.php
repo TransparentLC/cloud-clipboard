@@ -2,8 +2,8 @@
 namespace App\HttpController;
 class Text extends \App\AbstractInterface\HttpController {
     function index() {
-        if (strlen($this->request()->rawContent()) > $this->server()->config->text->limit) {
-            $this->writeJson(400, [], "文本长度不能超过 {$this->server()->config->text->limit} 字节");
+        if (mb_strlen($this->request()->rawContent()) > $this->server()->config->text->limit) {
+            $this->writeJson(400, [], "文本长度不能超过 {$this->server()->config->text->limit} 字");
             return;
         }
         $this->writeJson();

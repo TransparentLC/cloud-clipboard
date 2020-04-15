@@ -7,29 +7,25 @@ import axios from 'axios';
 import VueAxios from 'vue-axios';
 import linkify from 'vue-linkify';
 
+import {
+    prettyFileSize,
+    percentage,
+} from './util';
+
 import 'typeface-roboto/index.css';
 
 Vue.config.productionTip = false;
 
 Vue.use(VueAxios, axios);
 Vue.directive('linkified', linkify);
-Vue.filter('prettyFileSize', size => {
-    let units = ['TB', 'GB', 'MB', 'KB'];
-    let unit = 'Bytes';
-    while (size >= 1024 && units.length) {
-        size /= 1024;
-        unit = units.pop();
-    };
-    return `${Math.floor(100 * size) / 100} ${unit}`;
-});
-Vue.filter('percentage', (value, decimal = 2) => {
-    return (value * 100).toFixed(decimal) + '%';
-});
+Vue.filter('prettyFileSize', prettyFileSize);
+Vue.filter('percentage', percentage);
 
 new Vue({
     mixins: [websocket],
     data() {
         return {
+            config: {},
             send: {
                 text: '',
                 file: null,

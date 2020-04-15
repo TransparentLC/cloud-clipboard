@@ -6,6 +6,7 @@
             outlined
             dense
             rows="6"
+            :counter="$root.config.text.limit"
             placeholder="请输入需要发送的文本"
             v-model="$root.send.text"
         ></v-textarea>
@@ -13,7 +14,7 @@
             <v-btn
                 color="primary"
                 :block="$vuetify.breakpoint.smAndDown"
-                :disabled="!$root.send.text || !$root.websocket"
+                :disabled="!$root.send.text || !$root.websocket || $root.send.text.length > $root.config.text.limit"
                 @click="send"
             >发送</v-btn>
         </div>

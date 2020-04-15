@@ -2,7 +2,7 @@
 namespace App\HttpController;
 class Upload extends \App\AbstractInterface\HttpController {
     function index() {
-        $storage = $this->server()->config->file->storage;
+        $storage = $this->server()->config->server->storage;
         /** @var \Swoole\Table */
         $upload_table = $this->server()->upload_table;
 
@@ -35,7 +35,7 @@ class Upload extends \App\AbstractInterface\HttpController {
     }
 
     function chunk() {
-        $storage = $this->server()->config->file->storage;
+        $storage = $this->server()->config->server->storage;
         /** @var \Swoole\Table */
         $upload_table = $this->server()->upload_table;
         $chunk_length = strlen($this->request()->rawContent());
@@ -60,7 +60,7 @@ class Upload extends \App\AbstractInterface\HttpController {
     }
 
     function finish() {
-        $storage = $this->server()->config->file->storage;
+        $storage = $this->server()->config->server->storage;
         /** @var \Swoole\Table */
         $upload_table = $this->server()->upload_table;
         $uuid = $this->param()['uuid'];

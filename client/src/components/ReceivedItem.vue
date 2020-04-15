@@ -9,7 +9,7 @@
                         <div class="title text-truncate text--primary" @click="expand = !expand">
                             文本消息<v-icon>{{expand ? mdiChevronUp : mdiChevronDown}}</v-icon>
                         </div>
-                        <div class="text-truncate" @click="expand = !expand" v-html="meta.content" v-linkified></div>
+                        <div class="text-truncate" @click="expand = !expand" v-html="meta.content.trim()" v-linkified></div>
                         <v-expand-transition>
                             <div v-show="expand">
                                 <v-divider class="my-2"></v-divider>
