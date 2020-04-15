@@ -9,20 +9,11 @@
                         <div class="title text-truncate text--primary" @click="expand = !expand">
                             文本消息<v-icon>{{expand ? mdiChevronUp : mdiChevronDown}}</v-icon>
                         </div>
-                        <div class="text-truncate">
-                            <template v-if="isLink">
-                                <a :href="meta.content" target="_blank">{{meta.content}}</a>
-                            </template>
-                            <template v-else>
-                                {{meta.content}}
-                            </template>
-                        </div>
+                        <div class="text-truncate" @click="expand = !expand" v-html="meta.content" v-linkified></div>
                         <v-expand-transition>
                             <div v-show="expand">
                                 <v-divider class="my-2"></v-divider>
-                                <template v-for="(item, index) in meta.content.split('\n')">
-                                    <br v-if="index" :key="index">{{item}}
-                                </template>
+                                <div ref="content" v-html="meta.content.replace(/\n/g, '<br>')" v-linkified></div>
                             </div>
                         </v-expand-transition>
                     </template>
@@ -95,15 +86,10 @@ export default {
             mdiClose,
         };
     },
-    computed: {
-        isLink() {
-            return this.meta.content.match(new RegExp(/^https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)$/));
-        },
-    },
     methods: {
         copyText() {
             let el = document.createElement('textarea');
-            el.value = this.meta.content;
+            el.value = new DOMParser().parseFromString(this.meta.content, 'text/html').documentElement.textContent;
             el.style.cssText = 'top:0;left:0;position:fixed';
             document.body.appendChild(el);
             el.focus();

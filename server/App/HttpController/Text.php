@@ -8,12 +8,13 @@ class Text extends \App\AbstractInterface\HttpController {
         }
         $this->writeJson();
 
+        $escaped = htmlspecialchars($this->request()->rawContent(), ENT_QUOTES);
         $broadcast = [
             'event' => 'receive',
             'data' => [
                 'id' => $this->server()->message_count->add(),
                 'type' => 'text',
-                'content' => $this->request()->rawContent(),
+                'content' => $escaped,
             ],
         ];
         $broadcast_json = json_encode($broadcast, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);

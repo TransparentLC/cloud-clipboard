@@ -5,13 +5,14 @@ import vuetify from './plugins/vuetify';
 import websocket from './websocket';
 import axios from 'axios';
 import VueAxios from 'vue-axios';
+import linkify from 'vue-linkify';
 
 import 'typeface-roboto/index.css';
 
 Vue.config.productionTip = false;
 
 Vue.use(VueAxios, axios);
-
+Vue.directive('linkified', linkify);
 Vue.filter('prettyFileSize', size => {
     let units = ['TB', 'GB', 'MB', 'KB'];
     let unit = 'Bytes';
