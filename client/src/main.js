@@ -25,7 +25,16 @@ new Vue({
     mixins: [websocket],
     data() {
         return {
-            config: {},
+            config: {
+                text: {
+                    limit: 0,
+                },
+                file: {
+                    expire: 0,
+                    chunk: 0,
+                    limit: 0,
+                },
+            },
             send: {
                 text: '',
                 file: null,

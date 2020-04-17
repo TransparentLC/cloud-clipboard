@@ -5,9 +5,9 @@
             <template v-if="$root.send.file">
                 <template v-if="progress">
                     <div class="flex-grow-1">
-                        <div class="text-right text--secondary">
+                        <small class="d-block text-right text--secondary">
                             {{Math.min(uploadedSize, fileSize) | prettyFileSize}} / {{fileSize | prettyFileSize}} ({{uploadProgress | percentage}})
-                        </div>
+                        </small>
                         <v-progress-linear :value="uploadProgress * 100"></v-progress-linear>
                     </div>
                 </template>
@@ -92,18 +92,22 @@ export default {
             }
         },
         async send() {
-            const chunkSize = this.$root.config.file.chunk;
-            let file = this.$root.send.file;
             try {
+                const chunkSize = this.$root.config.file.chunk;
+                let file = this.$root.send.file;
                 let response = await this.$http.post('/upload', file.name, {headers: {'Content-Type': 'text/plain'}});
                 let uuid = response.data.result.uuid;
 
+                let uploadedSize = 0;
                 this.uploadedSize = 0;
                 this.progress = true;
                 while (this.uploadedSize < file.size) {
                     let chunk = file.slice(this.uploadedSize, this.uploadedSize + chunkSize);
-                    this.uploadedSize += chunkSize;
-                    await this.$http.post(`/upload/chunk/${uuid}`, chunk, {headers: {'Content-Type': 'application/octet-stream'}});
+                    await this.$http.post(`/upload/chunk/${uuid}`, chunk, {
+                        headers: {'Content-Type': 'application/octet-stream'},
+                        onUploadProgress: e => {this.uploadedSize = uploadedSize + e.loaded},
+                    });
+                    uploadedSize += chunkSize;
                 }
                 await this.$http.post(`/upload/finish/${uuid}`);
                 this.$toast('发送成功');

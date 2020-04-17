@@ -5,10 +5,10 @@ if (!extension_loaded('swoole')) exit('Swoole is not installed.');
 require_once __DIR__ . '/vendor/autoload.php';
 
 $config = require_once './App/Config.php';
-$server = new \Swoole\WebSocket\Server('0.0.0.0', $config->server->port);
+$server = new \Swoole\WebSocket\Server('0.0.0.0', $config->server->port, SWOOLE_BASE);
 
 $server->set([
-    'package_max_length' => 10485760,
+    'package_max_length' => 5242880,
     'document_root' => './static',
     'enable_static_handler' => true,
 ]);

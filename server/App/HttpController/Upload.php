@@ -10,7 +10,7 @@ class Upload extends \App\AbstractInterface\HttpController {
             $uuid = bin2hex(random_bytes(16));
         } while ($upload_table->exist($uuid));
 
-        \Swoole\Timer::after(30000, function () use ($upload_table, $uuid, $storage) {
+        \Swoole\Timer::after(60000, function () use ($upload_table, $uuid, $storage) {
             if (file_exists("{$storage}/~{$uuid}")) {
                 echo "Upload {$uuid} failed, remove temp files.\n";
                 $upload_table->del($uuid);
@@ -27,6 +27,7 @@ class Upload extends \App\AbstractInterface\HttpController {
 
         $upload_table->set($uuid, [
             'name' => $this->request()->rawContent(),
+            'size' => 0,
         ]);
 
         fclose(fopen("{$storage}/~{$uuid}", 'w'));
@@ -42,12 +43,16 @@ class Upload extends \App\AbstractInterface\HttpController {
         $uuid = $this->param()['uuid'];
 
         if (!$upload_table->exist($uuid) || !file_exists("{$storage}/~{$uuid}")) {
-            $this->writeJson(400, [], '无效的 uuid');
+            $this->writeJson(400, [], '无效的 UUID');
             return;
         } else if (!$chunk_length || $chunk_length > $this->server()->config->file->chunk) {
             $this->writeJson(413, [], "分片长度不能超过 {$this->server()->config->file->chunk} 字节");
             return;
-        } else if (filesize("{$storage}/~{$uuid}") + $chunk_length > $this->server()->config->file->limit) {
+        }
+
+        $file_meta = $upload_table->get($uuid);
+
+        if ($file_meta['size'] + $chunk_length > $this->server()->config->file->limit) {
             $this->writeJson(400, [], '文件大小已超过限制');
             return;
         }
@@ -55,6 +60,9 @@ class Upload extends \App\AbstractInterface\HttpController {
         $fp = fopen("{$storage}/~{$uuid}", 'a');
         fwrite($fp, $this->request()->rawContent());
         fclose($fp);
+
+        $file_meta['size'] += $chunk_length;
+        $upload_table->set($uuid, $file_meta);
 
         $this->writeJson();
     }
