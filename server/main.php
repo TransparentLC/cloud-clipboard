@@ -15,6 +15,7 @@ $server->set([
 
 $server->config = $config;
 $server->upload_table = require_once './App/UploadTable.php';
+$server->device_table = require_once './App/DeviceTable.php';
 $server->message_count = require_once './App/MessageCounter.php';
 // 所有的依赖都可以挂在这个对象里面
 // 现在好像还用不到
@@ -61,7 +62,6 @@ $server->on('request', function (\Swoole\Http\Request $request, \Swoole\Http\Res
 });
 
 $server->on('open', function (\Swoole\WebSocket\Server $server, \Swoole\Http\Request $request) {
-    echo "server: handshake success with fd{$request->fd}\n";
     $server->push($request->fd, json_encode([
         'event' => 'config',
         'data' => [
@@ -69,17 +69,56 @@ $server->on('open', function (\Swoole\WebSocket\Server $server, \Swoole\Http\Req
             'file' => $server->config->file,
         ],
     ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
-    // $device = new \DeviceDetector\DeviceDetector($request->header['user-agent']);
-    // $device->skipBotDetection();
-    // $device->parse();
-    // foreach ($server->connections as $fd) {
-    //     if (!$server->isEstablished($fd)) continue;
-    //     $server->push($fd, "{$device->getOs()['name']} {$device->getOs()['version']} ({$device->getClient()['name']} {$device->getClient()['version']})");
-    // }
+    foreach ($server->device_table as $fd => $row) {
+        $server->push($request->fd, json_encode([
+            'event' => 'connect',
+            'data' => array_merge(['id' => $fd], $row),
+        ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+    }
+
+    $device = new \DeviceDetector\DeviceDetector($request->header['user-agent']);
+    $device->parse();
+    if ($device->isBot()) {
+        $device_meta = [
+            'type' => 'bot',
+            'device' => '',
+            'os' => '',
+            'browser' => '',
+        ];
+    } else {
+        $device_meta = [
+            'type' => trim($device->getDeviceName()),
+            'device' => trim("{$device->getBrandName()} {$device->getModel()}"),
+            'os' => trim("{$device->getOs()['name']} {$device->getOs()['version']}"),
+            'browser' => trim("{$device->getClient()['name']} {$device->getClient()['version']}"),
+        ];
+    }
+    $server->device_table->set($request->fd, $device_meta);
+
+    $broadcast = [
+        'event' => 'connect',
+        'data' => array_merge(['id' => $request->fd], $device_meta),
+    ];
+    $broadcast_json = json_encode($broadcast, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+    foreach ($server->connections as $fd) {
+        if (!$server->isEstablished($fd)) continue;
+        $server->push($fd, $broadcast_json);
+    }
 });
 
-$server->on('close', function ($ser, $fd) {
-    echo "client {$fd} closed\n";
+$server->on('close', function (\Swoole\WebSocket\Server $server, $fd) {
+    if ($server->isEstablished($fd)) {
+        $server->device_table->del($fd);
+        $broadcast = [
+            'event' => 'disconnect',
+            'data' => ['id' => $fd],
+        ];
+        $broadcast_json = json_encode($broadcast, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        foreach ($server->connections as $fd) {
+            if (!$server->isEstablished($fd)) continue;
+            $server->push($fd, $broadcast_json);
+        }
+    }
 });
 
 $server->on('message', function (\Swoole\WebSocket\Server $server, \Swoole\WebSocket\Frame $frame) {

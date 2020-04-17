@@ -40,6 +40,7 @@ new Vue({
                 file: null,
             },
             received: [],
+            device: [],
         };
     },
     router,

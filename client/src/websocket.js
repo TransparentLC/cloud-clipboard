@@ -15,6 +15,14 @@ export default {
                 config: data => {
                     this.$root.config = data;
                 },
+                connect: data => {
+                    this.$root.device.push(data);
+                },
+                disconnect: data => {
+                    let index = this.$root.device.findIndex(e => e.id === data.id);
+                    if (index === -1) return;
+                    this.$root.device.splice(index, 1);
+                },
             },
         };
     },
@@ -50,6 +58,7 @@ export default {
         },
         failure() {
             this.websocket = null;
+            this.$root.device = [];
             if (this.retry++ < 3) {
                 this.connect();
             } else {

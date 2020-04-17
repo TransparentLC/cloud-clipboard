@@ -30,7 +30,6 @@
             </v-card-text>
         </v-card>
     </v-hover>
-
 </template>
 
 <script>
