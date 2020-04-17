@@ -8,7 +8,7 @@
             </v-col>
             <v-col cols="12" md="8">
                 <v-fade-transition group>
-                    <received-item v-for="item in $root.received" :key="item.id" :meta="item"></received-item>
+                    <div :is="`received-${item.type}`" v-for="item in $root.received" :key="item.id" :meta="item"></div>
                 </v-fade-transition>
                 <div class="text-center caption text--secondary py-2">{{$root.received.length ? '已经到底了哦～' : '这里空空的'}}</div>
             </v-col>
@@ -71,7 +71,8 @@
 <script>
 import SendText from '@/components/SendText.vue';
 import SendFile from '@/components/SendFile.vue';
-import ReceivedItem from '@/components/ReceivedItem.vue';
+import ReceivedText from '@/components/received-item/Text.vue';
+import ReceivedFile from '@/components/received-item/File.vue';
 import {
     mdiPlus,
     mdiFileDocumentOutline,
@@ -83,7 +84,8 @@ export default {
     components: {
         SendText,
         SendFile,
-        ReceivedItem,
+        ReceivedText,
+        ReceivedFile,
     },
     data() {
         return {
