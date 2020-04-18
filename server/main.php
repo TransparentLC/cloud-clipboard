@@ -9,8 +9,10 @@ $server = new \Swoole\WebSocket\Server('0.0.0.0', $config->server->port, SWOOLE_
 
 $server->set([
     'package_max_length' => 5242880,
-    'document_root' => './static',
     'enable_static_handler' => true,
+    'document_root' => './static',
+    'http_autoindex' => true,
+    'http_index_files' => ['index.html'],
 ]);
 
 $server->config = $config;

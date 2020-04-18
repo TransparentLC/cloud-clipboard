@@ -4,19 +4,6 @@
             v-model="drawer"
             app
         >
-            <v-list-item>
-                <v-list-item-content>
-                    <v-list-item-title class="title">
-                        Application
-                    </v-list-item-title>
-                    <v-list-item-subtitle>
-                        subtext
-                    </v-list-item-subtitle>
-                </v-list-item-content>
-            </v-list-item>
-
-            <v-divider></v-divider>
-
             <v-list>
                 <v-list-item link href="#/">
                     <v-list-item-action>
@@ -66,7 +53,7 @@
 
         <v-content>
             <template v-if="$route.meta.keepAlive">
-                <keep-alive><router-view class="mdui-container mdui-typo mdui-m-y-2"/></keep-alive>
+                <keep-alive><router-view /></keep-alive>
             </template>
             <router-view v-else />
         </v-content>

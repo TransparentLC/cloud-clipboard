@@ -2,10 +2,11 @@ module.exports = {
     publicPath: '',
     integrity: true,
     transpileDependencies: [
-        "vuetify",
+        'vuetify',
     ],
     pluginOptions: {
         webpackBundleAnalyzer: {
+            analyzerMode: 'disabled',
             openAnalyzer: false,
         },
     },

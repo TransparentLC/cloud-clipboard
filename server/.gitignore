@@ -466,3 +466,4 @@ start.bat
 start-dev.bat
 config.json
 /.storage/
+/static/
