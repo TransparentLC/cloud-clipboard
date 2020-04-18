@@ -1,4 +1,5 @@
 module.exports = {
+    outputDir: '../server/static',
     publicPath: '',
     integrity: true,
     transpileDependencies: [
