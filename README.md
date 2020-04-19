@@ -38,38 +38,24 @@
 
 在命令行中输入 `php --ri swoole`，可以输出配置信息就代表准备完成了～
 
-### 安装
+### 安装和运行
 
-~~实际上也不能叫安装，毕竟解压就可以用了~~
+~~实际上也不能叫安装，毕竟下载之后就可以直接用了~~
 
-下载 `cloud-clipboard.zip` 或 `cloud-clipboard.tar.gz` 然后解压即可直接使用。
+1. 前往 [Release](https://github.com/TransparentLC/cloud-clipboard/releases) 下载最新的 `cloud-clipboard.phar`。
+2. 在同一目录新建配置文件 `config.json`（可以参见下面的说明），**一定要根据实际修改 IP 地址！**
+3. `php cloud-clipboard.phar`
+4. 打开 `http://192.168.1.136:9501`（需要替换为在配置文件中**实际设定的地址和端口**）即可使用～
 
-如果需要从源代码运行的话：
-
-```bash
-cd client
-npm install
-npm run build
-cd ../server
-composer install --no-dev
-
-# 可选：生成压缩包
-cd ..
-php build-dist.php
-```
-
-
-### 修改配置文件
-
-配置文件为和 `main.php` 放在同一目录的 `config.json`。**一定要根据实际修改 IP 地址！**
+<details>
+<summary>配置文件说明</summary>
 
 ```json
 {
     "server": {
         "host": "192.168.1.136", // 服务端的 IP 地址或域名
         "port": 9501, // 端口号
-        "wss": false, // 使用 wss 协议而不是 ws 协议，一般不修改
-        "storage": ".storage" // 临时文件存储路径
+        "wss": false // 使用 wss 协议而不是 ws 协议，一般不修改
     },
     "text": {
         "limit": 4096 // 文本的长度限制
@@ -87,15 +73,25 @@ php build-dist.php
 > * Windows：任务管理器 -> 性能 -> 以太网 / Wi-Fi -> IPv4 地址
 > * Linux：`ifconfig | grep inet`
 >
-> IP 地址可能有多个，需要选择当前正在使用的 IP 地址。
+> IP 地址可能有多个，需要选择**当前正在使用的** IP 地址。
 
-### 运行
+</details>
+
+### 从源代码运行
+
+需要安装 [Vue CLI](https://cli.vuejs.org/zh/guide/installation.html) 和 [Composer](https://getcomposer.org/download/)。
 
 ```bash
-# 如果是从源代码运行的话
-cd server
+cd client
+npm install
+npm run build
+cd ../server
+composer install --no-dev
 
+# 从源代码直接运行
 php main.php
-```
 
-在浏览器中打开 `http://192.168.1.136:9501`（需要替换为在配置文件中实际设定的地址和端口）即可使用～
+# 生成 Phar
+cd ..
+php build-phar.php
+```

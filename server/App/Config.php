@@ -1,7 +1,17 @@
 <?php
-// 读取设置，创建临时存储文件夹
-$config = json_decode(file_get_contents(__DIR__ . '/../config.json'));
-if (empty($config->server->storage)) exit('Please set a valid storage path in "config.json".');
+// 读取设置
+$config_path = realpath(IS_PHAR ? (dirname(Phar::running(false)) . '/config.json') : (__DIR__ . '/../config.json'));
+if (file_exists($config_path)) {
+    echo "Loading config file:\n";
+    echo $config_path. "\n";
+} else {
+    echo "Config file not found:\n";
+    echo $config_path. "\n";
+    exit;
+}
+
+$config = json_decode(file_get_contents($config_path));
+$config->server->storage = dirname($config_path) . '/.storage';
 
 // 检查分片上传大小限制
 if ($config->file->chunk > 5242880) {
@@ -13,7 +23,7 @@ if ($config->file->chunk > 5242880) {
 if (is_dir($config->server->storage)) {
     if (count(scandir($config->server->storage)) !== 2) {
         echo "The storage path is not empty:\n";
-        echo realpath($config->server->storage) . "\n";
+        echo $config->server->storage . "\n";
     }
 } else {
     mkdir($config->server->storage);

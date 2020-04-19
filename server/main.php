@@ -2,6 +2,8 @@
 if (php_sapi_name() !== 'cli') exit('Use CLI to run this application.');
 if (!extension_loaded('swoole')) exit('Swoole is not installed.');
 
+define('IS_PHAR', (bool)Phar::running());
+
 require_once __DIR__ . '/vendor/autoload.php';
 
 $config = require_once __DIR__ .  '/App/Config.php';
@@ -132,6 +134,11 @@ $server->on('close', function (\Swoole\WebSocket\Server $server, $fd) {
 
 $server->on('message', function (\Swoole\WebSocket\Server $server, \Swoole\WebSocket\Frame $frame) {
 });
+
+echo "\n";
+echo "Cloud Clipboard 1.0.0\n";
+echo "https://github.com/TransparentLC/cloud-clipboard\n";
+echo "\n";
 
 echo "Server listening on port {$config->server->port} ...\n";
 $server->start();
