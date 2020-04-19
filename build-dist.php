@@ -27,5 +27,6 @@ foreach ([
 }
 
 $zip->close();
+if (file_exists('cloud-clipboard.tar.gz')) unlink('cloud-clipboard.tar.gz');
 $tar->compress(Phar::GZ);
 unlink('cloud-clipboard.tar');

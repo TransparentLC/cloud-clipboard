@@ -4,24 +4,22 @@ if (!extension_loaded('swoole')) exit('Swoole is not installed.');
 
 require_once __DIR__ . '/vendor/autoload.php';
 
-$config = require_once './App/Config.php';
+$config = require_once __DIR__ .  '/App/Config.php';
 $server = new \Swoole\WebSocket\Server('0.0.0.0', $config->server->port, SWOOLE_BASE);
 
 $server->set([
     'package_max_length' => 5242880,
-    'enable_static_handler' => true,
-    'document_root' => './static',
-    'http_autoindex' => true,
-    'http_index_files' => ['index.html'],
+    'http_compression_level' => 9,
 ]);
 
 $server->config = $config;
-$server->upload_table = require_once './App/UploadTable.php';
-$server->device_table = require_once './App/DeviceTable.php';
-$server->message_count = require_once './App/MessageCounter.php';
-// 所有的依赖都可以挂在这个对象里面
-// 现在好像还用不到
-// $server->require = new \stdClass;
+$server->upload_table = require_once __DIR__ . '/App/UploadTable.php';
+$server->device_table = require_once __DIR__ . '/App/DeviceTable.php';
+$server->message_count = require_once __DIR__ . '/App/MessageCounter.php';
+
+// 所有的依赖都挂在这个对象里面
+$server->require = new \stdClass;
+$server->require->mimes = new \Mimey\MimeTypes;
 
 $server->on('workerStart', function (\Swoole\WebSocket\Server $server) {
     // 所有的数据库连接都要在这里创建
@@ -44,6 +42,15 @@ $dispatcher = \FastRoute\simpleDispatcher(function (\FastRoute\RouteCollector $r
 });
 
 $server->on('request', function (\Swoole\Http\Request $request, \Swoole\Http\Response $response) use ($dispatcher, $server) {
+    // 静态文件处理
+    $static_path = __DIR__ . '/static' . $request->server['request_uri'];
+    if ($static_path[-1] === '/') $static_path .= 'index.html';
+    if (is_file($static_path)) {
+        $response->header('Content-Type', $server->require->mimes->getMimeType(pathinfo($static_path, PATHINFO_EXTENSION)));
+        $response->end(file_get_contents($static_path));
+        return;
+    }
+
     $route = $dispatcher->dispatch($request->server['request_method'], $request->server['request_uri']);
     switch ($route[0]) {
         case \FastRoute\Dispatcher::NOT_FOUND:

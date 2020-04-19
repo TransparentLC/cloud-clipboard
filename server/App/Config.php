@@ -1,6 +1,6 @@
 <?php
 // 读取设置，创建临时存储文件夹
-$config = json_decode(file_get_contents('config.json'));
+$config = json_decode(file_get_contents(__DIR__ . '/../config.json'));
 if (empty($config->server->storage)) exit('Please set a valid storage path in "config.json".');
 
 // 检查分片上传大小限制
