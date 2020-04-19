@@ -10,7 +10,12 @@
                 </div>
 
                 <div class="align-self-center text-no-wrap">
-                    <v-tooltip bottom>
+                    <v-progress-circular
+                        v-if="loading"
+                        indeterminate
+                        color="grey"
+                    >{{loaded / meta.size | percentage(0)}}</v-progress-circular>
+                    <v-tooltip v-else bottom>
                         <template v-slot:activator="{ on }">
                             <v-btn v-on="on" icon color="grey" @click="getFile">
                                 <v-icon>{{mdiDownload}}</v-icon>
@@ -20,7 +25,7 @@
                     </v-tooltip>
                     <v-tooltip bottom>
                         <template v-slot:activator="{ on }">
-                            <v-btn v-on="on" icon color="grey" @click="deleteItem">
+                            <v-btn v-on="on" icon color="grey" @click="deleteItem" :disabled="loading">
                                 <v-icon>{{mdiClose}}</v-icon>
                             </v-btn>
                         </template>
@@ -51,6 +56,8 @@ export default {
     },
     data() {
         return {
+            loading: false,
+            loaded: 0,
             mdiContentCopy,
             mdiDownload,
             mdiClose,
@@ -58,7 +65,12 @@ export default {
     },
     methods: {
         getFile() {
-            this.$http.get(`/file/${this.meta.cache}`, {responseType: 'arraybuffer'}).then(response => {
+            this.loading = true,
+            this.loaded = 0;
+            this.$http.get(`/file/${this.meta.cache}`, {
+                responseType: 'arraybuffer',
+                onDownloadProgress: e => {this.loaded = e.loaded},
+            }).then(response => {
                 let blobURL = URL.createObjectURL(new Blob([response.data]));
                 let cd = response.headers['content-disposition'];
                 let el = document.createElement('a');
@@ -72,6 +84,8 @@ export default {
                 } else {
                     this.$toast('文件获取失败');
                 }
+            }).finally(() => {
+                this.loading = false;
             });
 
         },
