@@ -83,7 +83,7 @@ $server->on('open', function (\Swoole\WebSocket\Server $server, \Swoole\Http\Req
     foreach ($server->device_table as $fd => $row) {
         $server->push($request->fd, json_encode([
             'event' => 'connect',
-            'data' => array_merge(['id' => $fd], $row),
+            'data' => array_merge(['id' => (int)$fd], $row),
         ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
     }
 
