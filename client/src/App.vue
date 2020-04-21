@@ -42,11 +42,14 @@
             <v-spacer></v-spacer>
             <v-tooltip left>
                 <template v-slot:activator="{ on }">
-                    <v-btn icon v-on="on" @click="if (!$root.websocket) {$root.retry = 0; $root.connect();}">
-                        <v-icon>{{$root.websocket ? mdiLanConnect : mdiLanDisconnect}}</v-icon>
+                    <v-btn icon v-on="on" @click="if (!$root.websocket && !$root.websocketConnecting) {$root.retry = 0; $root.connect();}">
+                        <v-icon v-if="$root.websocket">{{mdiLanConnect}}</v-icon>
+                        <v-icon v-else-if="$root.websocketConnecting">{{mdiLanPending}}</v-icon>
+                        <v-icon v-else>{{mdiLanDisconnect}}</v-icon>
                     </v-btn>
                 </template>
                 <span v-if="$root.websocket">已连接</span>
+                <span v-else-if="$root.websocketConnecting">连接中</span>
                 <span v-else>未连接，点击重连</span>
             </v-tooltip>
         </v-app-bar>
@@ -67,6 +70,7 @@ import {
     mdiInformation,
     mdiLanConnect,
     mdiLanDisconnect,
+    mdiLanPending,
 } from '@mdi/js';
 
 export default {
@@ -78,6 +82,7 @@ export default {
             mdiInformation,
             mdiLanConnect,
             mdiLanDisconnect,
+            mdiLanPending,
         };
     },
 };

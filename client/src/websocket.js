@@ -2,6 +2,7 @@ export default {
     data() {
         return {
             websocket: null,
+            websocketConnecting: false,
             retry: 0,
             event: {
                 receive: data => {
@@ -28,6 +29,7 @@ export default {
     },
     methods: {
         connect() {
+            this.websocketConnecting = true;
             this.$toast(this.retry ? `未能连接到服务器，正在尝试第 ${this.retry} 次重连……` : '正在连接服务器……', {
                 showClose: false,
                 dismissable: false,
@@ -40,6 +42,7 @@ export default {
                     ws.onerror = reject;
                 });
             }).then(ws => {
+                this.websocketConnecting = false;
                 this.retry = 0;
                 this.$toast('连接服务器成功');
                 setInterval(() => {ws.send('')}, 60000);
@@ -53,6 +56,7 @@ export default {
                 this.websocket = ws;
             }).catch(error => {
                 // console.log(error);
+                this.websocketConnecting = false;
                 this.failure();
             });
         },
