@@ -136,7 +136,7 @@ $server->on('message', function (\Swoole\WebSocket\Server $server, \Swoole\WebSo
 });
 
 echo "\n";
-echo "Cloud Clipboard 1.0.0\n";
+echo "Cloud Clipboard 1.0.1\n";
 echo "https://github.com/TransparentLC/cloud-clipboard\n";
 echo "\n";
 
