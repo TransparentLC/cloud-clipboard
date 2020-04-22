@@ -7,7 +7,7 @@ class File extends \App\AbstractInterface\HttpController {
         $upload_table = $this->server()->upload_table;
         $uuid = $this->param()['uuid'];
 
-        if ($upload_table->exist($uuid) && file_exists("{$storage}/{$uuid}")) {
+        if ((time() < $upload_table->get($uuid, 'expire_timestamp')) && file_exists("{$storage}/{$uuid}")) {
             $this->response()->header('Content-Disposition', 'attachment;filename="' . rawurlencode($upload_table->get($uuid, 'name')) . '"');
             $this->response()->sendFile("{$storage}/{$uuid}");
         } else {
@@ -28,7 +28,7 @@ class File extends \App\AbstractInterface\HttpController {
                 $this->writeJson(400);
             }
         } else {
-            $this->writeJson(404, [], '文件不存在');
+            $this->writeJson(404, [], '文件已过期或不存在');
         }
     }
 }

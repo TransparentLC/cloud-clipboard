@@ -8,7 +8,7 @@
         "limit": 4096
     },
     "file": {
-        "expire": 3600000,
+        "expire": 3600,
         "chunk": 2097152,
         "limit": 268435456
     }

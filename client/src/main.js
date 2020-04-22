@@ -10,6 +10,7 @@ import linkify from 'vue-linkify';
 import {
     prettyFileSize,
     percentage,
+    formatTimestamp,
 } from './util';
 
 import 'typeface-roboto/index.css';
@@ -20,11 +21,13 @@ Vue.use(VueAxios, axios);
 Vue.directive('linkified', linkify);
 Vue.filter('prettyFileSize', prettyFileSize);
 Vue.filter('percentage', percentage);
+Vue.filter('formatTimestamp', formatTimestamp);
 
 new Vue({
     mixins: [websocket],
     data() {
         return {
+            date: new Date,
             config: {
                 text: {
                     limit: 0,
@@ -46,4 +49,7 @@ new Vue({
     router,
     vuetify,
     render: h => h(App),
+    mounted() {
+        setInterval(() => {this.date = new Date}, 1000);
+    },
 }).$mount('#app');

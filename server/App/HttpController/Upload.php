@@ -10,27 +10,14 @@ class Upload extends \App\AbstractInterface\HttpController {
             $uuid = bin2hex(random_bytes(16));
         } while ($upload_table->exist($uuid));
 
-        \Swoole\Timer::after(60000, function () use ($upload_table, $uuid, $storage) {
-            if (file_exists("{$storage}/~{$uuid}")) {
-                echo "Upload {$uuid} failed, remove temp files.\n";
-                $upload_table->del($uuid);
-                unlink("{$storage}/~{$uuid}");
-            } else {
-                echo "Upload {$uuid} success, set expire timer.\n";
-                \Swoole\Timer::after(max(0, $this->server()->config->file->expire - 30000), function () use ($upload_table, $uuid, $storage) {
-                    echo "Upload {$uuid} expired.\n";
-                    $upload_table->del($uuid);
-                    @unlink("{$storage}/{$uuid}");
-                });
-            }
-        });
-
         $upload_table->set($uuid, [
             'name' => $this->request()->rawContent(),
             'size' => 0,
+            'upload_timestamp' => time(),
+            'expire_timestamp' => 0,
         ]);
 
-        fclose(fopen("{$storage}/~{$uuid}", 'w'));
+        fclose(fopen("{$storage}/{$uuid}", 'w'));
 
         $this->writeJson(200, ['uuid' => $uuid]);
     }
@@ -42,7 +29,7 @@ class Upload extends \App\AbstractInterface\HttpController {
         $chunk_length = strlen($this->request()->rawContent());
         $uuid = $this->param()['uuid'];
 
-        if (!$upload_table->exist($uuid) || !file_exists("{$storage}/~{$uuid}")) {
+        if ($upload_table->get($uuid, 'expire_timestamp') !== 0) {
             $this->writeJson(400, [], '无效的 UUID');
             return;
         } else if (!$chunk_length || $chunk_length > $this->server()->config->file->chunk) {
@@ -50,19 +37,17 @@ class Upload extends \App\AbstractInterface\HttpController {
             return;
         }
 
-        $file_meta = $upload_table->get($uuid);
-
-        if ($file_meta['size'] + $chunk_length > $this->server()->config->file->limit) {
+        $size = $upload_table->get($uuid, 'size');
+        if ($size + $chunk_length > $this->server()->config->file->limit) {
             $this->writeJson(400, [], '文件大小已超过限制');
             return;
         }
 
-        $fp = fopen("{$storage}/~{$uuid}", 'a');
+        $fp = fopen("{$storage}/{$uuid}", 'a');
         fwrite($fp, $this->request()->rawContent());
         fclose($fp);
 
-        $file_meta['size'] += $chunk_length;
-        $upload_table->set($uuid, $file_meta);
+        $upload_table->set($uuid, ['size' => $size + $chunk_length]);
 
         $this->writeJson();
     }
@@ -73,20 +58,21 @@ class Upload extends \App\AbstractInterface\HttpController {
         $upload_table = $this->server()->upload_table;
         $uuid = $this->param()['uuid'];
 
-        if (!$upload_table->exist($uuid) || !file_exists("{$storage}/~{$uuid}")) {
-            $this->writeJson(400, [], '无效的 uuid');
+        if ($upload_table->get($uuid, 'expire_timestamp') !== 0) {
+            $this->writeJson(400, [], '无效的 UUID');
             return;
         }
 
-        rename("{$storage}/~{$uuid}", "{$storage}/{$uuid}");
+        $upload_table->set($uuid, ['expire_timestamp' => time() + $this->server()->config->file->expire]);
         $broadcast = [
             'event' => 'receive',
             'data' => [
                 'id' => $this->server()->message_count->add(),
                 'type' => 'file',
                 'name' => $upload_table->get($uuid, 'name'),
-                'size' => filesize("{$storage}/{$uuid}"),
+                'size' => $upload_table->get($uuid, 'size'),
                 'cache' => $uuid,
+                'expire' => $upload_table->get($uuid, 'expire_timestamp'),
             ],
         ];
         $broadcast_json = json_encode($broadcast, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);

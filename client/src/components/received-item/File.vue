@@ -5,8 +5,17 @@
         <v-card :elevation="hover ? 6 : 2" class="mb-2">
             <v-card-text class="d-flex">
                 <div class="flex-grow-1 mr-2" style="min-width: 0">
-                    <div class="title text-truncate text--primary" :title="meta.name">{{meta.name}}</div>
-                    <div class="caption">{{meta.size | prettyFileSize}}</div>
+                    <div
+                        class="title text-truncate text--primary"
+                        :style="{'text-decoration': expired ? 'line-through' : ''}"
+                        :title="meta.name"
+                    >{{meta.name}}</div>
+                    <div class="caption">
+                        {{meta.size | prettyFileSize}}
+                        <template v-if="$vuetify.breakpoint.smAndDown"><br></template>
+                        <template v-else>|</template>
+                        {{expired ? '已' : '将'}}于 {{meta.expire | formatTimestamp}} 过期
+                    </div>
                 </div>
 
                 <div class="align-self-center text-no-wrap">
@@ -17,11 +26,11 @@
                     >{{loaded / meta.size | percentage(0)}}</v-progress-circular>
                     <v-tooltip v-else bottom>
                         <template v-slot:activator="{ on }">
-                            <v-btn v-on="on" icon color="grey" @click="getFile">
-                                <v-icon>{{mdiDownload}}</v-icon>
+                            <v-btn v-on="on" icon color="grey" @click="if (!expired) {getFile()}">
+                                <v-icon>{{expired ? mdiDownloadOff : mdiDownload}}</v-icon>
                             </v-btn>
                         </template>
-                        <span>下载</span>
+                        <span>{{expired ? '已过期' : '下载'}}</span>
                     </v-tooltip>
                     <v-tooltip bottom>
                         <template v-slot:activator="{ on }">
@@ -41,6 +50,7 @@
 import {
     mdiContentCopy,
     mdiDownload,
+    mdiDownloadOff,
     mdiClose,
 } from '@mdi/js';
 
@@ -60,8 +70,14 @@ export default {
             loaded: 0,
             mdiContentCopy,
             mdiDownload,
+            mdiDownloadOff,
             mdiClose,
         };
+    },
+    computed: {
+        expired() {
+            return this.$root.date.getTime() / 1000 > this.meta.expire;
+        },
     },
     methods: {
         getFile() {
@@ -91,6 +107,7 @@ export default {
         },
         deleteItem() {
             this.$http.delete(`/revoke/${this.meta.id}`).then(() => {
+                if (this.expired) return;
                 this.$http.delete(`/file/${this.meta.cache}`).then(() => {
                     this.$toast(`已删除文件 ${this.meta.name}`);
                 }).catch(error => {

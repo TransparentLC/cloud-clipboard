@@ -11,3 +11,14 @@ export function prettyFileSize(size) {
 export function percentage(value, decimal = 2) {
     return (value * 100).toFixed(decimal) + '%';
 }
+
+export function formatTimestamp(timestamp) {
+    let date = new Date(timestamp * 1000);
+    return ''
+        + date.getFullYear() + '-'
+        + (date.getMonth() + 1).toString().padStart(2, 0) + '-'
+        + date.getDate().toString().padStart(2, 0) + ' '
+        + date.getHours().toString().padStart(2, 0) + ':'
+        + date.getMinutes().toString().padStart(2, 0) + ':'
+        + date.getSeconds().toString().padStart(2, 0);
+};
