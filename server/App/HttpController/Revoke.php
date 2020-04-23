@@ -8,10 +8,12 @@ class Revoke extends \App\AbstractInterface\HttpController {
         }
         $this->writeJson();
 
+        $id = (int)$this->param()['id'];
+        $this->server()->history_queue->del($id);
         $broadcast = [
             'event' => 'revoke',
             'data' => [
-                'id' => (int)$this->param()['id'],
+                'id' => $id,
             ],
         ];
         $broadcast_json = json_encode($broadcast, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);

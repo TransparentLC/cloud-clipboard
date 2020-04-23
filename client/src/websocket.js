@@ -44,6 +44,7 @@ export default {
             }).then(ws => {
                 this.websocketConnecting = false;
                 this.retry = 0;
+                this.received = [];
                 this.$toast('连接服务器成功');
                 setInterval(() => {ws.send('')}, 60000);
                 ws.onclose = () => {this.failure()};

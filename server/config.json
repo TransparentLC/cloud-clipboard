@@ -2,7 +2,8 @@
     "server": {
         "host": "192.168.1.136",
         "port": 9501,
-        "wss": false
+        "wss": false,
+        "history": 10
     },
     "text": {
         "limit": 4096

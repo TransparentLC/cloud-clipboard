@@ -63,11 +63,12 @@ class Upload extends \App\AbstractInterface\HttpController {
             return;
         }
 
+        $id = $this->server()->message_count->add();
         $upload_table->set($uuid, ['expire_timestamp' => time() + $this->server()->config->file->expire]);
         $broadcast = [
             'event' => 'receive',
             'data' => [
-                'id' => $this->server()->message_count->add(),
+                'id' => $id,
                 'type' => 'file',
                 'name' => $upload_table->get($uuid, 'name'),
                 'size' => $upload_table->get($uuid, 'size'),
@@ -76,6 +77,7 @@ class Upload extends \App\AbstractInterface\HttpController {
             ],
         ];
         $broadcast_json = json_encode($broadcast, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        $this->server()->history_queue->set($id, $broadcast_json);
         foreach ($this->server()->connections as $fd) {
             if (!$this->server()->isEstablished($fd)) continue;
             $this->server()->push($fd, $broadcast_json);

@@ -18,6 +18,7 @@ $server->config = $config;
 $server->upload_table = require_once __DIR__ . '/App/UploadTable.php';
 $server->device_table = require_once __DIR__ . '/App/DeviceTable.php';
 $server->message_count = require_once __DIR__ . '/App/MessageCounter.php';
+$server->history_queue = require_once __DIR__ . '/App/HistoryQueue.php';
 
 // 所有的依赖都挂在这个对象里面
 $server->require = new \stdClass;
@@ -80,11 +81,17 @@ $server->on('open', function (\Swoole\WebSocket\Server $server, \Swoole\Http\Req
             'file' => $server->config->file,
         ],
     ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+
     foreach ($server->device_table as $fd => $row) {
         $server->push($request->fd, json_encode([
             'event' => 'connect',
             'data' => array_merge(['id' => (int)$fd], $row),
         ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+    }
+
+    $keys = $server->history_queue->keys();
+    foreach ($keys as $key) {
+        $server->push($request->fd, $server->history_queue->get($key));
     }
 
     $device = new \DeviceDetector\DeviceDetector($request->header['user-agent']);
@@ -136,7 +143,7 @@ $server->on('message', function (\Swoole\WebSocket\Server $server, \Swoole\WebSo
 });
 
 echo "\n";
-echo "Cloud Clipboard 1.0.1\n";
+echo "Cloud Clipboard 1.1.0\n";
 echo "https://github.com/TransparentLC/cloud-clipboard\n";
 echo "\n";
 
