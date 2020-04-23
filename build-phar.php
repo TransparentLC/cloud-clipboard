@@ -18,8 +18,32 @@ foreach ([
     foreach ($files as $file) {
         $file = str_replace('\\', '/', $file);
         if (is_dir($file)) continue;
-        if (strpos($file, '/.git/') !== false) continue;
-        if (strpos($file, '/vendor/eaglewu/swoole-ide-helper/') !== false) continue;
+
+        $excluded = false;
+        foreach ([
+            '.git',
+            '.gitignore',
+            '.codeclimate.yml',
+            '.travis.yml',
+            'phpunit.xml',
+            'doc',
+            'docs',
+            'test',
+            'test_old',
+            'tests',
+            'example',
+            'examples',
+            'sample',
+            'samples',
+            'vendor-bin',
+            'swoole-ide-helper',
+        ] as $keyword) {
+            if (in_array($keyword, explode('/', $file))) {
+                $excluded = true;
+                break;
+            }
+        }
+        if ($excluded) continue;
 
         $localname = preg_replace('/^(server\/)/', '', $file);
         echo $file . "\n";
