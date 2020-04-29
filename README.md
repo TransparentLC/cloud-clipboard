@@ -9,7 +9,17 @@
 
 *仅供个人在连接到同一局域网（比如家里的路由器）的设备之间使用，如果放在公开的服务器上大概会出现各种奇怪的问题吧 \_(:зゝ∠)\_*
 
-*以及……这东西本身大概就会有不少奇怪的 BUG \_(:зゝ∠)\_*
+<details>
+<summary><em>以及……这东西本身大概就会有不少奇怪的 BUG \_(:зゝ∠)\_</em></summary>
+
+比如说低概率出现的这种错误，我暂时也不知道是怎么回事（摊手）
+
+```text
+WARNING swReactorEpoll_set(:178): reactor#0->set(fd=15|type=0|events=5) failed, Error: No such file or directory
+段错误 (核心已转储)
+```
+
+</details>
 
 ## 截图
 
