@@ -3,6 +3,7 @@ if (php_sapi_name() !== 'cli') exit('Use CLI to run this application.');
 if (!extension_loaded('swoole')) exit('Swoole is not installed.');
 
 define('IS_PHAR', (bool)Phar::running());
+define('VERSION', '1.2.0');
 
 require_once __DIR__ . '/vendor/autoload.php';
 
@@ -77,6 +78,7 @@ $server->on('open', function (\Swoole\WebSocket\Server $server, \Swoole\Http\Req
     $server->push($request->fd, json_encode([
         'event' => 'config',
         'data' => [
+            'version' => VERSION,
             'text' => $server->config->text,
             'file' => $server->config->file,
         ],
@@ -143,7 +145,7 @@ $server->on('message', function (\Swoole\WebSocket\Server $server, \Swoole\WebSo
 });
 
 echo "\n";
-echo "Cloud Clipboard 1.1.0\n";
+echo "Cloud Clipboard " . VERSION . "\n";
 echo "https://github.com/TransparentLC/cloud-clipboard\n";
 echo "\n";
 

@@ -51,25 +51,27 @@ foreach ([
         $localname = preg_replace('/^(server\/)/', '', $file);
 
         $minify = false;
-        if (pathinfo($file, PATHINFO_EXTENSION) === 'php') {
+        if (pathinfo($file, PATHINFO_EXTENSION) === 'php' || pathinfo($file, PATHINFO_EXTENSION) === 'php4') {
             $minify = true;
             $minified = php_strip_whitespace($file);
-            $file .= '.min';
-            file_put_contents($file, $minified);
         } else if (pathinfo($file, PATHINFO_EXTENSION) === 'json') {
             $minify = true;
             $minified = json_encode(json_decode(file_get_contents($file), true), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-            $file .= '.min';
-            file_put_contents($file, $minified);
+        }
+        if ($minify) {
+            $phar->addFromString($localname, $minified);
+        } else {
+            $phar->addFile($file, $localname);
         }
 
-        $phar->addFile($file, $localname);
-        if ($minify) unlink($file);
-        echo $file . "\n";
+        echo $file . ($minify ? " (minified)\n" : "\n");
     }
 }
 
-$phar->setStub($phar->createDefaultStub('main.php'));
+file_put_contents('.stub', $phar->createDefaultStub('main.php'));
+$phar->setStub(php_strip_whitespace('.stub'));
+$phar->stopBuffering();
+unlink('.stub');
 // $phar->extractTo('extract');
 
 if (extension_loaded('zlib')) {

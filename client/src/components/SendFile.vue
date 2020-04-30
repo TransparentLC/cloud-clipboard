@@ -32,7 +32,7 @@
                     @click="$refs.selectFile.click()"
                 >
                     <div>
-                        选择要发送的文件<span class="hidden-sm-and-down">（支持拖拽）</span>
+                        选择要发送的文件<span class="hidden-sm-and-down">（支持拖拽和 Ctrl+V 粘贴截图）</span>
                         <br>
                         <small class="text--secondary">文件大小限制：{{$root.config.file.limit | prettyFileSize}}</small>
                     </div>
@@ -122,6 +122,14 @@ export default {
                 this.progress = false;
             }
         }
+    },
+    mounted() {
+        document.onpaste = e => {
+            if (!(e && e.clipboardData && e.clipboardData.items[0] && e.clipboardData.items[0].kind === 'file')) return;
+            let file = e.clipboardData.items[0].getAsFile();
+            if (!file.size || file.size > this.$root.config.file.limit) return;
+            this.$root.send.file = file;
+        };
     },
 }
 </script>

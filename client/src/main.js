@@ -29,6 +29,7 @@ new Vue({
         return {
             date: new Date,
             config: {
+                version: '',
                 text: {
                     limit: 0,
                 },
