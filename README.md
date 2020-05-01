@@ -9,17 +9,7 @@
 
 *仅供个人在连接到同一局域网（比如家里的路由器）的设备之间使用，如果放在公开的服务器上大概会出现各种奇怪的问题吧 \_(:зゝ∠)\_*
 
-<details>
-<summary><em>以及……这东西本身大概就会有不少奇怪的 BUG \_(:зゝ∠)\_</em></summary>
-
-比如说低概率出现的这种错误，我暂时也不知道是怎么回事（摊手）
-
-```text
-WARNING swReactorEpoll_set(:178): reactor#0->set(fd=15|type=0|events=5) failed, Error: No such file or directory
-段错误 (核心已转储)
-```
-
-</details>
+以及……这东西本身大概就会有不少奇怪的 BUG \_(:зゝ∠)\_
 
 ## 截图
 
@@ -43,8 +33,15 @@ WARNING swReactorEpoll_set(:178): reactor#0->set(fd=15|type=0|events=5) failed, 
 
 需要安装了 Swoole 扩展的 PHP 运行环境。
 
-* Windows：使用官方在百毒网盘上提供的 [Cygwin 整合包](https://pan.baidu.com/s/15RodWdoIgwBLmG1I5HXzOg#list/path=%2Fsharelink2059756482-531706993208199%2Fswoole%2Fcygwin)（或者从[这里](https://files.catbox.moe/wz2ktt.zip)下载我自己搬运的 4.5.0 RC1 版本），也可以在 WSL(Windows Subsystem for Linux) 中安装运行环境
 * Linux：参见 Swoole 文档的[安装说明](https://wiki.swoole.com/#/environment)
+* Windows：使用官方在百毒网盘上提供的 [Cygwin 整合包](https://pan.baidu.com/s/15RodWdoIgwBLmG1I5HXzOg#list/path=%2Fsharelink2059756482-531706993208199%2Fswoole%2Fcygwin)（或者从[这里](https://files.catbox.moe/wz2ktt.zip)下载我自己搬运的 4.5.0 RC1 版本），~~也可以在 WSL(Windows Subsystem for Linux) 中安装运行环境~~
+
+> 可能是由于 WSL 的缺陷，在 WSL 下多次刷新页面后开始有概率出现错误导致服务端挂掉：
+> ```text
+> WARNING swReactorEpoll_set(:178): reactor#0->set(fd=15|type=0|events=5) failed, Error: No such file or directory
+> 段错误 (核心已转储)
+> ```
+> Cygwin 整合包下暂未发现类似的问题。
 
 在命令行中输入 `php --ri swoole`，可以输出配置信息就代表准备完成了～
 
