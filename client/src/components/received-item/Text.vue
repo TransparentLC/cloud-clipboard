@@ -3,7 +3,7 @@
         v-slot:default="{ hover }"
     >
         <v-card :elevation="hover ? 6 : 2" class="mb-2">
-            <v-card-text class="d-flex">
+            <v-card-text class="d-flex flex-row align-center">
                 <div class="flex-grow-1 mr-2" style="min-width: 0">
                     <div class="title text-truncate text--primary" @click="expand = !expand">
                         文本消息<v-icon>{{expand ? mdiChevronUp : mdiChevronDown}}</v-icon>

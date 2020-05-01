@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="headline text--primary mb-4">发送文件</div>
-        <v-card outlined class="pa-4 mb-6 d-flex" @drop="handleSelectFile($event.dataTransfer.files[0])">
+        <v-card outlined class="pa-3 mb-6 d-flex flex-row align-center" @drop="handleSelectFile($event.dataTransfer.files[0])">
             <template v-if="$root.send.file">
                 <template v-if="progress">
                     <div class="flex-grow-1">
@@ -12,6 +12,14 @@
                     </div>
                 </template>
                 <template v-else>
+                    <v-img
+                        v-if="isUploadingImage"
+                        :src="imagePreview"
+                        class="mr-3 flex-grow-0"
+                        width="2.5rem"
+                        height="2.5rem"
+                        style="border-radius: 3px"
+                    ></v-img>
                     <div class="flex-grow-1 mr-2" style="min-width: 0">
                         <div class="text-truncate" :title="$root.send.file.name">{{$root.send.file.name}}</div>
                         <div class="caption">{{$root.send.file.size | prettyFileSize}}</div>
@@ -70,6 +78,7 @@ export default {
         return {
             progress: false,
             uploadedSize: 0,
+            imagePreview: '',
             mdiClose,
         };
     },
@@ -80,6 +89,9 @@ export default {
         uploadProgress() {
             return Math.min(this.fileSize !== 0 ? (this.uploadedSize / this.fileSize) : 0, 1);
         },
+        isUploadingImage() {
+            return this.$root.send.file && this.$root.send.file.type.startsWith('image/');
+        },
     },
     methods: {
         handleSelectFile(file) {
@@ -89,6 +101,10 @@ export default {
                 this.$toast(`文件大小超过限制（${prettyFileSize(this.$root.config.file.limit)}）`);
             } else {
                 this.$root.send.file = file;
+                if (this.isUploadingImage) {
+                    URL.revokeObjectURL(this.imagePreview);
+                    this.imagePreview = URL.createObjectURL(file);
+                }
             }
         },
         async send() {
@@ -126,9 +142,7 @@ export default {
     mounted() {
         document.onpaste = e => {
             if (!(e && e.clipboardData && e.clipboardData.items[0] && e.clipboardData.items[0].kind === 'file')) return;
-            let file = e.clipboardData.items[0].getAsFile();
-            if (!file.size || file.size > this.$root.config.file.limit) return;
-            this.$root.send.file = file;
+            this.handleSelectFile(e.clipboardData.items[0].getAsFile());
         };
     },
 }

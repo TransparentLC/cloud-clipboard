@@ -3,7 +3,15 @@
         v-slot:default="{ hover }"
     >
         <v-card :elevation="hover ? 6 : 2" class="mb-2">
-            <v-card-text class="d-flex">
+            <v-card-text class="d-flex flex-row align-center">
+                <v-img
+                    v-if="meta.thumbnail"
+                    :src="meta.thumbnail"
+                    class="mr-3 flex-grow-0 hidden-sm-and-down"
+                    width="2.5rem"
+                    height="2.5rem"
+                    style="border-radius: 3px"
+                ></v-img>
                 <div class="flex-grow-1 mr-2" style="min-width: 0">
                     <div
                         class="title text-truncate text--primary"

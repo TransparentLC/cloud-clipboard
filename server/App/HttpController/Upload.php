@@ -76,6 +76,22 @@ class Upload extends \App\AbstractInterface\HttpController {
                 'expire' => $upload_table->get($uuid, 'expire_timestamp'),
             ],
         ];
+
+        try {
+            if (($image = @imagecreatefromstring(file_get_contents("{$storage}/{$uuid}"))) === false) throw new \Exception();
+            list($width, $height, $type, $attr) = getimagesize("{$storage}/{$uuid}");
+            if (min($width, $height) > 64) {
+                $ratio = 64 / min($width, $height);
+                $image = imagescale($image, $width * $ratio, $height * $ratio, IMG_BICUBIC_FIXED);
+            }
+            imageinterlace($image, true);
+            ob_start();
+            imagejpeg($image, null, 64);
+            $image_data = ob_get_clean();
+            imagedestroy($image);
+            $broadcast['data']['thumbnail'] = 'data:image/jpeg;base64,' . base64_encode($image_data);
+        } catch (\Throwable $th) {}
+
         $broadcast_json = json_encode($broadcast, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
         $this->server()->history_queue->set($id, $broadcast_json);
         foreach ($this->server()->connections as $fd) {
