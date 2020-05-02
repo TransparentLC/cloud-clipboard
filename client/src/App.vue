@@ -21,6 +21,50 @@
                         <v-list-item-title>设备列表</v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
+                <v-menu
+                    offset-x
+                    transition="slide-x-transition"
+                    open-on-click
+                    open-on-hover
+                    :close-on-content-click="false"
+                >
+                    <template v-slot:activator="{on}">
+                        <v-list-item link v-on="on">
+                            <v-list-item-action>
+                                <v-icon>{{mdiBrightness4}}</v-icon>
+                            </v-list-item-action>
+                            <v-list-item-content>
+                                <v-list-item-title>深色模式</v-list-item-title>
+                            </v-list-item-content>
+                        </v-list-item>
+                    </template>
+                    <v-list two-line>
+                        <v-list-item-group v-model="$root.dark" color="primary">
+                            <v-list-item link value="time">
+                                <v-list-item-content>
+                                    <v-list-item-title>根据时间切换</v-list-item-title>
+                                    <v-list-item-subtitle>在 19:00 到次日 7:00 期间启用</v-list-item-subtitle>
+                                </v-list-item-content>
+                            </v-list-item>
+                            <v-list-item link value="prefer">
+                                <v-list-item-content>
+                                    <v-list-item-title>根据系统设置切换</v-list-item-title>
+                                    <v-list-item-subtitle>使用 <code>prefers-color-scheme</code> 检测</v-list-item-subtitle>
+                                </v-list-item-content>
+                            </v-list-item>
+                            <v-list-item link value="enable">
+                                <v-list-item-content>
+                                    <v-list-item-title>保持启用</v-list-item-title>
+                                </v-list-item-content>
+                            </v-list-item>
+                            <v-list-item link value="disable">
+                                <v-list-item-content>
+                                    <v-list-item-title>保持禁用</v-list-item-title>
+                                </v-list-item-content>
+                            </v-list-item>
+                        </v-list-item-group>
+                    </v-list>
+                </v-menu>
                 <v-list-item link href="#/about">
                     <v-list-item-action>
                         <v-icon>{{mdiInformation}}</v-icon>
@@ -71,6 +115,7 @@ import {
     mdiLanConnect,
     mdiLanDisconnect,
     mdiLanPending,
+    mdiBrightness4,
 } from '@mdi/js';
 
 export default {
@@ -83,6 +128,7 @@ export default {
             mdiLanConnect,
             mdiLanDisconnect,
             mdiLanPending,
+            mdiBrightness4,
         };
     },
 };

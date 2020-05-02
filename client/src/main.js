@@ -28,6 +28,7 @@ new Vue({
     data() {
         return {
             date: new Date,
+            dark: null,
             config: {
                 version: '',
                 text: {
@@ -50,7 +51,36 @@ new Vue({
     router,
     vuetify,
     render: h => h(App),
+    watch: {
+        dark(newval) {
+            this.$vuetify.theme.dark = this.useDark;
+            localStorage.setItem('darkmode', newval);
+        },
+    },
+    computed: {
+        useDark() {
+            switch (this.dark) {
+                case 'enable':
+                    return true;
+                    break;
+                case 'disable':
+                    return false;
+                    break;
+                case 'time':
+                    let hour = this.date.getHours();
+                    return hour >= 19 || hour <= 7;
+                    break;
+                case 'prefer':
+                    return matchMedia('(prefers-color-scheme:dark)').matches;
+                    break;
+                default:
+                    return false;
+                    break;
+            }
+        },
+    },
     mounted() {
         setInterval(() => {this.date = new Date}, 1000);
+        this.dark = localStorage.getItem('darkmode') || 'time';
     },
 }).$mount('#app');

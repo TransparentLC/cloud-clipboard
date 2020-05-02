@@ -86,7 +86,7 @@ class Upload extends \App\AbstractInterface\HttpController {
             }
             imageinterlace($image, true);
             ob_start();
-            imagejpeg($image, null, 64);
+            imagejpeg($image, null, 70);
             $image_data = ob_get_clean();
             imagedestroy($image);
             $broadcast['data']['thumbnail'] = 'data:image/jpeg;base64,' . base64_encode($image_data);
