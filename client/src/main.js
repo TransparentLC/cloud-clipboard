@@ -68,7 +68,7 @@ new Vue({
                     break;
                 case 'time':
                     let hour = this.date.getHours();
-                    return hour >= 19 || hour <= 7;
+                    return hour >= 19 || hour < 7;
                     break;
                 case 'prefer':
                     return matchMedia('(prefers-color-scheme:dark)').matches;
