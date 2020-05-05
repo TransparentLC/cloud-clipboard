@@ -39,7 +39,7 @@
                         </v-list-item>
                     </template>
                     <v-list two-line>
-                        <v-list-item-group v-model="$root.dark" color="primary">
+                        <v-list-item-group v-model="$root.dark" color="primary" mandatory>
                             <v-list-item link value="time">
                                 <v-list-item-content>
                                     <v-list-item-title>根据时间切换</v-list-item-title>

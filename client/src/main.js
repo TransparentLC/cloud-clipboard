@@ -58,29 +58,31 @@ new Vue({
         },
     },
     computed: {
-        useDark() {
-            switch (this.dark) {
-                case 'enable':
-                    return true;
-                    break;
-                case 'disable':
-                    return false;
-                    break;
-                case 'time':
-                    let hour = this.date.getHours();
-                    return hour >= 19 || hour < 7;
-                    break;
-                case 'prefer':
-                    return matchMedia('(prefers-color-scheme:dark)').matches;
-                    break;
-                default:
-                    return false;
-                    break;
-            }
+        useDark: {
+            cache: false,
+            get() {
+                switch (this.dark) {
+                    case 'enable':
+                        return true;
+                    case 'disable':
+                        return false;
+                    case 'time':
+                        let hour = this.date.getHours();
+                        return hour >= 19 || hour < 7;
+                    case 'prefer':
+                        return matchMedia('(prefers-color-scheme:dark)').matches;
+                    default:
+                        return false;
+                }
+            },
         },
     },
     mounted() {
-        setInterval(() => {this.date = new Date}, 1000);
         this.dark = localStorage.getItem('darkmode') || 'time';
+        this.$vuetify.theme.dark = this.useDark;
+        setInterval(() => {
+            this.date = new Date;
+            this.$vuetify.theme.dark = this.useDark;
+        }, 1000);
     },
 }).$mount('#app');
