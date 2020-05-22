@@ -3,7 +3,7 @@ if (php_sapi_name() !== 'cli') exit('Use CLI to run this application.');
 if (!extension_loaded('swoole')) exit('Swoole is not installed.');
 
 define('IS_PHAR', (bool)Phar::running());
-define('VERSION', '1.2.0');
+define('VERSION', '1.2.1');
 
 require_once __DIR__ . '/vendor/autoload.php';
 
@@ -24,15 +24,6 @@ $server->history_queue = require_once __DIR__ . '/App/HistoryQueue.php';
 // 所有的依赖都挂在这个对象里面
 $server->require = new \stdClass;
 $server->require->mimes = new \Mimey\MimeTypes;
-
-$server->on('workerStart', function (\Swoole\WebSocket\Server $server) {
-    // 所有的数据库连接都要在这里创建
-    // https://wiki.swoole.com/#/question/use?id=是否可以共用1个redis或mysql连接
-});
-
-$server->on('workerStop', function (\Swoole\WebSocket\Server $server) {
-    // 数据库连接在这里关闭
-});
 
 $dispatcher = \FastRoute\simpleDispatcher(function (\FastRoute\RouteCollector $r) {
     $r->addRoute('GET', '/server', 'ServerURI/index');

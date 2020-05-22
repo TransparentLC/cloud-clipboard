@@ -78,8 +78,13 @@ class Upload extends \App\AbstractInterface\HttpController {
         ];
 
         try {
-            if (($image = @imagecreatefromstring(file_get_contents("{$storage}/{$uuid}"))) === false) throw new \Exception();
-            list($width, $height, $type, $attr) = getimagesize("{$storage}/{$uuid}");
+            // 32MB以上文件不生成缩略图
+            if (filesize("{$storage}/{$uuid}") > 33554432) throw new \Exception();
+            // 非图像文件不生成缩略图
+            if (($imagesize = getimagesize("{$storage}/{$uuid}")) === false) throw new \Exception();
+
+            $image = imagecreatefromstring(file_get_contents("{$storage}/{$uuid}"));
+            list($width, $height, $type, $attr) = $imagesize;
             if (min($width, $height) > 64) {
                 $ratio = 64 / min($width, $height);
                 $image = imagescale($image, $width * $ratio, $height * $ratio, IMG_BICUBIC_FIXED);
