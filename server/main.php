@@ -21,10 +21,6 @@ $server->device_table = require_once __DIR__ . '/App/DeviceTable.php';
 $server->message_count = require_once __DIR__ . '/App/MessageCounter.php';
 $server->history_queue = require_once __DIR__ . '/App/HistoryQueue.php';
 
-// 所有的依赖都挂在这个对象里面
-$server->require = new \stdClass;
-$server->require->mimes = new \Mimey\MimeTypes;
-
 $dispatcher = \FastRoute\simpleDispatcher(function (\FastRoute\RouteCollector $r) {
     $r->addRoute('GET', '/server', 'ServerURI/index');
     $r->addRoute('POST', '/text', 'Text/index');
@@ -41,7 +37,7 @@ $server->on('request', function (\Swoole\Http\Request $request, \Swoole\Http\Res
     $static_path = __DIR__ . '/static' . $request->server['request_uri'];
     if ($static_path[-1] === '/') $static_path .= 'index.html';
     if (is_file($static_path)) {
-        $response->header('Content-Type', $server->require->mimes->getMimeType(pathinfo($static_path, PATHINFO_EXTENSION)));
+        $response->header('Content-Type', swoole_mime_type_get($static_path));
         $response->end(file_get_contents($static_path));
         return;
     }

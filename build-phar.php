@@ -39,7 +39,7 @@ foreach ([
             'sample',
             'samples',
             'vendor-bin',
-            'swoole-ide-helper',
+            'ide-helper',
         ] as $keyword) {
             if (in_array($keyword, explode('/', $file))) {
                 $excluded = true;

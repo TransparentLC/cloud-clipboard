@@ -5,11 +5,10 @@
         }
     },
     "require-dev": {
-        "eaglewu/swoole-ide-helper": "dev-master"
+        "swoole/ide-helper": "@dev"
     },
     "require": {
         "nikic/fast-route": "^1.3",
-        "piwik/device-detector": "^3.12",
-        "ralouphie/mimey": "^2.1"
+        "piwik/device-detector": "^3.12"
     }
 }

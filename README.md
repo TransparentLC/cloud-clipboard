@@ -65,7 +65,8 @@
         "host": "192.168.1.136", // 服务端的 IP 地址或域名
         "port": 9501, // 端口号
         "wss": false, // 使用 wss 协议而不是 ws 协议，一般不修改
-        "history": 10 // 消息历史记录的数量
+        "history": 10, // 消息历史记录的数量
+        "auth": false  // 是否在连接时要求使用密码认证，falsy 值表示不使用
     },
     "text": {
         "limit": 4096 // 文本的长度限制
@@ -85,6 +86,10 @@
 >
 > IP 地址可能有多个，需要选择**当前正在使用的** IP 地址。
 
+> “密码认证”的说明：
+>
+> 如果启用“密码认证”，只有输入正确的密码才能连接到服务端并查看剪贴板内容。
+> 可以将 `auth` 字段设为 `true`（随机生成六位数字密码）或字符串（自定义密码）来启用这个功能，启动服务端后控制台会以 `Authorization code: ****` 的格式输出当前使用的密码。
 </details>
 
 ### 从源代码运行
@@ -105,3 +110,15 @@ php main.php
 cd ..
 php build-phar.php
 ```
+
+### 使用的开源项目
+
+* [axios/axios](https://github.com/axios/axios)
+* [eolant/vuetify-toast-snackbar](https://github.com/eolant/vuetify-toast-snackbar)
+* [matomo-org/device-detector](https://github.com/matomo-org/device-detector)
+* [nikic/FastRoute](https://github.com/nikic/FastRoute)
+* [phanan/vue-linkify](https://github.com/phanan/vue-linkify)
+* [Templarian/MaterialDesign-JS](https://github.com/Templarian/MaterialDesign-JS)
+* [vuejs/vue](https://github.com/vuejs/vue)
+* [vuejs/vue-router](https://github.com/vuejs/vue-router)
+* [vuetifyjs/vuetify](https://github.com/vuetifyjs/vuetify)
