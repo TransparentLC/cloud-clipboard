@@ -3,7 +3,7 @@ if (php_sapi_name() !== 'cli') exit('Use CLI to run this application.');
 if (!extension_loaded('swoole')) exit('Swoole is not installed.');
 
 define('IS_PHAR', (bool)Phar::running());
-define('VERSION', '1.2.1');
+define('VERSION', '1.3.0');
 
 require_once __DIR__ . '/vendor/autoload.php';
 
@@ -66,6 +66,16 @@ $server->on('request', function (\Swoole\Http\Request $request, \Swoole\Http\Res
 });
 
 $server->on('open', function (\Swoole\WebSocket\Server $server, \Swoole\Http\Request $request) {
+    // var_dump($request->get['auth'], $request->get['auth'] === $server->config->server->auth);
+    if ($server->config->server->auth && $request->get['auth'] !== $server->config->server->auth) {
+        $server->push($request->fd, json_encode([
+            'event' => 'forbidden',
+            'data' => [],
+        ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+        $server->close($request->fd);
+        return;
+    }
+
     $server->push($request->fd, json_encode([
         'event' => 'config',
         'data' => [
@@ -139,6 +149,12 @@ echo "\n";
 echo "Cloud Clipboard " . VERSION . "\n";
 echo "https://github.com/TransparentLC/cloud-clipboard\n";
 echo "\n";
+
+if ($config->server->auth) {
+    echo "Authorization code: {$config->server->auth}\n\n";
+} else {
+    echo "Authorization code is disabled.\n\n";
+}
 
 echo "Server listening on port {$config->server->port} ...\n";
 $server->start();

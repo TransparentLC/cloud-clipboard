@@ -11,7 +11,18 @@ if (file_exists($config_path)) {
 }
 
 $config = json_decode(file_get_contents($config_path));
+
 $config->server->storage = dirname($config_path) . '/.storage';
+
+// 剪贴板的密码可以自定义
+// 如果写true的话就随机生成六位数字
+if (empty($config->server->auth)) {
+    $config->server->auth = false;
+} else if ($config->server->auth === true) {
+    $config->server->auth = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
+} else {
+    $config->server->auth = (string)$config->server->auth;
+}
 
 // 检查分片上传大小限制
 if ($config->file->chunk > 5242880) {

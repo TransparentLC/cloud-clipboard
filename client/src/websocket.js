@@ -3,6 +3,8 @@ export default {
         return {
             websocket: null,
             websocketConnecting: false,
+            authCode: localStorage.getItem('auth') || '',
+            authCodeDialog: false,
             retry: 0,
             event: {
                 receive: data => {
@@ -29,6 +31,10 @@ export default {
                     if (index === -1) return;
                     this.$root.device.splice(index, 1);
                 },
+                forbidden: () => {
+                    this.authCode = '';
+                    localStorage.removeItem('auth');
+                },
             },
         };
     },
@@ -41,8 +47,17 @@ export default {
                 timeout: 0,
             });
             this.$http.get('/server', {responseType: 'text'}).then(response => {
+                if (this.authCode) localStorage.setItem('auth', this.authCode);
                 return new Promise((resolve, reject) => {
-                    let ws = new WebSocket(response.data);
+                    let ws;
+                    if (!response.data.auth) {
+                        ws = new WebSocket(response.data.server);
+                    } else if (this.authCode) {
+                        ws = new WebSocket(`${response.data.server}?auth=${encodeURIComponent(this.authCode)}`);
+                    } else {
+                        this.authCodeDialog = true;
+                        return;
+                    }
                     ws.onopen = () => {resolve(ws)};
                     ws.onerror = reject;
                 });

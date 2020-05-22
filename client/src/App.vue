@@ -104,6 +104,28 @@
             </template>
             <router-view v-else />
         </v-content>
+
+        <v-dialog v-model="$root.authCodeDialog" persistent max-width="360">
+            <v-card>
+                <v-card-title class="headline">需要认证</v-card-title>
+                <v-card-text>
+                    这个剪贴板服务并不是公开的，请输入密码以继续连接。
+                    <br>
+                    <v-text-field v-model="$root.authCode" label="密码"></v-text-field>
+                </v-card-text>
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn
+                        color="primary darken-1"
+                        text
+                        @click="
+                            $root.authCodeDialog = false;
+                            $root.connect();
+                        "
+                    >提交</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
     </v-app>
 </template>
 
