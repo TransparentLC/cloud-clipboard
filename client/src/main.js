@@ -78,7 +78,7 @@ new Vue({
         },
     },
     mounted() {
-        this.dark = localStorage.getItem('darkmode') || 'time';
+        this.dark = localStorage.getItem('darkmode') || 'prefer';
         this.$vuetify.theme.dark = this.useDark;
         setInterval(() => {
             this.date = new Date;

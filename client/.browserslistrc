@@ -1,4 +1,4 @@
 > 1%
 last 2 major versions
-not ie < 11
-not ie_mob < 11
+not ie
+not ie_mob

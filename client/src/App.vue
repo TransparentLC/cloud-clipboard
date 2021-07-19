@@ -98,12 +98,12 @@
             </v-tooltip>
         </v-app-bar>
 
-        <v-content>
+        <v-main>
             <template v-if="$route.meta.keepAlive">
                 <keep-alive><router-view /></keep-alive>
             </template>
             <router-view v-else />
-        </v-content>
+        </v-main>
 
         <v-dialog v-model="$root.authCodeDialog" persistent max-width="360">
             <v-card>
