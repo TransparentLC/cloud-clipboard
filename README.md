@@ -57,7 +57,7 @@
 3. `php cloud-clipboard.phar`
 4. 打开 `http://192.168.1.136:9501`（需要替换为在配置文件中**实际设定的地址和端口**）即可使用～
 
-### 从源代码运行
+#### 从源代码运行
 
 需要安装 [Vue CLI](https://cli.vuejs.org/zh/guide/installation.html) 和 [Composer](https://getcomposer.org/download/)。
 
