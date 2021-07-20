@@ -1,8 +1,17 @@
 import KoaRouter from '@koa/router';
 import koaWebsocket from 'koa-websocket';
+import uaParser from 'ua-parser-js';
 
 import config from './config.js';
 import messageQueue from './message.js';
+import {
+    wsBoardcast,
+    murmurHash,
+} from './util.js';
+
+/** @type {Map<String, {type: String, device: String, os: String, browser: String}>} */
+const deviceConnected = new Map;
+const deviceHashSeed = Math.random() * 0xFFFFFFFF >>> 0;
 
 const router = new KoaRouter;
 
@@ -16,10 +25,43 @@ router.get('/push', async (/** @type {koaWebsocket.MiddlewareContext<Koa.Default
         return;
     }
 
+    const deviceParsed = uaParser(ctx.get('user-agent'));
+    const deviceId = murmurHash(ctx.request.ip + ctx.get('user-agent'), deviceHashSeed);
+    const deviceMeta = {
+        type: (deviceParsed.device.type || '').trim(),
+        device: `${deviceParsed.device.vendor || ''} ${deviceParsed.device.model || ''}`.trim(),
+        os: `${deviceParsed.os.name || ''} ${deviceParsed.os.version || ''}`.trim(),
+        browser: `${deviceParsed.browser.name || ''} ${deviceParsed.browser.version || ''}`.trim(),
+    };
+    deviceConnected.forEach((v, k) => ctx.websocket.send(JSON.stringify({
+        event: 'connect',
+        data: {
+            id: k,
+            ...v,
+        },
+    })));
+    deviceConnected.set(deviceId, deviceMeta);
+    wsBoardcast(ctx.app.ws, JSON.stringify({
+        event: 'connect',
+        data: {
+            id: deviceId,
+            ...deviceMeta,
+        },
+    }));
+    ctx.websocket.addEventListener('close', () => {
+        wsBoardcast(ctx.app.ws, JSON.stringify({
+            event: 'disconnect',
+            data: {
+                id: deviceId,
+            },
+        }));
+        deviceConnected.delete(deviceId);
+    });
+
     await new Promise(resolve => ctx.websocket.send(JSON.stringify({
         event: 'config',
         data: {
-            version: 'node-1.0.0',
+            version: process.env.VERSION,
             text: config.text,
             file: config.file,
         },

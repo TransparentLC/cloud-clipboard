@@ -26,10 +26,10 @@
                                 <v-icon v-else-if="item.os.split(' ').shift() === 'Mac'">{{mdiApple}}</v-icon>
                                 <v-icon v-else>{{mdiLaptop}}</v-icon>
                             </template>
-                            <template v-else-if="item.type === 'smartphone' || item.type === 'tablet'">
+                            <template v-else-if="item.type === 'smartphone' || item.type === 'mobile' || item.type === 'tablet'">
                                 <v-icon v-if="item.os.split(' ').shift() === 'Android'">{{mdiAndroid}}</v-icon>
                                 <v-icon v-else-if="item.os.split(' ').shift() === 'iOS'">{{mdiAppleIos}}</v-icon>
-                                <v-icon v-else>{{mdiTabletCellPhone}}</v-icon>
+                                <v-icon v-else>{{mdiTabletCellphone}}</v-icon>
                             </template>
                             <v-icon v-else>{{mdiDevices}}</v-icon>
                         </v-list-item-avatar>
@@ -37,7 +37,7 @@
                             <v-list-item-title>{{
                                 item.type === 'desktop' ? '桌面端设备' : (
                                     item.device || (
-                                        (item.type === 'smartphone' || item.type === 'tablet') ? '移动端设备' : '其他类型设备'
+                                        (item.type === 'smartphone' || item.type === 'mobile' || item.type === 'tablet') ? '移动端设备' : '其他类型设备'
                                     )
                                 )
                             }}</v-list-item-title>

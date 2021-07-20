@@ -3,7 +3,7 @@ if (php_sapi_name() !== 'cli') exit('Use CLI to run this application.');
 if (!extension_loaded('swoole')) exit('Swoole is not installed.');
 
 define('IS_PHAR', (bool)Phar::running());
-define('VERSION', '1.3.0');
+define('VERSION', 'swoole-1.3.0');
 
 require_once __DIR__ . '/vendor/autoload.php';
 

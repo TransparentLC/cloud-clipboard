@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build --modern"
+    "build": "vue-cli-service build --modern && node copy-dist.js"
   },
   "dependencies": {
     "axios": "^0.21.1",
@@ -21,6 +21,7 @@
     "@vue/cli-plugin-babel": "^4.5.13",
     "@vue/cli-plugin-router": "^4.5.13",
     "@vue/cli-service": "^4.5.13",
+    "fs-extra": "^10.0.0",
     "sass": "^1.35.2",
     "sass-loader": "^10.2.0",
     "typeface-roboto": "^1.1.13",

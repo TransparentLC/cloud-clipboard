@@ -3,9 +3,10 @@
 因为不想为了手机和电脑互传文件这种小事就扫🐴登录某个辣鸡 APP，而自己折腾出来的一个在线剪贴板。
 
 * 支持**传输纯文本**和**一键复制**
-* 支持**传输文件**
-* 前端使用 [Vue](https://cn.vuejs.org) 和 [Vuetify](https://vuetifyjs.com/zh-Hans/) 构建
-* 后端使用 [Swoole](https://www.swoole.com/) 构建
+* 支持**传输文件**，对于图像可以显示缩略图
+* 使用 WebSocket 实现实时通知
+* 前端使用 [Vue 2](https://cn.vuejs.org) 和 [Vuetify](https://vuetifyjs.com/zh-Hans/) 构建
+* 后端使用 [Swoole](https://www.swoole.com) 或 [NodeJS](https://nodejs.org) ([Koa](https://github.com/koajs/koa)) 构建（两种服务端实现任选一种即可）
 
 *仅供个人在连接到同一局域网（比如家里的路由器）的设备之间使用，如果放在公开的服务器上大概会出现各种奇怪的问题吧 \_(:зゝ∠)\_*
 
@@ -29,7 +30,9 @@
 
 ## 使用方法
 
-### 准备环境
+### Swoole 版服务端
+
+#### 准备环境
 
 需要安装了 Swoole 扩展的 PHP 运行环境。
 
@@ -45,7 +48,7 @@
 
 在命令行中输入 `php --ri swoole`，可以输出配置信息就代表准备完成了～
 
-### 安装和运行
+#### 安装和运行
 
 ~~实际上也不能叫安装，毕竟下载之后就可以直接用了~~
 
@@ -54,8 +57,47 @@
 3. `php cloud-clipboard.phar`
 4. 打开 `http://192.168.1.136:9501`（需要替换为在配置文件中**实际设定的地址和端口**）即可使用～
 
-<details>
-<summary>配置文件说明</summary>
+### 从源代码运行
+
+需要安装 [Vue CLI](https://cli.vuejs.org/zh/guide/installation.html) 和 [Composer](https://getcomposer.org/download/)。
+
+```bash
+cd client
+npm install
+npm run build
+cd ../server
+composer install --no-dev
+
+# 从源代码直接运行
+php main.php
+
+# 生成 Phar
+cd ..
+php build-phar.php
+```
+
+### NodeJS 版服务端
+
+#### 安装和运行
+
+据说 [pkg](https://github.com/vercel/pkg) 可以把 NodeJS 应用打包成可执行文件，但是先🕊️了（
+
+#### 从源代码运行
+
+需要安装 [Vue CLI](https://cli.vuejs.org/zh/guide/installation.html) 和 [NodeJS](https://nodejs.org)。另外同样需要在 `server-node` 目录下准备好 `config.json` 配置文件。
+
+```bash
+cd client
+npm install
+npm run build
+cd ../server-node
+npm install
+
+# 从源代码直接运行
+node main.js
+```
+
+### 配置文件说明
 
 `//` 开头的部分是注释，**并不需要写入配置文件中**，否则会导致读取失败。
 
@@ -90,35 +132,3 @@
 >
 > 如果启用“密码认证”，只有输入正确的密码才能连接到服务端并查看剪贴板内容。
 > 可以将 `auth` 字段设为 `true`（随机生成六位数字密码）或字符串（自定义密码）来启用这个功能，启动服务端后控制台会以 `Authorization code: ****` 的格式输出当前使用的密码。
-</details>
-
-### 从源代码运行
-
-需要安装 [Vue CLI](https://cli.vuejs.org/zh/guide/installation.html) 和 [Composer](https://getcomposer.org/download/)。
-
-```bash
-cd client
-npm install
-npm run build
-cd ../server
-composer install --no-dev
-
-# 从源代码直接运行
-php main.php
-
-# 生成 Phar
-cd ..
-php build-phar.php
-```
-
-### 使用的开源项目
-
-* [axios/axios](https://github.com/axios/axios)
-* [eolant/vuetify-toast-snackbar](https://github.com/eolant/vuetify-toast-snackbar)
-* [matomo-org/device-detector](https://github.com/matomo-org/device-detector)
-* [nikic/FastRoute](https://github.com/nikic/FastRoute)
-* [phanan/vue-linkify](https://github.com/phanan/vue-linkify)
-* [Templarian/MaterialDesign-JS](https://github.com/Templarian/MaterialDesign-JS)
-* [vuejs/vue](https://github.com/vuejs/vue)
-* [vuejs/vue-router](https://github.com/vuejs/vue-router)
-* [vuetifyjs/vuetify](https://github.com/vuetifyjs/vuetify)

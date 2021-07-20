@@ -26,9 +26,6 @@ if (config.server.auth === true) {
 }
 if (config.server.auth) {
     config.server.auth = config.server.auth.toString()
-    console.log(`Authorization code: ${config.server.auth}`);
-} else {
-    console.log('Authorization code is disabled.');
 }
 
 export default config;
