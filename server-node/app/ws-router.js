@@ -73,7 +73,4 @@ router.get('/push', async (/** @type {koaWebsocket.MiddlewareContext<Koa.Default
     );
 });
 
-router.get('(.*)', async (/** @type {koaWebsocket.MiddlewareContext<Koa.DefaultState>} */ ctx) => {
-});
-
 export default router;

@@ -15,11 +15,11 @@ try {
 } catch {}
 await fs.promises.mkdir(path.join(os.tmpdir(), '.cloud-clipboard-storage'));
 
-process.env.VERSION = `node-${JSON.parse(await fs.promises.readFile('./package.json')).version}`;
+process.env.VERSION = `node-${JSON.parse(await fs.promises.readFile(path.join(path.resolve(), 'package.json'))).version}`;
 
 const app = koaWebsocket(new Koa);
 app.use(koaCompress());
-app.use(koaStatic('static'));
+app.use(koaStatic(path.join(path.resolve(), 'static')));
 app.use(httpRouter.routes());
 app.use(httpRouter.allowedMethods());
 app.ws.use(wsRouter.routes());

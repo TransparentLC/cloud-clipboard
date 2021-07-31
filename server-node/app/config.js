@@ -1,4 +1,5 @@
 import fs from 'fs';
+import path from 'path';
 
 /**
  * @type {{
@@ -19,7 +20,7 @@ import fs from 'fs';
  *  },
  * }}
  */
-const config = JSON.parse(await fs.promises.readFile('config.json'));
+const config = JSON.parse(await fs.promises.readFile(path.join(process.cwd(), 'config.json')));
 
 if (config.server.auth === true) {
     config.server.auth = Math.floor(Math.random() * 1000000).toString().padStart(6, 0);
