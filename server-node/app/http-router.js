@@ -63,7 +63,7 @@ router.delete('/revoke/:id(\\d+)', async ctx => {
     if (!messageQueue.queue.some(e => e.data.id === id)) {
         return writeJSON(ctx, 400, {}, '不存在的消息 ID');
     }
-    messageQueue.queue.splice(messageQueue.queue.find(e => e.data.id === id), 1);
+    messageQueue.queue.splice(messageQueue.queue.findIndex(e => e.data.id === id), 1);
     /** @type {koaWebsocket.App<Koa.DefaultState, Koa.DefaultContext>} */
     const app = ctx.app;
     wsBoardcast(app.ws, JSON.stringify({
