@@ -46,7 +46,7 @@ export default {
                 dismissable: false,
                 timeout: 0,
             });
-            this.$http.get('/server', {responseType: 'text'}).then(response => {
+            this.$http.get('/server').then(response => {
                 if (this.authCode) localStorage.setItem('auth', this.authCode);
                 return new Promise((resolve, reject) => {
                     let ws;

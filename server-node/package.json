@@ -10,7 +10,7 @@
     "koa-compress": "^5.1.0",
     "koa-static": "^5.0.0",
     "koa-websocket": "^7.0.0",
-    "sharp": "^0.30.7",
-    "ua-parser-js": "^1.0.2"
+    "sharp": "^0.31.1",
+    "ua-parser-js": "^1.0.32"
   }
 }

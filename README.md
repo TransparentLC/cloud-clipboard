@@ -6,7 +6,7 @@
 * 支持**传输文件**，对于图像可以显示缩略图
 * 使用 WebSocket 实现实时通知
 * 前端使用 [Vue 2](https://cn.vuejs.org) 和 [Vuetify](https://vuetifyjs.com/zh-Hans/) 构建
-* 后端使用 [Swoole](https://www.swoole.com) 或 [NodeJS](https://nodejs.org) ([Koa](https://github.com/koajs/koa)) 构建（两种服务端实现任选一种即可）
+* 后端使用 ~~[Swoole](https://www.swoole.com) 或~~ [Node.js](https://nodejs.org) ([Koa](https://github.com/koajs/koa)) 构建 ~~（两种服务端实现任选一种即可）~~
 
 *仅供个人在连接到同一局域网（比如家里的路由器）的设备之间使用，如果放在公开的服务器上大概会出现各种奇怪的问题吧 \_(:зゝ∠)\_*
 
@@ -30,7 +30,34 @@
 
 ## 使用方法
 
+### Node.js 版服务端
+
+#### 安装和运行
+
+据说 [pkg](https://github.com/vercel/pkg) 可以把 Node.js 应用打包成可执行文件，但是先🕊️了（
+
+#### 从源代码运行
+
+需要安装 [Vue CLI](https://cli.vuejs.org/zh/guide/installation.html) 和 [Node.js](https://nodejs.org)。另外同样需要在 `server-node` 目录下准备好 `config.json` 配置文件。
+
+```bash
+cd client
+npm install
+npm run build
+cd ../server-node
+npm install
+
+# 从源代码直接运行
+node main.js
+```
+
+如果你使用的是 Node.js 17 或以上的版本，构建前端资源时可能会遇到 `Error: error:0308010C:digital envelope routines::unsupported` 的错误，在终端里设置环境变量 `NODE_OPTIONS=--openssl-legacy-provider` 可以解决这个问题。
+
 ### Swoole 版服务端
+
+> 已不再维护，以下内容仅作为存档。
+
+<details>
 
 #### 准备环境
 
@@ -76,26 +103,7 @@ cd ..
 php build-phar.php
 ```
 
-### NodeJS 版服务端
-
-#### 安装和运行
-
-据说 [pkg](https://github.com/vercel/pkg) 可以把 NodeJS 应用打包成可执行文件，但是先🕊️了（
-
-#### 从源代码运行
-
-需要安装 [Vue CLI](https://cli.vuejs.org/zh/guide/installation.html) 和 [NodeJS](https://nodejs.org)。另外同样需要在 `server-node` 目录下准备好 `config.json` 配置文件。
-
-```bash
-cd client
-npm install
-npm run build
-cd ../server-node
-npm install
-
-# 从源代码直接运行
-node main.js
-```
+</details>
 
 ### 配置文件说明
 

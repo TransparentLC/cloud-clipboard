@@ -2,53 +2,80 @@
     <v-hover
         v-slot:default="{ hover }"
     >
-        <v-card :elevation="hover ? 6 : 2" class="mb-2">
-            <v-card-text class="d-flex flex-row align-center">
-                <v-img
-                    v-if="meta.thumbnail"
-                    :src="meta.thumbnail"
-                    class="mr-3 flex-grow-0 hidden-sm-and-down"
-                    width="2.5rem"
-                    height="2.5rem"
-                    style="border-radius: 3px"
-                ></v-img>
-                <div class="flex-grow-1 mr-2" style="min-width: 0">
-                    <div
-                        class="title text-truncate text--primary"
-                        :style="{'text-decoration': expired ? 'line-through' : ''}"
-                        :title="meta.name"
-                    >{{meta.name}}</div>
-                    <div class="caption">
-                        {{meta.size | prettyFileSize}}
-                        <template v-if="$vuetify.breakpoint.smAndDown"><br></template>
-                        <template v-else>|</template>
-                        {{expired ? '已' : '将'}}于 {{meta.expire | formatTimestamp}} 过期
+        <v-card :elevation="hover ? 6 : 2" class="mb-2 transition-swing">
+            <v-card-text>
+                <div class="d-flex flex-row align-center">
+                    <v-img
+                        v-if="meta.thumbnail"
+                        :src="meta.thumbnail"
+                        class="mr-3 flex-grow-0 hidden-sm-and-down"
+                        width="2.5rem"
+                        height="2.5rem"
+                        style="border-radius: 3px"
+                    ></v-img>
+                    <div class="flex-grow-1 mr-2" style="min-width: 0">
+                        <div
+                            class="title text-truncate text--primary"
+                            :style="{'text-decoration': expired ? 'line-through' : ''}"
+                            :title="meta.name"
+                        >{{meta.name}}</div>
+                        <div class="caption">
+                            {{meta.size | prettyFileSize}}
+                            <template v-if="$vuetify.breakpoint.smAndDown"><br></template>
+                            <template v-else>|</template>
+                            {{expired ? '已' : '将'}}于 {{meta.expire | formatTimestamp}} 过期
+                        </div>
+                    </div>
+
+                    <div class="align-self-center text-no-wrap">
+                        <v-progress-circular
+                            v-if="loadingDownload"
+                            indeterminate
+                            color="grey"
+                        >{{loadedDownload / meta.size | percentage(0)}}</v-progress-circular>
+                        <v-tooltip v-else bottom>
+                            <template v-slot:activator="{ on }">
+                                <v-btn v-on="on" icon color="grey" @click="!expired && getFile()">
+                                    <v-icon>{{expired ? mdiDownloadOff : mdiDownload}}</v-icon>
+                                </v-btn>
+                            </template>
+                            <span>{{expired ? '已过期' : '下载'}}</span>
+                        </v-tooltip>
+                        <template v-if="meta.thumbnail">
+                            <v-progress-circular
+                                v-if="loadingPreview"
+                                indeterminate
+                                color="grey"
+                            >{{loadedPreview / meta.size | percentage(0)}}</v-progress-circular>
+                            <v-tooltip bottom>
+                                <template v-slot:activator="{ on }">
+                                    <v-btn v-on="on" icon color="grey" @click="!expired && previewFile()">
+                                        <v-icon>{{mdiImageSearchOutline}}</v-icon>
+                                    </v-btn>
+                                </template>
+                                <span>预览图片</span>
+                            </v-tooltip>
+                        </template>
+                        <v-tooltip bottom>
+                            <template v-slot:activator="{ on }">
+                                <v-btn v-on="on" icon color="grey" @click="deleteItem" :disabled="loadingDownload || loadingPreview">
+                                    <v-icon>{{mdiClose}}</v-icon>
+                                </v-btn>
+                            </template>
+                            <span>删除</span>
+                        </v-tooltip>
                     </div>
                 </div>
-
-                <div class="align-self-center text-no-wrap">
-                    <v-progress-circular
-                        v-if="loading"
-                        indeterminate
-                        color="grey"
-                    >{{loaded / meta.size | percentage(0)}}</v-progress-circular>
-                    <v-tooltip v-else bottom>
-                        <template v-slot:activator="{ on }">
-                            <v-btn v-on="on" icon color="grey" @click="if (!expired) {getFile()}">
-                                <v-icon>{{expired ? mdiDownloadOff : mdiDownload}}</v-icon>
-                            </v-btn>
-                        </template>
-                        <span>{{expired ? '已过期' : '下载'}}</span>
-                    </v-tooltip>
-                    <v-tooltip bottom>
-                        <template v-slot:activator="{ on }">
-                            <v-btn v-on="on" icon color="grey" @click="deleteItem" :disabled="loading">
-                                <v-icon>{{mdiClose}}</v-icon>
-                            </v-btn>
-                        </template>
-                        <span>删除</span>
-                    </v-tooltip>
-                </div>
+                <v-expand-transition v-if="meta.thumbnail">
+                    <div v-show="expand">
+                        <v-divider class="my-2"></v-divider>
+                        <img
+                            :src="srcPreview"
+                            style="max-height:480px;max-width:100%;"
+                            class="rounded d-block mx-auto"
+                        >
+                    </div>
+                </v-expand-transition>
             </v-card-text>
         </v-card>
     </v-hover>
@@ -60,6 +87,7 @@ import {
     mdiDownload,
     mdiDownloadOff,
     mdiClose,
+    mdiImageSearchOutline,
 } from '@mdi/js';
 
 export default {
@@ -74,12 +102,17 @@ export default {
     },
     data() {
         return {
-            loading: false,
-            loaded: 0,
+            loadingDownload: false,
+            loadedDownload: 0,
+            loadingPreview: false,
+            loadedPreview: 0,
+            expand: false,
+            srcPreview: null,
             mdiContentCopy,
             mdiDownload,
             mdiDownloadOff,
             mdiClose,
+            mdiImageSearchOutline,
         };
     },
     computed: {
@@ -89,15 +122,15 @@ export default {
     },
     methods: {
         getFile() {
-            this.loading = true,
-            this.loaded = 0;
+            this.loadingDownload = true,
+            this.loadedDownload = 0;
             this.$http.get(`/file/${this.meta.cache}`, {
                 responseType: 'arraybuffer',
                 onDownloadProgress: e => {this.loaded = e.loaded},
             }).then(response => {
-                let blobURL = URL.createObjectURL(new Blob([response.data]));
-                let cd = response.headers['content-disposition'];
-                let el = document.createElement('a');
+                const blobURL = URL.createObjectURL(new Blob([response.data]));
+                const cd = response.headers['content-disposition'];
+                const el = document.createElement('a');
                 el.href = blobURL;
                 el.setAttribute('download', decodeURIComponent(cd.substring(cd.indexOf('"') + 1, cd.lastIndexOf('"'))));
                 el.click();
@@ -109,9 +142,35 @@ export default {
                     this.$toast('文件获取失败');
                 }
             }).finally(() => {
-                this.loading = false;
+                this.loadingDownload = false;
             });
 
+        },
+        previewFile() {
+            if (this.expand) {
+                this.expand = false;
+                return;
+            } else if (this.srcPreview) {
+                this.expand = true;
+                return;
+            }
+            this.loadingPreview = true,
+            this.loadedPreview = 0;
+            this.expand = true;
+            this.$http.get(`/file/${this.meta.cache}`, {
+                responseType: 'arraybuffer',
+                onDownloadProgress: e => {this.loaded = e.loaded},
+            }).then(response => {
+                this.srcPreview = URL.createObjectURL(new Blob([response.data]));
+            }).catch(error => {
+                if (error.response && error.response.data.msg) {
+                    this.$toast(`文件获取失败：${error.response.data.msg}`);
+                } else {
+                    this.$toast('文件获取失败');
+                }
+            }).finally(() => {
+                this.loadingPreview = false;
+            });
         },
         deleteItem() {
             this.$http.delete(`/revoke/${this.meta.id}`).then(() => {
