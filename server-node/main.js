@@ -1,10 +1,10 @@
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
 import Koa from 'koa';
-import fs from 'fs';
 import koaCompress from 'koa-compress';
 import koaStatic from 'koa-static';
 import koaWebsocket from 'koa-websocket';
-import os from 'os';
-import path from 'path';
 
 import config from './app/config.js';
 import httpRouter from './app/http-router.js';

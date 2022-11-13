@@ -1,6 +1,6 @@
+import fs from 'node:fs';
 import KoaRouter from '@koa/router';
 import { koaBody } from 'koa-body';
-import fs from 'fs';
 import koaWebsocket from 'koa-websocket';
 import sharp from 'sharp';
 

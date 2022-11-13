@@ -1,4 +1,4 @@
-import crypto from 'crypto';
+import crypto from 'node:crypto';
 import KoaRouter from '@koa/router';
 import koaWebsocket from 'koa-websocket';
 import uaParser from 'ua-parser-js';
