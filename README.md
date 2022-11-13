@@ -34,7 +34,7 @@
 
 #### 安装和运行
 
-据说 [pkg](https://github.com/vercel/pkg) 可以把 Node.js 应用打包成可执行文件，但是先🕊️了（
+据说 [pkg](https://github.com/vercel/pkg) 可以把 Node.js 应用打包成可执行文件，但是 目前的 5.x 版还不支持 ES Modules，所以先🕊️了（
 
 #### 从源代码运行
 
@@ -50,6 +50,8 @@ npm install
 # 从源代码直接运行
 node main.js
 ```
+
+服务端会监听本机的所有网卡，并在终端中显示前端界面所在的网址，使用浏览器打开即可使用。
 
 如果你使用的是 Node.js 17 或以上的版本，构建前端资源时可能会遇到 `Error: error:0308010C:digital envelope routines::unsupported` 的错误，在终端里设置环境变量 `NODE_OPTIONS=--openssl-legacy-provider` 可以解决这个问题。
 
@@ -112,9 +114,7 @@ php build-phar.php
 ```json
 {
     "server": {
-        "host": "192.168.1.136", // 服务端的 IP 地址或域名
         "port": 9501, // 端口号
-        "wss": false, // 使用 wss 协议而不是 ws 协议，一般不修改
         "history": 10, // 消息历史记录的数量
         "auth": false  // 是否在连接时要求使用密码认证，falsy 值表示不使用
     },
@@ -129,14 +129,7 @@ php build-phar.php
 }
 ```
 
-> 查看本机 IP 地址的方法：
->
-> * Windows：任务管理器 -> 性能 -> 以太网 / Wi-Fi -> IPv4 地址
-> * Linux：`ifconfig | grep inet`
->
-> IP 地址可能有多个，需要选择**当前正在使用的** IP 地址。
-
 > “密码认证”的说明：
 >
 > 如果启用“密码认证”，只有输入正确的密码才能连接到服务端并查看剪贴板内容。
-> 可以将 `auth` 字段设为 `true`（随机生成六位数字密码）或字符串（自定义密码）来启用这个功能，启动服务端后控制台会以 `Authorization code: ****` 的格式输出当前使用的密码。
+> 可以将 `auth` 字段设为 `true`（随机生成六位密码）或字符串（自定义密码）来启用这个功能，启动服务端后终端会以 `Authorization code: ******` 的格式输出当前使用的密码。

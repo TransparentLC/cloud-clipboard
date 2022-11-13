@@ -32,5 +32,14 @@ console.log([
     'https://github.com/TransparentLC/cloud-clipboard',
     '',
     'Authorization code' + (config.server.auth ? `: ${config.server.auth}` : ' is disabled.'),
-    `Server listening on port ${config.server.port} ...`
+    `Server listening on port ${config.server.port} ...`,
+    'Available at:',
+    ...Object.entries(os.networkInterfaces()).reduce((acc, [k, v]) => {
+        acc.push(`    ${k}:`);
+        v.forEach(e => {
+            const a = e.family === 'IPv6' ? `[${e.address}]` : e.address;
+            acc.push(`        http://${a}:${config.server.port}`);
+        });
+        return acc;
+    }, []),
 ].join('\n'));

@@ -1,12 +1,11 @@
+import crypto from 'crypto';
 import fs from 'fs';
 import path from 'path';
 
 /**
  * @type {{
  *  server: {
- *      host: String,
  *      port: Number,
- *      wss: Boolean,
  *      history: Number,
  *      auth: Boolean
  *  },
@@ -23,10 +22,12 @@ import path from 'path';
 const config = JSON.parse(await fs.promises.readFile(path.join(process.cwd(), 'config.json')));
 
 if (config.server.auth === true) {
-    config.server.auth = Math.floor(Math.random() * 1000000).toString().padStart(6, 0);
+    config.server.auth = '';
+    for (let i = 0; i < 6; i++)
+    config.server.auth += '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'[crypto.randomInt(62)];
 }
 if (config.server.auth) {
-    config.server.auth = config.server.auth.toString()
+    config.server.auth = config.server.auth.toString();
 }
 
 export default config;

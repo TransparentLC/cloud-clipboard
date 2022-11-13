@@ -1,5 +1,5 @@
 import KoaRouter from '@koa/router';
-import koaBody from 'koa-body';
+import { koaBody } from 'koa-body';
 import fs from 'fs';
 import koaWebsocket from 'koa-websocket';
 import sharp from 'sharp';
@@ -19,7 +19,7 @@ const router = new KoaRouter;
 
 router.get('/server', async ctx => {
     ctx.body = {
-        'server': `ws${config.server.wss ? 's' : ''}://${config.server.host}:${config.server.port}/push`,
+        'server': `ws${ctx.request.protocol === 'https' ? 's' : ''}://${ctx.request.host}/push`,
         'auth': !!config.server.auth,
     };
 });

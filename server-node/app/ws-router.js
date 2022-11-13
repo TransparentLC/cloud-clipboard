@@ -1,3 +1,4 @@
+import crypto from 'crypto';
 import KoaRouter from '@koa/router';
 import koaWebsocket from 'koa-websocket';
 import uaParser from 'ua-parser-js';
@@ -17,6 +18,7 @@ const router = new KoaRouter;
 
 router.get('/push', async (/** @type {koaWebsocket.MiddlewareContext<Koa.DefaultState>} */ ctx) => {
     if (config.server.auth && ctx.query.auth !== config.server.auth) {
+        await new Promise(resolve => setTimeout(resolve, crypto.randomInt(50, 200)));
         await new Promise(resolve => ctx.websocket.send(JSON.stringify({
             event: 'forbidden',
             data: {},
