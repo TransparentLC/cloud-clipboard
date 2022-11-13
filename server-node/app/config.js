@@ -19,7 +19,7 @@ import path from 'node:path';
  *  },
  * }}
  */
-const config = JSON.parse(await fs.promises.readFile(path.join(process.cwd(), 'config.json')));
+const config = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'config.json')));
 
 if (config.server.auth === true) {
     config.server.auth = '';

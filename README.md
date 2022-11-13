@@ -8,9 +8,7 @@
 * 前端使用 [Vue 2](https://cn.vuejs.org) 和 [Vuetify](https://vuetifyjs.com/zh-Hans/) 构建
 * 后端使用 ~~[Swoole](https://www.swoole.com) 或~~ [Node.js](https://nodejs.org) ([Koa](https://github.com/koajs/koa)) 构建 ~~（两种服务端实现任选一种即可）~~
 
-*仅供个人在连接到同一局域网（比如家里的路由器）的设备之间使用，如果放在公开的服务器上大概会出现各种奇怪的问题吧 \_(:зゝ∠)\_*
-
-以及……这东西本身大概就会有不少奇怪的 BUG \_(:зゝ∠)\_
+*由于这个项目是针对个人在连接到同一局域网（比如家里的路由器）的设备之间使用而设计的，因此并没有额外考虑在公开的服务器上使用时可能面对的技术和安全问题。*
 
 ## 截图
 
@@ -34,7 +32,7 @@
 
 #### 安装和运行
 
-据说 [pkg](https://github.com/vercel/pkg) 可以把 Node.js 应用打包成可执行文件，但是 目前的 5.x 版还不支持 ES Modules，所以先🕊️了（
+据说 [pkg](https://github.com/vercel/pkg) 可以把 Node.js 应用打包成可执行文件，但是目前的 5.x 版还不支持 ES Modules，所以先🕊️了（
 
 #### 从源代码运行
 

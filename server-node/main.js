@@ -11,11 +11,11 @@ import httpRouter from './app/http-router.js';
 import wsRouter from './app/ws-router.js';
 
 try {
-    await fs.promises.rm(path.join(os.tmpdir(), '.cloud-clipboard-storage'), { recursive: true });
+    fs.rmSync(path.join(os.tmpdir(), '.cloud-clipboard-storage'), { recursive: true });
 } catch {}
-await fs.promises.mkdir(path.join(os.tmpdir(), '.cloud-clipboard-storage'));
+fs.mkdirSync(path.join(os.tmpdir(), '.cloud-clipboard-storage'));
 
-process.env.VERSION = `node-${JSON.parse(await fs.promises.readFile(path.join(path.resolve(), 'package.json'))).version}`;
+process.env.VERSION = `node-${JSON.parse(fs.readFileSync(path.join(path.resolve(), 'package.json'))).version}`;
 
 const app = koaWebsocket(new Koa);
 app.use(koaCompress());
