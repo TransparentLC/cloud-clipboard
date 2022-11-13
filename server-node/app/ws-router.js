@@ -17,14 +17,16 @@ const deviceHashSeed = Math.random() * 0xFFFFFFFF >>> 0;
 const router = new KoaRouter;
 
 router.get('/push', async (/** @type {koaWebsocket.MiddlewareContext<Koa.DefaultState>} */ ctx) => {
-    if (config.server.auth && ctx.query.auth !== config.server.auth) {
+    if (config.server.auth) {
         await new Promise(resolve => setTimeout(resolve, crypto.randomInt(50, 200)));
-        await new Promise(resolve => ctx.websocket.send(JSON.stringify({
-            event: 'forbidden',
-            data: {},
-        }), resolve));
-        ctx.websocket.close();
-        return;
+        if (ctx.query.auth !== config.server.auth) {
+            await new Promise(resolve => ctx.websocket.send(JSON.stringify({
+                event: 'forbidden',
+                data: {},
+            }), resolve));
+            ctx.websocket.close();
+            return;
+        }
     }
 
     const deviceParsed = uaParser(ctx.get('user-agent'));
