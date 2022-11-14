@@ -30,7 +30,7 @@ jobs:
           cd ../server-node
           npm install
           npm install --save-dev caxa
-          caxa \
+          npx caxa \
             --input . \
             --output dist/cloud-clipboard.exe \
             --exclude \
