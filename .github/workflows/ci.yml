@@ -29,7 +29,8 @@ jobs:
           NODE_OPTIONS=--openssl-legacy-provider npm run build
           cd ../server-node
           npm install
-          npx caxa \
+          npm install --save-dev caxa
+          caxa \
             --input . \
             --output dist/cloud-clipboard.exe \
             --exclude \
