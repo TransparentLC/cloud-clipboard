@@ -51,8 +51,13 @@ jobs:
             -- \
               "{{caxa}}/node_modules/.bin/node" \
               "{{caxa}}/main.js"
-      - name: Upload result
+      - name: Upload result (server)
         uses: actions/upload-artifact@v3
         with:
           name: cloud-clipboard-${{ runner.os }}
           path: dist
+      - name: Upload result (frontend static files)
+        uses: actions/upload-artifact@v3
+        with:
+          name: static-${{ runner.os }}
+          path: server-node/static

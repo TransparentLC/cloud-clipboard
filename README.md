@@ -48,13 +48,15 @@
 需要安装 [Node.js](https://nodejs.org)。
 
 ```bash
+# 构建前端资源，只需要执行一次
+# 也可以直接从 Actions 下载构建好的压缩包（static），解压到 server-node/static
 cd client
 npm install
 npm run build
+
+# 运行服务端
 cd ../server-node
 npm install
-
-# 从源代码直接运行
 node main.js
 ```
 
