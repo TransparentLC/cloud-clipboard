@@ -18,11 +18,11 @@ jobs:
           architecture: x64
           check-latest: true
       - name: Get npm cache directory
-        run: echo "npm-cache=$(npm config get cache)" >> $GITHUB_OUTPUT
+        run: echo "npm_cache=$(npm config get cache)" >> $GITHUB_OUTPUT
       - name: Cache npm dependencies
         uses: actions/cache@v3
         with:
-          path: ${{ env.npm-cache }}
+          path: ${{ env.npm_cache }}
           key: ${{ runner.os }}-npm-${{ hashFiles('**/package.json') }}
       - name: Install npm dependencies
         run: npm install
