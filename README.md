@@ -34,7 +34,7 @@
 
 ~~据说 [pkg](https://github.com/vercel/pkg) 可以把 Node.js 应用打包成可执行文件，但是目前的 5.x 版还不支持 ES Modules，所以先🕊️了（~~
 
-使用 [caxa](https://github.com/leafac/caxa) 和 GitHub Actions 打包成了 Windows 用的可执行文件（其他系统的可执行文件先🕊️了），可以在[这里](https://nightly.link/TransparentLC/cloud-clipboard/workflows/ci/master)下载。
+使用 [caxa](https://github.com/leafac/caxa) 和 GitHub Actions 打包成了可以在 Windows amd64 和 Linux amd64 使用的可执行文件，可以在[这里](https://nightly.link/TransparentLC/cloud-clipboard/workflows/ci/master)下载。
 
 *caxa 的打包原理相当于将 Node.js 的可执行文件和所有代码一起做成了一个自解压压缩包，执行时会解压到临时文件夹，并且在退出时不会自动清空。*
 

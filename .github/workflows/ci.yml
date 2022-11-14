@@ -7,11 +7,17 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-windows:
-    runs-on: windows-latest
+  build:
+    runs-on: ${{ matrix.os }}
     defaults:
       run:
         shell: bash
+    strategy:
+      matrix:
+        os:
+          - windows-latest
+          - ubuntu-latest
+          # - macos-latest
     steps:
       - uses: actions/checkout@v3
       - name: Setup node
@@ -24,6 +30,11 @@ jobs:
           cache-dependency-path: "**/package.json"
       - name: Build executable
         run: |
+          if [ $RUNNER_OS == "Windows" ]; then
+            ext=".exe"
+          else
+            ext=""
+          fi
           cd client
           npm install
           NODE_OPTIONS=--openssl-legacy-provider npm run build
@@ -32,7 +43,7 @@ jobs:
           npm install --save-dev caxa
           npx caxa \
             --input . \
-            --output ../dist/cloud-clipboard.exe \
+            --output "../dist/cloud-clipboard${ext}" \
             --exclude \
               ".*" \
               "config.json" \
@@ -43,5 +54,5 @@ jobs:
       - name: Upload result
         uses: actions/upload-artifact@v3
         with:
-          name: cloud-clipboard
-          path: dist/
+          name: cloud-clipboard-${{ runner.os }}
+          path: dist
