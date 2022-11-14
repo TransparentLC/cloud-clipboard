@@ -6,8 +6,10 @@ import path from 'node:path';
  * @type {{
  *  server: {
  *      port: Number,
+ *      key: [String],
+ *      cert: [String],
  *      history: Number,
- *      auth: Boolean
+ *      auth: Boolean,
  *  },
  *  text: {
  *      limit: Number,
@@ -19,7 +21,7 @@ import path from 'node:path';
  *  },
  * }}
  */
-const config = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'config.json')));
+const config = JSON.parse(fs.readFileSync(process.argv[2] || path.join(process.cwd(), 'config.json')));
 
 if (config.server.auth === true) {
     config.server.auth = '';

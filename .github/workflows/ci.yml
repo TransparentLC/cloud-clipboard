@@ -1,0 +1,51 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: latest
+          architecture: x64
+          check-latest: true
+      - name: Get npm cache directory
+        id: npm-cache
+        run: echo "dir=$(npm config get cache)" >> $GITHUB_OUTPUT
+      - name: Cache npm dependencies
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.npm-cache.outputs.dir }}
+          key: ${{ runner.os }}-npm-${{ hashFiles('**/package.json') }}
+      - name: Install npm dependencies
+        run: npm install
+      - name: Build executable
+        run: |
+          cd client
+          npm install
+          NODE_OPTIONS=--openssl-legacy-provider npm run build
+          cd ../server-node
+          npm install
+          npx caxa \
+            --input . \
+            --output cloud-clipboard.exe \
+            --exclude \
+              ".*" \
+              "config.json" \
+              "package-lock.json" \
+            -- \
+              "{{caxa}}/node_modules/.bin/node" \
+              "{{caxa}}/main.js"
+      - name: Upload result
+        uses: actions/upload-artifact@v3
+        with:
+          name: cloud-clipboard
+          path: dist/

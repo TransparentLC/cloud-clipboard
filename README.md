@@ -32,11 +32,20 @@
 
 #### 安装和运行
 
-据说 [pkg](https://github.com/vercel/pkg) 可以把 Node.js 应用打包成可执行文件，但是目前的 5.x 版还不支持 ES Modules，所以先🕊️了（
+~~据说 [pkg](https://github.com/vercel/pkg) 可以把 Node.js 应用打包成可执行文件，但是目前的 5.x 版还不支持 ES Modules，所以先🕊️了（~~
+
+使用 [caxa](https://github.com/leafac/caxa) 和 GitHub Actions 打包成了 Windows 用的可执行文件（其他系统的可执行文件先🕊️了），可以在[这里]((https://nightly.link/TransparentLC/cloud-clipboard/workflows/ci/master))下载。
+
+*caxa 的打包原理相当于将 Node.js 的可执行文件和所有代码一起做成了一个自解压压缩包，执行时会解压到临时文件夹，并且在退出时不会自动清空。*
+
+配置文件是按照以下顺序尝试读取的：
+
+* 和可执行文件放在同一目录的 `config.json`
+* 在命令行中指定：`cloud-clipboard /path/to/config.json`
 
 #### 从源代码运行
 
-需要安装 [Vue CLI](https://cli.vuejs.org/zh/guide/installation.html) 和 [Node.js](https://nodejs.org)。另外同样需要在 `server-node` 目录下准备好 `config.json` 配置文件。
+需要安装 [Node.js](https://nodejs.org)。
 
 ```bash
 cd client
@@ -48,6 +57,11 @@ npm install
 # 从源代码直接运行
 node main.js
 ```
+
+配置文件是按照以下顺序尝试读取的：
+
+* 和 `main.js` 放在同一目录的 `config.json`
+* 在命令行中指定：`node main.js /path/to/config.json`
 
 服务端会监听本机的所有网卡，并在终端中显示前端界面所在的网址，使用浏览器打开即可使用。
 
@@ -113,8 +127,10 @@ php build-phar.php
 {
     "server": {
         "port": 9501, // 端口号
+        "key": "localhost-key.pem", // HTTPS 私钥路径
+        "cert": "localhost.pem", // HTTPS 证书路径
         "history": 10, // 消息历史记录的数量
-        "auth": false  // 是否在连接时要求使用密码认证，falsy 值表示不使用
+        "auth": false // 是否在连接时要求使用密码认证，falsy 值表示不使用
     },
     "text": {
         "limit": 4096 // 文本的长度限制
@@ -126,8 +142,12 @@ php build-phar.php
     }
 }
 ```
-
+> HTTPS 的说明：
+>
+> 如果同时设定了私钥和证书路径，则会使用 HTTPS 协议访问前端界面，未设定则会使用 HTTP 协议。
+> 自用的话，可以使用 [mkcert](https://mkcert.dev/) 自行生成证书，并将根证书添加到系统/浏览器的信任列表中。
+>
 > “密码认证”的说明：
 >
 > 如果启用“密码认证”，只有输入正确的密码才能连接到服务端并查看剪贴板内容。
-> 可以将 `auth` 字段设为 `true`（随机生成六位密码）或字符串（自定义密码）来启用这个功能，启动服务端后终端会以 `Authorization code: ******` 的格式输出当前使用的密码。
+> 可以将 `server.auth` 字段设为 `true`（随机生成六位密码）或字符串（自定义密码）来启用这个功能，启动服务端后终端会以 `Authorization code: ******` 的格式输出当前使用的密码。

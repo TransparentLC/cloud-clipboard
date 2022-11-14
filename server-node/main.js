@@ -1,6 +1,9 @@
 import fs from 'node:fs';
+import http from 'node:http';
+import https from 'node:https';
 import os from 'node:os';
 import path from 'node:path';
+import url from 'node:url';
 import Koa from 'koa';
 import koaCompress from 'koa-compress';
 import koaStatic from 'koa-static';
@@ -15,17 +18,25 @@ try {
 } catch {}
 fs.mkdirSync(path.join(os.tmpdir(), '.cloud-clipboard-storage'));
 
-process.env.VERSION = `node-${JSON.parse(fs.readFileSync(path.join(path.resolve(), 'package.json'))).version}`;
+process.env.VERSION = `node-${JSON.parse(fs.readFileSync(path.join(path.dirname(url.fileURLToPath(import.meta.url)), 'package.json'))).version}`;
 
-const app = koaWebsocket(new Koa);
+const app = koaWebsocket(
+    new Koa,
+    undefined,
+    (config.server.key && config.server.cert) ? {
+        key: fs.readFileSync(config.server.key),
+        cert: fs.readFileSync(config.server.cert),
+    } : undefined,
+);
 app.use(koaCompress());
-app.use(koaStatic(path.join(path.resolve(), 'static')));
+app.use(koaStatic(path.join(path.dirname(url.fileURLToPath(import.meta.url)), 'static')));
 app.use(httpRouter.routes());
 app.use(httpRouter.allowedMethods());
 app.ws.use(wsRouter.routes());
 app.ws.use(wsRouter.allowedMethods());
 
 app.listen(config.server.port);
+
 console.log([
     '',
     `Cloud Clipboard ${process.env.VERSION}`,
@@ -38,7 +49,7 @@ console.log([
         acc.push(`    ${k}:`);
         v.forEach(e => {
             const a = e.family === 'IPv6' ? `[${e.address}]` : e.address;
-            acc.push(`        http://${a}:${config.server.port}`);
+            acc.push(`        http${config.server.key && config.server.cert ? 's' : ''}://${a}:${config.server.port}`);
         });
         return acc;
     }, []),
