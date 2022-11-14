@@ -32,7 +32,7 @@ jobs:
           npm install --save-dev caxa
           npx caxa \
             --input . \
-            --output dist/cloud-clipboard.exe \
+            --output ../dist/cloud-clipboard.exe \
             --exclude \
               ".*" \
               "config.json" \
