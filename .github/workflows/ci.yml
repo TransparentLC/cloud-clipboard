@@ -17,14 +17,8 @@ jobs:
           node-version: latest
           architecture: x64
           check-latest: true
-      - name: Get npm cache directory
-        id: npm-cache
-        run: echo "dir=$(npm config get cache)" >> $GITHUB_OUTPUT
-      - name: Cache npm dependencies
-        uses: actions/cache@v3
-        with:
-          path: ${{ steps.npm-cache.outputs.dir }}
-          key: ${{ runner.os }}-npm-${{ hashFiles('**/package.json') }}
+          cache: npm
+          cache-dependency-path: "**/package.json"
       - name: Install npm dependencies
         run: npm install
       - name: Build executable
