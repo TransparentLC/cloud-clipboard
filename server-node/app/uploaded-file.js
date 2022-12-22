@@ -64,8 +64,12 @@ setInterval(() => {
         if (v.expireTime < currentTime) toRemove.push(k);
     });
     toRemove.forEach(e => {
-        uploadFileMap.get(e).remove();
-        uploadFileMap.delete(e);
+        try {
+            uploadFileMap.get(e).remove();
+            uploadFileMap.delete(e);
+        } catch (err) {
+
+        }
     });
 }, 1800000);
 
