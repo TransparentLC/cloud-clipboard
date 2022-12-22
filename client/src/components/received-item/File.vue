@@ -126,7 +126,7 @@ export default {
             this.loadedDownload = 0;
             this.$http.get(`/file/${this.meta.cache}`, {
                 responseType: 'arraybuffer',
-                onDownloadProgress: e => {this.loaded = e.loaded},
+                onDownloadProgress: e => {this.loadedDownload = e.loaded},
             }).then(response => {
                 const blobURL = URL.createObjectURL(new Blob([response.data]));
                 const cd = response.headers['content-disposition'];
@@ -159,7 +159,7 @@ export default {
             this.expand = true;
             this.$http.get(`/file/${this.meta.cache}`, {
                 responseType: 'arraybuffer',
-                onDownloadProgress: e => {this.loaded = e.loaded},
+                onDownloadProgress: e => {this.loadedPreview = e.loaded},
             }).then(response => {
                 this.srcPreview = URL.createObjectURL(new Blob([response.data]));
             }).catch(error => {
