@@ -48,7 +48,7 @@ class UploadedFile {
     }
 
     remove() {
-        this.writePromise = this.writePromise.then(() => fs.promises.rm(this.path));
+        this.writePromise = this.writePromise.then(() => fs.promises.rm(this.path)).catch(() => {});
         return this.writePromise;
     }
 }
