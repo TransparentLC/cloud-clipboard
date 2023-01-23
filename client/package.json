@@ -7,13 +7,13 @@
     "build": "vue-cli-service build --modern && node after-build.js"
   },
   "dependencies": {
-    "axios": "^1.2.1",
-    "core-js": "^3.26.1",
+    "axios": "^1.2.3",
+    "core-js": "^3.27.2",
     "vue": "^2.7.13",
     "vue-axios": "^2.1.5",
     "vue-linkify": "^1.0.1",
     "vue-router": "^3.6.5",
-    "vuetify": "^2.6.13",
+    "vuetify": "^2.6.14",
     "vuetify-toast-snackbar": "^0.6.1"
   },
   "devDependencies": {
@@ -22,7 +22,7 @@
     "@vue/cli-plugin-router": "^4.5.19",
     "@vue/cli-service": "^4.5.19",
     "fs-extra": "^10.1.0",
-    "glob": "^8.0.3",
+    "glob": "^8.1.0",
     "sass": "^1.57.1",
     "sass-loader": "^10.4.1",
     "typeface-roboto": "^1.1.13",
