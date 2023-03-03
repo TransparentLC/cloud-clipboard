@@ -70,11 +70,19 @@ node main.js
 如果你使用的是 Node.js 17 或以上的版本，构建前端资源时可能会遇到 `Error: error:0308010C:digital envelope routines::unsupported` 的错误，在终端里设置环境变量 `NODE_OPTIONS=--openssl-legacy-provider` 可以解决这个问题。
 
 ### Docker
+#### 自己打包
 ```bash
 docker image build -t myclip .
 docker container run -d -p 9501:9501 myclip
 ```
-访问 [myclip](http://127.0.0.1:9501)
+
+#### 从docker hub拉取
+```bash
+docker pull csmayi/lan-clip:latest
+docker container run -d -p 9501:9501 csmayi/lan-clip
+```
+
+访问 [clipboard](http://127.0.0.1:9501)
 
 ### Swoole 版服务端
 
