@@ -1,7 +1,7 @@
 import crypto from 'node:crypto';
 import KoaRouter from '@koa/router';
 import koaWebsocket from 'koa-websocket';
-import uaParser from 'ua-parser-js';
+import { UAParser } from 'ua-parser-js';
 
 import config from './config.js';
 import messageQueue from './message.js';
@@ -29,7 +29,7 @@ router.get('/push', async (/** @type {koaWebsocket.MiddlewareContext<Koa.Default
         }
     }
 
-    const deviceParsed = uaParser(ctx.get('user-agent'));
+    const deviceParsed = UAParser(ctx.get('user-agent'));
     const deviceId = murmurHash(ctx.request.ip + ctx.get('user-agent'), deviceHashSeed);
     const deviceMeta = {
         type: (deviceParsed.device.type || '').trim(),

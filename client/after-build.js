@@ -5,7 +5,7 @@ const zlib = require('zlib');
 (async () => {
 
 /** @type {String[]} */
-const files = await new Promise((resolve, reject) => glob(
+const files = await new Promise((resolve, reject) => glob.glob(
     'dist/**/*.+(js|css|html|svg)',
     (error, files) => error ? reject(error) : resolve(files)
 ));
