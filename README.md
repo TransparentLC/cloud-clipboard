@@ -65,7 +65,7 @@ node main.js
 * 和 `main.js` 放在同一目录的 `config.json`
 * 在命令行中指定：`node main.js /path/to/config.json`
 
-服务端会监听本机的所有网卡，并在终端中显示前端界面所在的网址，使用浏览器打开即可使用。
+服务端默认会监听本机所有网卡的 IP 地址（也可以自己设定），并在终端中显示前端界面所在的网址，使用浏览器打开即可使用。
 
 如果你使用的是 Node.js 17 或以上的版本，构建前端资源时可能会遇到 `Error: error:0308010C:digital envelope routines::unsupported` 的错误，在终端里设置环境变量 `NODE_OPTIONS=--openssl-legacy-provider` 可以解决这个问题。
 
@@ -143,6 +143,11 @@ php build-phar.php
 ```json
 {
     "server": {
+        // 监听的 IP 地址，省略或设为null则会监听所有网卡的IP地址
+        "host": [
+            "127.0.0.1",
+            "::1"
+        ],
         "port": 9501, // 端口号
         "key": "localhost-key.pem", // HTTPS 私钥路径
         "cert": "localhost.pem", // HTTPS 证书路径

@@ -33,7 +33,11 @@ app.use(httpRouter.allowedMethods());
 app.ws.use(wsRouter.routes());
 app.ws.use(wsRouter.allowedMethods());
 
-app.listen(config.server.port);
+if (Array.isArray(config.server.host) && config.server.host.length) {
+    config.server.host.forEach(e => app.listen(config.server.port, e));
+} else {
+    app.listen(config.server.port);
+}
 
 console.log([
     '',
@@ -43,12 +47,19 @@ console.log([
     'Authorization code' + (config.server.auth ? `: ${config.server.auth}` : ' is disabled.'),
     `Server listening on port ${config.server.port} ...`,
     'Available at:',
-    ...Object.entries(os.networkInterfaces()).reduce((acc, [k, v]) => {
-        acc.push(`    ${k}:`);
-        v.forEach(e => {
-            const a = e.family === 'IPv6' ? `[${e.address}]` : e.address;
-            acc.push(`        http${config.server.key && config.server.cert ? 's' : ''}://${a}:${config.server.port}`);
-        });
-        return acc;
-    }, []),
+    ...(Array.isArray(config.server.host) && config.server.host.length
+        ? (
+            config.server.host.map(e => `    http${config.server.key && config.server.cert ? 's' : ''}://${e}:${config.server.port}`)
+        )
+        : (
+            Object.entries(os.networkInterfaces()).reduce((acc, [k, v]) => {
+                acc.push(`    ${k}:`);
+                v.forEach(e => {
+                    const a = e.family === 'IPv6' ? `[${e.address}]` : e.address;
+                    acc.push(`        http${config.server.key && config.server.cert ? 's' : ''}://${a}:${config.server.port}`);
+                });
+                return acc;
+            }, [])
+        )
+    ),
 ].join('\n'));
