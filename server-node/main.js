@@ -49,7 +49,12 @@ console.log([
     'Available at:',
     ...(Array.isArray(config.server.host) && config.server.host.length
         ? (
-            config.server.host.map(e => `    http${config.server.key && config.server.cert ? 's' : ''}://${e}:${config.server.port}`)
+            config.server.host.map(e => {
+                // How to check if a string is a valid IPv6 address in JavaScript? | MELVIN GEORGE
+                // https://melvingeorge.me/blog/check-if-string-is-valid-ipv6-address-javascript
+                const isIPv6 = e.match(/(([\da-f]{1,4}:){7,7}[\da-f]{1,4}|([\da-f]{1,4}:){1,7}:|([\da-f]{1,4}:){1,6}:[\da-f]{1,4}|([\da-f]{1,4}:){1,5}(:[\da-f]{1,4}){1,2}|([\da-f]{1,4}:){1,4}(:[\da-f]{1,4}){1,3}|([\da-f]{1,4}:){1,3}(:[\da-f]{1,4}){1,4}|([\da-f]{1,4}:){1,2}(:[\da-f]{1,4}){1,5}|[\da-f]{1,4}:((:[\da-f]{1,4}){1,6})|:((:[\da-f]{1,4}){1,7}|:)|fe80:(:[\da-f]{0,4}){0,4}%[\da-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[\d]){0,1}[\d])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[\d]){0,1}[\d])|([\da-f]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[\d]){0,1}[\d])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[\d]){0,1}[\d]))/gi);
+                return `    http${config.server.key && config.server.cert ? 's' : ''}://${isIPv6 ? `[${e}]` : e}:${config.server.port}`;
+            })
         )
         : (
             Object.entries(os.networkInterfaces()).reduce((acc, [k, v]) => {
