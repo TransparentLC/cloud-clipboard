@@ -29,6 +29,8 @@ router.get('/push', async (/** @type {koaWebsocket.MiddlewareContext<Koa.Default
         }
     }
 
+    ctx.app.ws.server.clients.add(ctx.websocket);
+
     const deviceParsed = UAParser(ctx.get('user-agent'));
     const deviceId = murmurHash(ctx.request.ip + ctx.get('user-agent'), deviceHashSeed);
     const deviceMeta = {
@@ -60,6 +62,7 @@ router.get('/push', async (/** @type {koaWebsocket.MiddlewareContext<Koa.Default
             },
         }));
         deviceConnected.delete(deviceId);
+        ctx.app.ws.server.clients.delete(ctx.websocket);
     });
 
     await new Promise(resolve => ctx.websocket.send(JSON.stringify({
