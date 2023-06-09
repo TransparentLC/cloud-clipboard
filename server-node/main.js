@@ -30,7 +30,7 @@ app.ws.use(wsRouter.allowedMethods());
 
 // WebSocket over HTTP2 · Issue #1458 · websockets/ws
 // https://github.com/websockets/ws/issues/1458
-const server = (config.server.cert && config.server.key)
+const createServer = () => (config.server.cert && config.server.key)
     ? http2.createSecureServer(
         {
             cert: fs.readFileSync(config.server.cert),
@@ -41,14 +41,19 @@ const server = (config.server.cert && config.server.key)
     )
     : http.createServer(app.callback());
 
-if (Array.isArray(config.server.host) && config.server.host.length) {
-    config.server.host.forEach(e => server.listen(config.server.port, e));
-} else {
-    server.listen(config.server.port);
-}
 // How to create https server and support websocket or wss use koa2? · Issue #29 · kudos/koa-websocket
 // https://github.com/kudos/koa-websocket/issues/29#issuecomment-341782858
-app.ws.listen({server});
+if (Array.isArray(config.server.host) && config.server.host.length) {
+    config.server.host.forEach(e => {
+        const server = createServer();
+        server.listen(config.server.port, e);
+        app.ws.listen({server});
+    });
+} else {
+    const server = createServer();
+    server.listen(config.server.port);
+    app.ws.listen({server});
+}
 
 console.log([
     '',

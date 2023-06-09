@@ -5,6 +5,7 @@ import path from 'node:path';
 /**
  * @type {{
  *  server: {
+ *      host: String | String[],
  *      port: Number,
  *      key: [String],
  *      cert: [String],
