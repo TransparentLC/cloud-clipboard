@@ -1,4 +1,6 @@
 import fs from 'node:fs';
+import http from 'node:http';
+import http2 from 'node:http2';
 import os from 'node:os';
 import path from 'node:path';
 import url from 'node:url';
@@ -18,14 +20,7 @@ fs.mkdirSync(path.join(os.tmpdir(), '.cloud-clipboard-storage'));
 
 process.env.VERSION = `node-${JSON.parse(fs.readFileSync(path.join(path.dirname(url.fileURLToPath(import.meta.url)), 'package.json'))).version}`;
 
-const app = koaWebsocket(
-    new Koa,
-    undefined,
-    (config.server.key && config.server.cert) ? {
-        key: fs.readFileSync(config.server.key),
-        cert: fs.readFileSync(config.server.cert),
-    } : undefined,
-);
+const app = koaWebsocket(new Koa);
 app.use(koaCompress());
 app.use(koaStatic(path.join(path.dirname(url.fileURLToPath(import.meta.url)), 'static')));
 app.use(httpRouter.routes());
@@ -33,11 +28,27 @@ app.use(httpRouter.allowedMethods());
 app.ws.use(wsRouter.routes());
 app.ws.use(wsRouter.allowedMethods());
 
+// WebSocket over HTTP2 · Issue #1458 · websockets/ws
+// https://github.com/websockets/ws/issues/1458
+const server = (config.server.cert && config.server.key)
+    ? http2.createSecureServer(
+        {
+            cert: fs.readFileSync(config.server.cert),
+            key: fs.readFileSync(config.server.key),
+            allowHTTP1: true,
+        },
+        app.callback(),
+    )
+    : http.createServer(app.callback());
+
 if (Array.isArray(config.server.host) && config.server.host.length) {
-    config.server.host.forEach(e => app.listen(config.server.port, e));
+    config.server.host.forEach(e => server.listen(config.server.port, e));
 } else {
-    app.listen(config.server.port);
+    server.listen(config.server.port);
 }
+// How to create https server and support websocket or wss use koa2? · Issue #29 · kudos/koa-websocket
+// https://github.com/kudos/koa-websocket/issues/29#issuecomment-341782858
+app.ws.listen({server});
 
 console.log([
     '',
