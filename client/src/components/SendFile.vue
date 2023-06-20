@@ -39,8 +39,8 @@
                     class="d-block mx-auto"
                     @click="$refs.selectFile.click()"
                 >
-                    <div>
-                        选择要发送的文件<span class="hidden-sm-and-down">（支持拖拽和 Ctrl+V 粘贴截图）</span>
+                    <div title="支持拖拽和 Ctrl+V 粘贴截图">
+                        选择要发送的文件<span class="d-none d-xl-inline">（支持拖拽和 Ctrl+V 粘贴截图）</span>
                         <br>
                         <small class="text--secondary">文件大小限制：{{$root.config.file.limit | prettyFileSize}}</small>
                     </div>
