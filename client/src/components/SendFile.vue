@@ -1,7 +1,14 @@
 <template>
     <div>
         <div class="headline text--primary mb-4">发送文件</div>
-        <v-card outlined class="pa-3 mb-6 d-flex flex-row align-center" @drop="handleSelectFile($event.dataTransfer.files[0])">
+        <v-card
+            outlined
+            class="pa-3 mb-6 d-flex flex-row align-center"
+            @dragenter="$event.preventDefault()"
+            @dragover="$event.preventDefault()"
+            @dragleave="$event.preventDefault()"
+            @drop="$event.preventDefault(); handleSelectFile($event.dataTransfer.files[0])"
+        >
             <template v-if="$root.send.file">
                 <template v-if="progress">
                     <div class="flex-grow-1">
