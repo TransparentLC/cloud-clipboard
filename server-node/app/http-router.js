@@ -161,8 +161,38 @@ router.get('/file/:uuid([0-9a-f]{32})', async ctx => {
     if (!file || Date.now() / 1000 > file.expireTime || !fs.existsSync(file.path)) {
         return ctx.status = 404;
     }
-    ctx.attachment(encodeURIComponent(file.name));
-    ctx.body = fs.createReadStream(file.path);
+    ctx.attachment(encodeURIComponent(file.name), {type: 'inline'});
+    const fileSize = fs.statSync(file.path).size;
+    // https://github.com/xtx1130/koa-partial-content/blob/master/index.js
+    if (file.name.match(/\.(mp3|mp4|flv|webm|ogv|mpg|mpg|wav|ogg|opus|m4a)$/gi)) {
+        try {
+            const m = /^bytes=(\d+)-(\d*)$/.exec(ctx.request.header.range || 'bytes=0-');
+            if (!m) throw new Error;
+            const rangeStart = parseInt(m[1]);
+            const rangeEnd = parseInt(m[2] || (fileSize - 1));
+            ctx.set('Accept-Range', 'bytes');
+            if (rangeEnd > fileSize - 1 || rangeEnd > fileSize - 1) {
+                throw new Error;
+            } else {
+                ctx.status = 206;
+                ctx.set('Content-Range', `bytes ${rangeStart}-${rangeEnd}/${fileSize}`);
+                await new Promise(resolve => {
+                    const rs = fs.createReadStream(file.path, {
+                        start: rangeStart,
+                        end: rangeEnd,
+                    });
+                    rs.on('open', () => rs.pipe(ctx.res));
+                    rs.on('end', resolve);
+                    rs.on('error', () => resolve(ctx.throw(500)));
+                });
+            }
+        } catch (err) {
+            ctx.throw(416);
+            ctx.set('Content-Range', `bytes */${fileSize}`);
+        }
+    } else {
+        ctx.body = fs.createReadStream(file.path);
+    }
 });
 
 router.delete('/file/:uuid([0-9a-f]{32})', async ctx => {
