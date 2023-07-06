@@ -28,14 +28,15 @@
                     </div>
 
                     <div class="align-self-center text-no-wrap">
-                        <v-progress-circular
-                            v-if="loadingDownload"
-                            indeterminate
-                            color="grey"
-                        >{{loadedDownload / meta.size | percentage(0)}}</v-progress-circular>
-                        <v-tooltip v-else bottom>
+                        <v-tooltip bottom>
                             <template v-slot:activator="{ on }">
-                                <v-btn v-on="on" icon color="grey" @click="!expired && getFile()">
+                                <v-btn
+                                    v-on="on"
+                                    icon
+                                    color="grey"
+                                    :href="expired ? null : `/file/${meta.cache}`"
+                                    :download="expired ? null : meta.name"
+                                >
                                     <v-icon>{{expired ? mdiDownloadOff : mdiDownload}}</v-icon>
                                 </v-btn>
                             </template>
@@ -58,7 +59,7 @@
                         </template>
                         <v-tooltip bottom>
                             <template v-slot:activator="{ on }">
-                                <v-btn v-on="on" icon color="grey" @click="deleteItem" :disabled="loadingDownload || loadingPreview">
+                                <v-btn v-on="on" icon color="grey" @click="deleteItem" :disabled="loadingPreview">
                                     <v-icon>{{mdiClose}}</v-icon>
                                 </v-btn>
                             </template>
@@ -102,8 +103,6 @@ export default {
     },
     data() {
         return {
-            loadingDownload: false,
-            loadedDownload: 0,
             loadingPreview: false,
             loadedPreview: 0,
             expand: false,
@@ -121,31 +120,6 @@ export default {
         },
     },
     methods: {
-        getFile() {
-            this.loadingDownload = true,
-            this.loadedDownload = 0;
-            this.$http.get(`/file/${this.meta.cache}`, {
-                responseType: 'arraybuffer',
-                onDownloadProgress: e => {this.loadedDownload = e.loaded},
-            }).then(response => {
-                const blobURL = URL.createObjectURL(new Blob([response.data]));
-                const cd = response.headers['content-disposition'];
-                const el = document.createElement('a');
-                el.href = blobURL;
-                el.setAttribute('download', decodeURIComponent(cd.substring(cd.indexOf('"') + 1, cd.lastIndexOf('"'))));
-                el.click();
-                URL.revokeObjectURL(blobURL);
-            }).catch(error => {
-                if (error.response && error.response.data.msg) {
-                    this.$toast(`文件获取失败：${error.response.data.msg}`);
-                } else {
-                    this.$toast('文件获取失败');
-                }
-            }).finally(() => {
-                this.loadingDownload = false;
-            });
-
-        },
         previewFile() {
             if (this.expand) {
                 this.expand = false;
