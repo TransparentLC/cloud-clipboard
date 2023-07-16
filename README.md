@@ -151,6 +151,7 @@ php build-phar.php
         "port": 9501, // 端口号
         "key": "localhost-key.pem", // HTTPS 私钥路径
         "cert": "localhost.pem", // HTTPS 证书路径
+        "forceWss": false, // 如果没有设定以上两项，但是通过 Nginx 等反向代理而使用了 HTTPS，则需要设为 true 让前端界面强制使用 WSS 连接
         "history": 10, // 消息历史记录的数量
         "auth": false // 是否在连接时要求使用密码认证，falsy 值表示不使用
     },
