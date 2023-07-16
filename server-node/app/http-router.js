@@ -19,7 +19,7 @@ const router = new KoaRouter;
 
 router.get('/server', async ctx => {
     ctx.body = {
-        'server': `ws${(config.forceWss || ctx.request.protocol === 'https') ? 's' : ''}://${ctx.request.host}/push`,
+        'server': `ws${(config.server.forceWss || ctx.request.protocol === 'https') ? 's' : ''}://${ctx.request.host}/push`,
         'auth': !!config.server.auth,
     };
 });
