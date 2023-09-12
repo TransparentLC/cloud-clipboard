@@ -76,4 +76,5 @@ setInterval(() => {
 export {
     UploadedFile,
     uploadFileMap,
+    storageFolder,
 };

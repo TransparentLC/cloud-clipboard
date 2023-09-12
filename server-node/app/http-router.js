@@ -1,7 +1,9 @@
 import fs from 'node:fs';
+import path from 'node:path';
 import KoaRouter from '@koa/router';
 import { koaBody } from 'koa-body';
 import koaWebsocket from 'koa-websocket';
+import exitHook from 'async-exit-hook';
 import sharp from 'sharp';
 
 import config from './config.js';
@@ -9,6 +11,7 @@ import messageQueue from './message.js';
 import {
     UploadedFile,
     uploadFileMap,
+    storageFolder,
 } from './uploaded-file.js';
 import {
     writeJSON,
@@ -201,7 +204,69 @@ router.delete('/file/:uuid([0-9a-f]{32})', async ctx => {
         return writeJSON(ctx, 404);
     }
     file.remove();
+    uploadFileMap.delete(ctx.params.uuid);
     writeJSON(ctx);
+});
+
+const historyPath = path.join(process.cwd(), 'history.json');
+if (fs.existsSync(historyPath)) {
+    /**
+     * @type {{
+     *  file: {
+     *      name: String,
+     *      uuid: String,
+     *      size: Number,
+     *      uploadTime: Number,
+     *      expireTime: Number,
+     *  }[],
+     *  receive: ({
+     *      type: 'text',
+     *      content: String,
+     *  }|{
+     *      type: 'file',
+     *      name: String,
+     *      size: Number,
+     *      cache: String,
+     *      expire: Number,
+     *  })[],
+     * }}
+     */
+    const history = JSON.parse(fs.readFileSync(historyPath, {encoding: 'utf-8'}));
+    const currentTime = Math.round(Date.now() / 1000);
+    history.file.forEach(e => {
+        if (!fs.existsSync(path.join(storageFolder, e.uuid)) || e.expireTime < currentTime) return;
+        const f = new UploadedFile(e.name);
+        f.uuid = e.uuid;
+        f.path = path.join(storageFolder, f.uuid);
+        f.size = e.size;
+        f.uploadTime = e.uploadTime;
+        f.expireTime = e.expireTime;
+        uploadFileMap.set(e.uuid, f);
+    });
+    history.receive.forEach(e => {
+        if (e.type === 'file' && !uploadFileMap.has(e.cache)) return;
+        messageQueue.enqueue({
+            event: 'receive',
+            data: {
+                id: messageQueue.counter,
+                ...e,
+            },
+        });
+    });
+}
+
+exitHook(() => {
+    fs.writeFileSync(historyPath, JSON.stringify({
+        file: Array.from(uploadFileMap.values()).map(e => ({
+            name: e.name,
+            uuid: e.uuid,
+            size: e.size,
+            uploadTime: e.uploadTime,
+            expireTime: e.expireTime,
+        })),
+        receive: messageQueue.queue.filter(e => e.event === 'receive').map(e => e.data),
+    }));
+    console.log(`History is saved to ${historyPath}`);
 });
 
 export default router;

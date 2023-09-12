@@ -13,10 +13,10 @@ import config from './app/config.js';
 import httpRouter from './app/http-router.js';
 import wsRouter from './app/ws-router.js';
 
-try {
-    fs.rmSync(path.join(os.tmpdir(), '.cloud-clipboard-storage'), { recursive: true });
-} catch {}
-fs.mkdirSync(path.join(os.tmpdir(), '.cloud-clipboard-storage'));
+const storagePath = path.join(os.tmpdir(), '.cloud-clipboard-storage');
+if (!fs.existsSync(storagePath)) {
+    fs.mkdirSync(storagePath);
+}
 
 process.env.VERSION = `node-${JSON.parse(fs.readFileSync(path.join(path.dirname(url.fileURLToPath(import.meta.url)), 'package.json'))).version}`;
 

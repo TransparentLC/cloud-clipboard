@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@koa/router": "^12.0.0",
+    "async-exit-hook": "^2.0.1",
     "koa": "^2.14.2",
     "koa-body": "^6.0.1",
     "koa-compress": "^5.1.1",
