@@ -3,7 +3,6 @@ import path from 'node:path';
 import KoaRouter from '@koa/router';
 import { koaBody } from 'koa-body';
 import koaWebsocket from 'koa-websocket';
-import exitHook from 'async-exit-hook';
 import sharp from 'sharp';
 
 import config from './config.js';
@@ -17,6 +16,19 @@ import {
     writeJSON,
     wsBoardcast,
 } from './util.js';
+
+const historyPath = path.join(process.cwd(), 'history.json');
+
+const saveHistory = () => fs.promises.writeFile(historyPath, JSON.stringify({
+    file: Array.from(uploadFileMap.values()).filter(e => e.expireTime > Date.now() / 1e3).map(e => ({
+        name: e.name,
+        uuid: e.uuid,
+        size: e.size,
+        uploadTime: e.uploadTime,
+        expireTime: e.expireTime,
+    })),
+    receive: messageQueue.queue.filter(e => e.event === 'receive').filter(e => e.data.type !== 'file' || e.data.expire > Date.now() / 1e3).map(e => e.data),
+}));
 
 const router = new KoaRouter;
 
@@ -58,6 +70,7 @@ router.post(
         const app = ctx.app;
         wsBoardcast(app.ws, JSON.stringify(message));
         writeJSON(ctx);
+        saveHistory();
     }
 );
 
@@ -76,6 +89,7 @@ router.delete('/revoke/:id(\\d+)', async ctx => {
         },
     }));
     writeJSON(ctx);
+    saveHistory();
 });
 
 router.post(
@@ -154,6 +168,7 @@ router.post('/upload/finish/:uuid([0-9a-f]{32})', async ctx => {
         const app = ctx.app;
         wsBoardcast(app.ws, JSON.stringify(message));
         writeJSON(ctx);
+        saveHistory();
     } catch (error) {
         writeJSON(ctx, 400, error.message || error);
     }
@@ -206,9 +221,9 @@ router.delete('/file/:uuid([0-9a-f]{32})', async ctx => {
     file.remove();
     uploadFileMap.delete(ctx.params.uuid);
     writeJSON(ctx);
+    saveHistory();
 });
 
-const historyPath = path.join(process.cwd(), 'history.json');
 if (fs.existsSync(historyPath)) {
     /**
      * @type {{
@@ -254,19 +269,5 @@ if (fs.existsSync(historyPath)) {
         });
     });
 }
-
-exitHook(() => {
-    fs.writeFileSync(historyPath, JSON.stringify({
-        file: Array.from(uploadFileMap.values()).map(e => ({
-            name: e.name,
-            uuid: e.uuid,
-            size: e.size,
-            uploadTime: e.uploadTime,
-            expireTime: e.expireTime,
-        })),
-        receive: messageQueue.queue.filter(e => e.event === 'receive').map(e => e.data),
-    }));
-    console.log(`History is saved to ${historyPath}`);
-});
 
 export default router;
