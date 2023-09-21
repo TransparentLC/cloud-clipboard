@@ -23,6 +23,7 @@
             open-on-hover
             transition="scale-transition"
             class="hidden-md-and-up"
+            style="transform:translateY(-64px)"
         >
             <template v-slot:activator>
                 <v-btn
