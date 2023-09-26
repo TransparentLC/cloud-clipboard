@@ -147,7 +147,9 @@ export default {
             });
         },
         deleteItem() {
-            this.$http.delete(`/revoke/${this.meta.id}`).then(() => {
+            this.$http.delete(`/revoke/${this.meta.id}`, {
+                params: new URLSearchParams([['room', this.$root.room]]),
+            }).then(() => {
                 if (this.expired) return;
                 this.$http.delete(`/file/${this.meta.cache}`).then(() => {
                     this.$toast(`已删除文件 ${this.meta.name}`);

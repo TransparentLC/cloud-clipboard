@@ -83,8 +83,16 @@
             dark
         >
             <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
-            <v-toolbar-title>云剪贴板</v-toolbar-title>
+            <v-toolbar-title>云剪贴板<span class="d-none d-sm-inline" v-if="$root.room">（房间：<abbr title="点击复制" style="cursor:pointer" @click="navigator.clipboard.writeText($root.room).then(() => $toast(`已复制房间名称：${$root.room}`).catch(err => $toast.error(`复制失败：${err}`)))">{{$root.room}}</abbr>）</span></v-toolbar-title>
             <v-spacer></v-spacer>
+            <v-tooltip left>
+                <template v-slot:activator="{ on }">
+                    <v-btn icon v-on="on" @click="$root.roomInput = $root.room; $root.roomDialog = true">
+                        <v-icon>{{mdiBulletinBoard}}</v-icon>
+                    </v-btn>
+                </template>
+                <span>进入房间</span>
+            </v-tooltip>
             <v-tooltip left>
                 <template v-slot:activator="{ on }">
                     <v-btn icon v-on="on" @click="if (!$root.websocket && !$root.websocketConnecting) {$root.retry = 0; $root.connect();}">
@@ -110,8 +118,7 @@
             <v-card>
                 <v-card-title class="headline">需要认证</v-card-title>
                 <v-card-text>
-                    这个剪贴板服务并不是公开的，请输入密码以继续连接。
-                    <br>
+                    <p>这个剪贴板服务并不是公开的，请输入密码以继续连接。</p>
                     <v-text-field v-model="$root.authCode" label="密码"></v-text-field>
                 </v-card-text>
                 <v-card-actions>
@@ -127,6 +134,40 @@
                 </v-card-actions>
             </v-card>
         </v-dialog>
+
+        <v-dialog v-model="$root.roomDialog" persistent max-width="360">
+            <v-card>
+                <v-card-title class="headline">剪贴板房间</v-card-title>
+                <v-card-text>
+                    <p>输入任意名称创建新房间，或进入已有的房间。留空则表示使用默认的全局房间。</p>
+                    <p>在房间中发送的内容仅限房间内可见，保存的历史记录数量仍然会受到全局设定的限制。</p>
+                    <v-text-field
+                        v-model="$root.roomInput"
+                        label="房间名称"
+                        :append-icon="mdiDiceMultiple"
+                        @click:append="$root.roomInput = ['reimu', 'marisa', 'rumia', 'cirno', 'meiling', 'patchouli', 'sakuya', 'remilia', 'flandre', 'letty', 'chen', 'lyrica', 'lunasa', 'merlin', 'youmu', 'yuyuko', 'ran', 'yukari', 'suika', 'mystia', 'keine', 'tewi', 'reisen', 'eirin', 'kaguya', 'mokou'][Math.floor(Math.random() * 26)] + '-' + Math.random().toString(16).substring(2, 6)"
+                    ></v-text-field>
+                </v-card-text>
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn
+                        color="primary darken-1"
+                        text
+                        @click="$root.roomDialog = false"
+                    >取消</v-btn>
+                    <v-btn
+                        color="primary darken-1"
+                        text
+                        @click="
+                            $root.room = $root.roomInput;
+                            $root.roomDialog = false;
+                            $root.disconnect();
+                            $root.connect();
+                        "
+                    >进入房间</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
     </v-app>
 </template>
 
@@ -139,6 +180,8 @@ import {
     mdiLanDisconnect,
     mdiLanPending,
     mdiBrightness4,
+    mdiBulletinBoard,
+    mdiDiceMultiple,
 } from '@mdi/js';
 
 export default {
@@ -152,6 +195,9 @@ export default {
             mdiLanDisconnect,
             mdiLanPending,
             mdiBrightness4,
+            mdiBulletinBoard,
+            mdiDiceMultiple,
+            navigator,
         };
     },
 };

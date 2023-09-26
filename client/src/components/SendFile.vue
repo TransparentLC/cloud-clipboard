@@ -132,7 +132,9 @@ export default {
                     });
                     uploadedSize += chunkSize;
                 }
-                await this.$http.post(`/upload/finish/${uuid}`);
+                await this.$http.post(`/upload/finish/${uuid}`, null, {
+                    params: new URLSearchParams([['room', this.$root.room]]),
+                });
                 this.$toast('发送成功');
                 this.$root.send.file = null;
             } catch (error) {

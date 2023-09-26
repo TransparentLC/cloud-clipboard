@@ -62,13 +62,14 @@ router.post(
             data: {
                 id: messageQueue.counter,
                 type: 'text',
+                room: ctx.query.room,
                 content: body,
             },
         };
         messageQueue.enqueue(message);
         /** @type {koaWebsocket.App<Koa.DefaultState, Koa.DefaultContext>} */
         const app = ctx.app;
-        wsBoardcast(app.ws, JSON.stringify(message));
+        wsBoardcast(app.ws, JSON.stringify(message), ctx.query.room);
         writeJSON(ctx);
         saveHistory();
     }
@@ -82,12 +83,17 @@ router.delete('/revoke/:id(\\d+)', async ctx => {
     messageQueue.queue.splice(messageQueue.queue.findIndex(e => e.data.id === id), 1);
     /** @type {koaWebsocket.App<Koa.DefaultState, Koa.DefaultContext>} */
     const app = ctx.app;
-    wsBoardcast(app.ws, JSON.stringify({
-        event: 'revoke',
-        data: {
-            id,
-        },
-    }));
+    wsBoardcast(
+        app.ws,
+        JSON.stringify({
+            event: 'revoke',
+                data: {
+                    id,
+                    room: ctx.query.room,
+                },
+        }),
+        ctx.query.room,
+    );
     writeJSON(ctx);
     saveHistory();
 });
@@ -140,6 +146,7 @@ router.post('/upload/finish/:uuid([0-9a-f]{32})', async ctx => {
             data: {
                 id: messageQueue.counter,
                 type: 'file',
+                room: ctx.query.room,
                 name: file.name,
                 size: file.size,
                 cache: file.uuid,
@@ -166,7 +173,7 @@ router.post('/upload/finish/:uuid([0-9a-f]{32})', async ctx => {
 
         /** @type {koaWebsocket.App<Koa.DefaultState, Koa.DefaultContext>} */
         const app = ctx.app;
-        wsBoardcast(app.ws, JSON.stringify(message));
+        wsBoardcast(app.ws, JSON.stringify(message), ctx.query.room);
         writeJSON(ctx);
         saveHistory();
     } catch (error) {
@@ -236,9 +243,11 @@ if (fs.existsSync(historyPath)) {
      *  }[],
      *  receive: ({
      *      type: 'text',
+     *      room: String,
      *      content: String,
      *  }|{
      *      type: 'file',
+     *      room: String,
      *      name: String,
      *      size: Number,
      *      cache: String,

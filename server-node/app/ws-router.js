@@ -29,6 +29,8 @@ router.get('/push', async (/** @type {koaWebsocket.MiddlewareContext<Koa.Default
         }
     }
 
+    ctx.websocket.room = ctx.query.room || '';
+
     ctx.app.ws.server.clients.add(ctx.websocket);
 
     const deviceParsed = UAParser(ctx.get('user-agent'));
@@ -75,7 +77,7 @@ router.get('/push', async (/** @type {koaWebsocket.MiddlewareContext<Koa.Default
     }), resolve));
 
     messageQueue.queue.reduce(
-        (acc, cur) => acc.then(() => new Promise(resolve => ctx.websocket.send(JSON.stringify(cur), resolve))),
+        (acc, cur) => acc.then(() => new Promise(resolve => cur.data.room === ctx.query.room ? ctx.websocket.send(JSON.stringify(cur), resolve) : resolve())),
         Promise.resolve()
     );
 });

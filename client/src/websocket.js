@@ -5,6 +5,9 @@ export default {
             websocketConnecting: false,
             authCode: localStorage.getItem('auth') || '',
             authCodeDialog: false,
+            room: localStorage.getItem('room') || '',
+            roomInput: '',
+            roomDialog: false,
             retry: 0,
             event: {
                 receive: data => {
@@ -48,20 +51,24 @@ export default {
             });
             this.$http.get('/server').then(response => {
                 if (this.authCode) localStorage.setItem('auth', this.authCode);
+                this.room = this.room.trim();
+                localStorage.setItem('room', this.room);
                 return new Promise((resolve, reject) => {
-                    let ws;
-                    if (!response.data.auth) {
-                        ws = new WebSocket(response.data.server);
-                    } else if (this.authCode) {
-                        ws = new WebSocket(`${response.data.server}?auth=${encodeURIComponent(this.authCode)}`);
-                    } else {
-                        this.authCodeDialog = true;
-                        return;
+                    const wsUrl = new URL(response.data.server);
+                    if (response.data.auth) {
+                        if (this.authCode) {
+                            wsUrl.searchParams.set('auth', this.authCode);
+                        } else {
+                            this.authCodeDialog = true;
+                            return;
+                        }
                     }
-                    ws.onopen = () => {resolve(ws)};
+                    wsUrl.searchParams.set('room', this.room);
+                    const ws = new WebSocket(wsUrl);
+                    ws.onopen = () => resolve(ws);
                     ws.onerror = reject;
                 });
-            }).then(ws => {
+            }).then((/** @type {WebSocket} */ ws) => {
                 this.websocketConnecting = false;
                 this.retry = 0;
                 this.received = [];
@@ -80,6 +87,13 @@ export default {
                 this.websocketConnecting = false;
                 this.failure();
             });
+        },
+        disconnect() {
+            this.websocketConnecting = false;
+            this.websocket.onclose = () => {};
+            this.websocket.close();
+            this.websocket = null;
+            this.$root.device = [];
         },
         failure() {
             this.websocket = null;
