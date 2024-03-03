@@ -10,13 +10,13 @@
     "start": "node main.js"
   },
   "dependencies": {
-    "@koa/router": "^12.0.0",
-    "koa": "^2.14.2",
+    "@koa/router": "^12.0.1",
+    "koa": "^2.15.0",
     "koa-body": "^6.0.1",
     "koa-compress": "^5.1.1",
     "koa-static": "^5.0.0",
     "koa-websocket": "^7.0.0",
-    "sharp": "^0.32.6",
-    "ua-parser-js": "2.0.0-alpha.2"
+    "sharp": "^0.33.2",
+    "ua-parser-js": "2.0.0-alpha.3"
   }
 }
