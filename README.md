@@ -151,7 +151,6 @@ php build-phar.php
         "port": 9501, // 端口号
         "key": "localhost-key.pem", // HTTPS 私钥路径
         "cert": "localhost.pem", // HTTPS 证书路径
-        "forceWss": false, // 如果没有设定以上两项，但是通过 Nginx 等反向代理而使用了 HTTPS，则需要设为 true 让前端界面强制使用 WSS 连接
         "history": 10, // 消息历史记录的数量
         "auth": false // 是否在连接时要求使用密码认证，falsy 值表示不使用
     },
@@ -169,6 +168,7 @@ php build-phar.php
 >
 > 如果同时设定了私钥和证书路径，则会使用 HTTPS 协议访问前端界面，未设定则会使用 HTTP 协议。
 > 自用的话，可以使用 [mkcert](https://mkcert.dev/) 自行生成证书，并将根证书添加到系统/浏览器的信任列表中。
+> 如果使用了 Nginx 等软件的反向代理，且这些软件已经提供了 HTTPS 连接，则无需在这里设定。
 >
 > “密码认证”的说明：
 >

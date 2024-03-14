@@ -55,6 +55,7 @@ export default {
                 localStorage.setItem('room', this.room);
                 return new Promise((resolve, reject) => {
                     const wsUrl = new URL(response.data.server);
+                    wsUrl.protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
                     if (response.data.auth) {
                         if (this.authCode) {
                             wsUrl.searchParams.set('auth', this.authCode);
