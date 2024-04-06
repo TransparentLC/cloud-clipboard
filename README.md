@@ -80,16 +80,12 @@ docker container run -d -p 9501:9501 myclip
 
 #### 从 Docker Hub 拉取
 
-<details>
-
 ```bash
 docker pull chenqiyux/lan-clip:latest
 docker container run -d -p 9501:9501 chenqiyux/lan-clip
 ```
 
 访问 [clipboard](http://127.0.0.1:9501)
-
-</details>
 
 ### Swoole 版服务端
 
