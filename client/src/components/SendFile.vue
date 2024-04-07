@@ -7,9 +7,9 @@
             @dragenter="$event.preventDefault()"
             @dragover="$event.preventDefault()"
             @dragleave="$event.preventDefault()"
-            @drop="$event.preventDefault(); handleSelectFile($event.dataTransfer.files[0])"
+            @drop="$event.preventDefault(); handleSelectFiles(Array.from($event.dataTransfer.files))"
         >
-            <template v-if="$root.send.file">
+            <template v-if="$root.send.files.length">
                 <template v-if="progress">
                     <div class="flex-grow-1">
                         <small class="d-block text-right text--secondary">
@@ -28,11 +28,15 @@
                         style="border-radius: 3px"
                     ></v-img>
                     <div class="flex-grow-1 mr-2" style="min-width: 0">
-                        <div class="text-truncate" :title="$root.send.file.name">{{$root.send.file.name}}</div>
-                        <div class="caption">{{$root.send.file.size | prettyFileSize}}</div>
+                        <div
+                            class="text-truncate"
+                            :title="$root.send.files[0].name + ' ' + ($root.send.files.length > 1 ? `等 ${$root.send.files.length} 个文件` : '')"
+                        >{{$root.send.files[0].name}} {{$root.send.files.length > 1 ? `等 ${$root.send.files.length} 个文件` : ''}}
+                        </div>
+                        <div class="caption">{{fileSize | prettyFileSize}}</div>
                     </div>
                     <div class="align-self-center">
-                        <v-btn icon color="grey" @click="$root.send.file = null">
+                        <v-btn icon color="grey" @click="$root.send.files.splice(0)">
                             <v-icon>{{mdiClose}}</v-icon>
                         </v-btn>
                     </div>
@@ -56,7 +60,8 @@
                     ref="selectFile"
                     type="file"
                     class="d-none"
-                    @change="handleSelectFile($event.target.files[0])"
+                    multiple
+                    @change="handleSelectFiles(Array.from($event.target.files))"
                 >
             </template>
         </v-card>
@@ -64,7 +69,7 @@
             <v-btn
                 color="primary"
                 :block="$vuetify.breakpoint.smAndDown"
-                :disabled="!$root.send.file || !$root.websocket"
+                :disabled="!$root.send.files.length || !$root.websocket || progress"
                 @click="send"
             >发送</v-btn>
         </div>
@@ -84,59 +89,69 @@ export default {
     data() {
         return {
             progress: false,
-            uploadedSize: 0,
+            uploadedSizes: [],
             imagePreview: '',
+            uploading: false,
             mdiClose,
         };
     },
     computed: {
         fileSize() {
-            return this.$root.send.file ? this.$root.send.file.size : 0;
+            return this.$root.send.files.length ? this.$root.send.files.reduce((acc, cur) => acc += cur.size, 0) : 0;
+        },
+        uploadedSize() {
+            return this.uploadedSizes.length ? this.uploadedSizes.reduce((acc, cur) => acc += cur, 0) : 0;
         },
         uploadProgress() {
             return Math.min(this.fileSize !== 0 ? (this.uploadedSize / this.fileSize) : 0, 1);
         },
         isUploadingImage() {
-            return this.$root.send.file && this.$root.send.file.type.startsWith('image/');
+            return this.$root.send.files.length && this.$root.send.files[0].type.startsWith('image/');
         },
     },
     methods: {
-        handleSelectFile(file) {
-            if (!file.size) {
+        /**
+         * @param {File[]} files
+         */
+        handleSelectFiles(files) {
+            if (files.some(e => !e.size)) {
                 this.$toast('不能发送空文件');
-            } else if (file.size > this.$root.config.file.limit) {
+            } else if (files.some(e => e.size > this.$root.config.file.limit)) {
                 this.$toast(`文件大小超过限制（${prettyFileSize(this.$root.config.file.limit)}）`);
             } else {
-                this.$root.send.file = file;
+                this.$root.send.files.splice(0);
+                this.$root.send.files.push(...files);
                 if (this.isUploadingImage) {
                     URL.revokeObjectURL(this.imagePreview);
-                    this.imagePreview = URL.createObjectURL(file);
+                    this.imagePreview = URL.createObjectURL(files[0]);
                 }
             }
         },
         async send() {
             try {
                 const chunkSize = this.$root.config.file.chunk;
-                let file = this.$root.send.file;
-                let response = await this.$http.post('/upload', file.name, {headers: {'Content-Type': 'text/plain'}});
-                let uuid = response.data.result.uuid;
+                this.uploadedSizes.splice(0);
+                this.uploadedSizes.push(...Array(this.$root.send.files.length).fill(0));
+                await Promise.all(this.$root.send.files.map(async (file, i) => {
+                    let response = await this.$http.post('/upload', file.name, {headers: {'Content-Type': 'text/plain'}});
+                    let uuid = response.data.result.uuid;
 
-                let uploadedSize = 0;
-                this.uploadedSize = 0;
-                this.progress = true;
-                while (this.uploadedSize < file.size) {
-                    let chunk = file.slice(this.uploadedSize, this.uploadedSize + chunkSize);
-                    await this.$http.post(`/upload/chunk/${uuid}`, chunk, {
-                        headers: {'Content-Type': 'application/octet-stream'},
-                        onUploadProgress: e => {this.uploadedSize = uploadedSize + e.loaded},
+                    let uploadedSize = 0;
+                    this.progress = true;
+                    while (uploadedSize < file.size) {
+                        let chunk = file.slice(uploadedSize, uploadedSize + chunkSize);
+                        await this.$http.post(`/upload/chunk/${uuid}`, chunk, {
+                            headers: {'Content-Type': 'application/octet-stream'},
+                            onUploadProgress: e => this.$set(this.uploadedSizes, i, uploadedSize + e.loaded),
+                        });
+                        uploadedSize += chunkSize;
+                    }
+                    await this.$http.post(`/upload/finish/${uuid}`, null, {
+                        params: new URLSearchParams([['room', this.$root.room]]),
                     });
-                    uploadedSize += chunkSize;
-                }
-                await this.$http.post(`/upload/finish/${uuid}`, null, {
-                    params: new URLSearchParams([['room', this.$root.room]]),
-                });
+                }));
                 this.$toast('发送成功');
-                this.$root.send.file = null;
+                this.$root.send.files.splice(0);
             } catch (error) {
                 if (error.response && error.response.data.msg) {
                     this.$toast(`发送失败：${error.response.data.msg}`);
@@ -150,8 +165,11 @@ export default {
     },
     mounted() {
         document.onpaste = e => {
-            if (!(e && e.clipboardData && e.clipboardData.items[0] && e.clipboardData.items[0].kind === 'file')) return;
-            this.handleSelectFile(e.clipboardData.items[0].getAsFile());
+            if (!(e && e.clipboardData)) return;
+            console.log(e.clipboardData);
+            const items = Array.from(e.clipboardData.items);
+            if (!(items.length && items.every(e => e.type === 'file'))) return;
+            this.handleSelectFiles(items.map(e => e.getAsFile()));
         };
     },
 }

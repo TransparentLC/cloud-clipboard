@@ -42,7 +42,7 @@ new Vue({
             },
             send: {
                 text: '',
-                file: null,
+                files: [],
             },
             received: [],
             device: [],
