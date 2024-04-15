@@ -42,7 +42,7 @@
                             </template>
                             <span>{{expired ? '已过期' : '下载'}}</span>
                         </v-tooltip>
-                        <template v-if="meta.thumbnail">
+                        <template v-if="meta.thumbnail || isPreviewableVideo || isPreviewableAudio">
                             <v-progress-circular
                                 v-if="loadingPreview"
                                 indeterminate
@@ -51,10 +51,10 @@
                             <v-tooltip bottom>
                                 <template v-slot:activator="{ on }">
                                     <v-btn v-on="on" icon color="grey" @click="!expired && previewFile()">
-                                        <v-icon>{{mdiImageSearchOutline}}</v-icon>
+                                        <v-icon>{{(isPreviewableVideo || isPreviewableAudio) ? mdiMovieSearchOutline : mdiImageSearchOutline}}</v-icon>
                                     </v-btn>
                                 </template>
-                                <span>预览图片</span>
+                                <span>预览</span>
                             </v-tooltip>
                         </template>
                         <v-tooltip bottom>
@@ -67,10 +67,27 @@
                         </v-tooltip>
                     </div>
                 </div>
-                <v-expand-transition v-if="meta.thumbnail">
+                <v-expand-transition v-if="meta.thumbnail || isPreviewableVideo || isPreviewableAudio">
                     <div v-show="expand">
                         <v-divider class="my-2"></v-divider>
+                        <video
+                            v-if="isPreviewableVideo"
+                            :src="srcPreview"
+                            style="max-height:480px;max-width:100%;"
+                            class="rounded d-block mx-auto"
+                            controls
+                            preload="metadata"
+                        ></video>
+                        <audio
+                            v-else-if="isPreviewableAudio"
+                            :src="srcPreview"
+                            style="width:100%"
+                            class="rounded d-block mx-auto"
+                            controls
+                            preload="metadata"
+                        ></audio>
                         <img
+                            v-else
                             :src="srcPreview"
                             style="max-height:480px;max-width:100%;"
                             class="rounded d-block mx-auto"
@@ -89,6 +106,7 @@ import {
     mdiDownloadOff,
     mdiClose,
     mdiImageSearchOutline,
+    mdiMovieSearchOutline,
 } from '@mdi/js';
 
 export default {
@@ -112,11 +130,18 @@ export default {
             mdiDownloadOff,
             mdiClose,
             mdiImageSearchOutline,
+            mdiMovieSearchOutline,
         };
     },
     computed: {
         expired() {
             return this.$root.date.getTime() / 1000 > this.meta.expire;
+        },
+        isPreviewableVideo() {
+            return this.meta.name.match(/\.(mp4|webm|ogv)$/gi);
+        },
+        isPreviewableAudio() {
+            return this.meta.name.match(/\.(wav|ogg|opus|m4a|flac)$/gi);
         },
     },
     methods: {
@@ -128,23 +153,27 @@ export default {
                 this.expand = true;
                 return;
             }
-            this.loadingPreview = true,
-            this.loadedPreview = 0;
             this.expand = true;
-            this.$http.get(`/file/${this.meta.cache}`, {
-                responseType: 'arraybuffer',
-                onDownloadProgress: e => {this.loadedPreview = e.loaded},
-            }).then(response => {
-                this.srcPreview = URL.createObjectURL(new Blob([response.data]));
-            }).catch(error => {
-                if (error.response && error.response.data.msg) {
-                    this.$toast(`文件获取失败：${error.response.data.msg}`);
-                } else {
-                    this.$toast('文件获取失败');
-                }
-            }).finally(() => {
-                this.loadingPreview = false;
-            });
+            if (this.isPreviewableVideo || this.isPreviewableAudio) {
+                this.srcPreview = `/file/${this.meta.cache}`;
+            } else {
+                this.loadingPreview = true;
+                this.loadedPreview = 0;
+                this.$http.get(`/file/${this.meta.cache}`, {
+                    responseType: 'arraybuffer',
+                    onDownloadProgress: e => {this.loadedPreview = e.loaded},
+                }).then(response => {
+                    this.srcPreview = URL.createObjectURL(new Blob([response.data]));
+                }).catch(error => {
+                    if (error.response && error.response.data.msg) {
+                        this.$toast(`文件获取失败：${error.response.data.msg}`);
+                    } else {
+                        this.$toast('文件获取失败');
+                    }
+                }).finally(() => {
+                    this.loadingPreview = false;
+                });
+            }
         },
         deleteItem() {
             this.$http.delete(`/revoke/${this.meta.id}`, {

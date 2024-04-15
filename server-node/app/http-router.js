@@ -189,7 +189,7 @@ router.get('/file/:uuid([0-9a-f]{32})', async ctx => {
     ctx.attachment(file.name, {type: 'inline'});
     const fileSize = (await fs.promises.stat(file.path)).size;
     // https://github.com/xtx1130/koa-partial-content/blob/master/index.js
-    if (file.name.match(/\.(mp3|mp4|flv|webm|ogv|mpg|mpg|wav|ogg|opus|m4a)$/gi)) {
+    if (ctx.header.range && file.name.match(/\.(mp3|mp4|flv|webm|ogv|mpg|mpg|wav|ogg|opus|m4a|flac)$/gi)) {
         try {
             const m = /^bytes=(\d+)-(\d*)$/.exec(ctx.request.header.range || 'bytes=0-');
             if (!m) throw new Error;
