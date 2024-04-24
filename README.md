@@ -92,6 +92,12 @@ docker container run -d -p 9501:9501 chenqiyux/lan-clip
 
 访问 [clipboard](http://127.0.0.1:9501)
 
+### C 版服务端
+
+[@xfangfang](https://github.com/xfangfang) 使用 C 实现了一个服务端（目前只实现了部分功能）。如果你有在其他平台上运行的需求，可以尝试使用。
+
+https://github.com/xfangfang/cloud-clipboard/tree/c/server-c
+
 ### Swoole 版服务端
 
 > 已不再维护，以下内容仅作为存档。
