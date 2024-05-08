@@ -168,7 +168,7 @@ export default {
             if (!(e && e.clipboardData)) return;
             console.log(e.clipboardData);
             const items = Array.from(e.clipboardData.items);
-            if (!(items.length && items.every(e => e.type === 'file'))) return;
+            if (!(items.length && items.every(e => e.kind === 'file'))) return;
             this.handleSelectFiles(items.map(e => e.getAsFile()));
         };
     },
