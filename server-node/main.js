@@ -48,7 +48,7 @@ if (config.server.uds) {
     const udsPath = s[0];
     const udsPerm = s[1] || '666';
     if (fs.existsSync(udsPath)) {
-        fs.unlink(udsPath);
+        fs.unlinkSync(udsPath);
     }
     const server = createServer();
     server.listen(udsPath, () => fs.chmodSync(udsPath, udsPerm));
@@ -75,7 +75,7 @@ console.log([
     ...(config.server.uds ? [`Server listening on UNIX domain socket ${config.server.uds} ...`] : []),
     ...(config.server.port
         ? [
-            `Server listening on port ${config.server.port}`,
+            `Server listening on port ${config.server.port} ...`,
             'Available at:',
             ...(Array.isArray(config.server.host) && config.server.host.length
                 ? (
