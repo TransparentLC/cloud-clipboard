@@ -11,9 +11,9 @@ if (!process.argv[2] && !fs.existsSync(defaultConfigPath)) {
         server: {
             host: [],
             port: 9501,
+            uds: null,
             key: null,
             cert: null,
-            forceWss: false,
             history: 10,
             auth: false,
         },
@@ -32,7 +32,8 @@ if (!process.argv[2] && !fs.existsSync(defaultConfigPath)) {
  * @type {{
  *  server: {
  *      host: String | String[],
- *      port: Number,
+ *      port: [Number],
+ *      uds: [String],
  *      key: [String],
  *      cert: [String],
  *      forceWss: [Boolean],

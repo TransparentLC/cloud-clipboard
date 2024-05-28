@@ -157,12 +157,13 @@ php build-phar.php
 ```json
 {
     "server": {
-        // 监听的 IP 地址，省略或设为null则会监听所有网卡的IP地址
+        // 监听的 IP 地址，省略或设为 null 则会监听所有网卡的IP地址
         "host": [
             "127.0.0.1",
             "::1"
         ],
-        "port": 9501, // 端口号
+        "port": 9501, // 端口号，falsy 值表示不监听
+        "uds": "/var/run/cloud-clipboard.sock", // UNIX domain socket 路径，可以后接“:777”设定权限（默认777），falsy 值表示不监听
         "key": "localhost-key.pem", // HTTPS 私钥路径
         "cert": "localhost.pem", // HTTPS 证书路径
         "history": 10, // 消息历史记录的数量
