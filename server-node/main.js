@@ -46,7 +46,10 @@ const createServer = () => (config.server.cert && config.server.key)
 if (config.server.uds) {
     const s = config.server.uds.split(':');
     const udsPath = s[0];
-    const udsPerm = s[1] || '777';
+    const udsPerm = s[1] || '666';
+    if (fs.existsSync(udsPath)) {
+        fs.unlink(udsPath);
+    }
     const server = createServer();
     server.listen(udsPath, () => fs.chmodSync(udsPath, udsPerm));
     app.ws.listen({server});
