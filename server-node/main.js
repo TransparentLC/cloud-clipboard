@@ -21,6 +21,22 @@ if (!fs.existsSync(storagePath)) {
 process.env.VERSION = `node-${JSON.parse(fs.readFileSync(path.join(path.dirname(url.fileURLToPath(import.meta.url)), 'package.json'))).version}`;
 
 const app = koaWebsocket(new Koa);
+app.use(async (ctx, next) => {
+    const startTime = performance.now();
+
+    await next();
+
+    const statusCode = ctx.status;
+    const statusString = process.env.NO_COLOR
+        ? statusCode.toString()
+        : `\x1b[${[39, 94, 92, 96, 93, 91, 95][(statusCode / 100) | 0]}m${statusCode}\x1b[0m`;
+
+    const remoteAddress = ctx.request.header['x-real-ip']
+        ?? ctx.request.header['x-forwarded-for']?.split(',').pop()?.trim()
+        ?? ctx.req.socket.remoteAddress;
+
+    console.log(new Date().toISOString(), '-', remoteAddress, ctx.request.method, ctx.request.path, statusString, `${(performance.now() - startTime).toFixed(2)}ms`);
+})
 app.use(koaCompress());
 app.use(koaStatic(path.join(path.dirname(url.fileURLToPath(import.meta.url)), 'static')));
 app.use(httpRouter.routes());
@@ -100,4 +116,5 @@ console.log([
         ]
         : []
     ),
+    '',
 ].join('\n'));
