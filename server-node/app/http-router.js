@@ -42,7 +42,11 @@ router.get('/server', async ctx => {
 router.post(
     '/text',
     koaBody({
-        enableTypes: ['text'],
+        multipart: false,
+        urlencoded: false,
+        text: true,
+        json: false,
+        textLimit: 1048576,
     }),
     async ctx => {
         /** @type {String} */
