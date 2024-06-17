@@ -30,11 +30,13 @@ const saveHistory = () => fs.promises.writeFile(historyPath, JSON.stringify({
     receive: messageQueue.queue.filter(e => e.event === 'receive').filter(e => e.data.type !== 'file' || e.data.expire > Date.now() / 1e3).map(e => e.data),
 }));
 
-const router = new KoaRouter;
+const router = new KoaRouter({
+    prefix: config.server.prefix,
+});
 
 router.get('/server', async ctx => {
     ctx.body = {
-        'server': `ws://${ctx.request.host}/push`,
+        'server': `ws://${ctx.request.host}${config.server.prefix}/push`,
         'auth': !!config.server.auth,
     };
 });

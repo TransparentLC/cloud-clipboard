@@ -155,11 +155,11 @@ export default {
             }
             this.expand = true;
             if (this.isPreviewableVideo || this.isPreviewableAudio) {
-                this.srcPreview = `/file/${this.meta.cache}`;
+                this.srcPreview = `file/${this.meta.cache}`;
             } else {
                 this.loadingPreview = true;
                 this.loadedPreview = 0;
-                this.$http.get(`/file/${this.meta.cache}`, {
+                this.$http.get(`file/${this.meta.cache}`, {
                     responseType: 'arraybuffer',
                     onDownloadProgress: e => {this.loadedPreview = e.loaded},
                 }).then(response => {
@@ -176,11 +176,11 @@ export default {
             }
         },
         deleteItem() {
-            this.$http.delete(`/revoke/${this.meta.id}`, {
+            this.$http.delete(`revoke/${this.meta.id}`, {
                 params: new URLSearchParams([['room', this.$root.room]]),
             }).then(() => {
                 if (this.expired) return;
-                this.$http.delete(`/file/${this.meta.cache}`).then(() => {
+                this.$http.delete(`file/${this.meta.cache}`).then(() => {
                     this.$toast(`已删除文件 ${this.meta.name}`);
                 }).catch(error => {
                     if (error.response && error.response.data.msg) {

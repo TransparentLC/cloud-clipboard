@@ -27,7 +27,7 @@ export default {
     methods: {
         send() {
             this.$http.post(
-                '/text',
+                'text',
                 this.$root.send.text,
                 {
                     params: new URLSearchParams([['room', this.$root.room]]),

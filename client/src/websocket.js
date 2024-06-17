@@ -49,7 +49,7 @@ export default {
                 dismissable: false,
                 timeout: 0,
             });
-            this.$http.get('/server').then(response => {
+            this.$http.get('server').then(response => {
                 if (this.authCode) localStorage.setItem('auth', this.authCode);
                 this.room = this.room.trim();
                 localStorage.setItem('room', this.room);

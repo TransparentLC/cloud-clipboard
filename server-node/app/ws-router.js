@@ -14,7 +14,9 @@ import {
 const deviceConnected = new Map;
 const deviceHashSeed = Math.random() * 0xFFFFFFFF >>> 0;
 
-const router = new KoaRouter;
+const router = new KoaRouter({
+    prefix: config.server.prefix,
+});
 
 router.get('/push', async (/** @type {koaWebsocket.MiddlewareContext<Koa.DefaultState>} */ ctx) => {
     if (config.server.auth) {

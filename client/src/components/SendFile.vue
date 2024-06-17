@@ -133,20 +133,20 @@ export default {
                 this.uploadedSizes.splice(0);
                 this.uploadedSizes.push(...Array(this.$root.send.files.length).fill(0));
                 await Promise.all(this.$root.send.files.map(async (file, i) => {
-                    let response = await this.$http.post('/upload', file.name, {headers: {'Content-Type': 'text/plain'}});
+                    let response = await this.$http.post('upload', file.name, {headers: {'Content-Type': 'text/plain'}});
                     let uuid = response.data.result.uuid;
 
                     let uploadedSize = 0;
                     this.progress = true;
                     while (uploadedSize < file.size) {
                         let chunk = file.slice(uploadedSize, uploadedSize + chunkSize);
-                        await this.$http.post(`/upload/chunk/${uuid}`, chunk, {
+                        await this.$http.post(`upload/chunk/${uuid}`, chunk, {
                             headers: {'Content-Type': 'application/octet-stream'},
                             onUploadProgress: e => this.$set(this.uploadedSizes, i, uploadedSize + e.loaded),
                         });
                         uploadedSize += chunkSize;
                     }
-                    await this.$http.post(`/upload/finish/${uuid}`, null, {
+                    await this.$http.post(`upload/finish/${uuid}`, null, {
                         params: new URLSearchParams([['room', this.$root.room]]),
                     });
                 }));

@@ -82,7 +82,7 @@ export default {
             this.$toast('复制成功');
         },
         deleteItem() {
-            this.$http.delete(`/revoke/${this.meta.id}`, {
+            this.$http.delete(`revoke/${this.meta.id}`, {
                 params: new URLSearchParams([['room', this.$root.room]]),
             }).then(() => {
                 this.$toast('已删除文本消息');

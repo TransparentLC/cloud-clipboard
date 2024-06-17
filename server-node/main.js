@@ -6,6 +6,7 @@ import path from 'node:path';
 import url from 'node:url';
 import Koa from 'koa';
 import koaCompress from 'koa-compress';
+import koaMount from 'koa-mount';
 import koaStatic from 'koa-static';
 import koaWebsocket from 'koa-websocket';
 
@@ -38,7 +39,9 @@ app.use(async (ctx, next) => {
     console.log(new Date().toISOString(), '-', remoteAddress, ctx.request.method, ctx.request.path, statusString, `${(performance.now() - startTime).toFixed(2)}ms`);
 })
 app.use(koaCompress());
-app.use(koaStatic(path.join(path.dirname(url.fileURLToPath(import.meta.url)), 'static')));
+app.use(koaMount(config.server.prefix + '/', koaStatic(path.join(path.dirname(url.fileURLToPath(import.meta.url)), 'static'), {
+    maxage: 30 * 24 * 60 * 60 * 1000,
+})));
 app.use(httpRouter.routes());
 app.use(httpRouter.allowedMethods());
 app.ws.use(wsRouter.routes());
