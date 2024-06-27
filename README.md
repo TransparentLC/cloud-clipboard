@@ -89,7 +89,10 @@ docker container run -d -p 9501:9501 myclip
 > [!TIP]
 > Docker Hub 上的镜像是由他人打包的，仅为方便使用而在这里给出，版本可能会滞后于 repo 内的源代码。
 >
-> 如果你在使用时遇到了问题，请先确认这个问题在 repo 内的最新的源代码中是否仍然存在。
+> 如果你在使用时遇到了问题，请先确认这是本项目本身（而不是某个 Docker 镜像）的问题。
+
+> [!WARNING]
+> [csmayi/lan-clip](https://hub.docker.com/r/csmayi/lan-clip) 打包的版本无法使用反向代理，在我[修复](https://github.com/TransparentLC/cloud-clipboard/commit/39ba010f0ac721337842be4668fce693f4587a95)之后并没有同步更新，目前不建议使用。
 
 ```bash
 docker pull chenqiyux/lan-clip:latest
