@@ -94,12 +94,17 @@ docker container run -d -p 9501:9501 myclip
 > [!WARNING]
 > [csmayi/lan-clip](https://hub.docker.com/r/csmayi/lan-clip) 打包的版本无法使用反向代理，在我[修复](https://github.com/TransparentLC/cloud-clipboard/commit/39ba010f0ac721337842be4668fce693f4587a95)之后并没有同步更新，目前不建议使用。
 
-```bash
-docker pull chenqiyux/lan-clip:latest
-docker container run -d -p 9501:9501 chenqiyux/lan-clip
+```sh
+docker pull ***:latest
+docker container run -d -p 9501:9501 ***
 ```
 
-访问 [clipboard](http://127.0.0.1:9501)
+将 `***` 替换为镜像名称：
+
+* [chenqiyux/lan-clip](https://hub.docker.com/r/chenqiyux/lan-clip) amd64
+* [shuaigekda123/myclip](https://hub.docker.com/r/shuaigekda123/myclip) amd64/arm64
+
+然后访问 http://127.0.0.1:9501
 
 ### C 版服务端
 

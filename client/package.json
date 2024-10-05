@@ -7,8 +7,8 @@
     "build": "cross-env NODE_OPTIONS=--openssl-legacy-provider vue-cli-service build --modern && node after-build.js"
   },
   "dependencies": {
-    "axios": "^1.7.2",
-    "core-js": "^3.37.1",
+    "axios": "^1.7.7",
+    "core-js": "^3.38.1",
     "vue": "^2.7.16",
     "vue-axios": "^2.1.5",
     "vue-linkify": "^1.0.1",
@@ -23,8 +23,8 @@
     "@vue/cli-service": "^4.5.19",
     "cross-env": "^7.0.3",
     "fs-extra": "^11.2.0",
-    "glob": "^10.4.2",
-    "sass": "~1.77.6",
+    "glob": "^11.0.0",
+    "sass": "~1.79.4",
     "sass-loader": "^10.5.2",
     "typeface-roboto": "^1.1.13",
     "vue-cli-plugin-vuetify": "^2.5.8",
