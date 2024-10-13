@@ -1,25 +1,20 @@
 import config from './config.js';
 
-const queue = [];
-let counter = 0;
-
-const messageQueue = {
-    queue,
+export default {
+    counter: 0,
+    queue: [],
     /**
      * @param {*} item
      */
-    enqueue: item => {
-        queue.push(item);
-        counter++;
-        while (queue.length > config.server.history) queue.shift();
+    enqueue(item) {
+        this.queue.push(item);
+        this.counter++;
+        while (this.queue.length > config.server.history) this.queue.shift();
     },
     /**
      * @return {*}
      */
-    dequeue: () => queue.shift(),
-    get counter() {
-        return counter;
+    dequeue() {
+        this.queue.shift();
     },
 };
-
-export default messageQueue;

@@ -278,8 +278,8 @@ if (fs.existsSync(historyPath)) {
         messageQueue.enqueue({
             event: 'receive',
             data: {
-                id: messageQueue.counter,
                 ...e,
+                id: messageQueue.counter,
             },
         });
     });
