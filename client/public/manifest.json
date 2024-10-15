@@ -1,0 +1,19 @@
+{
+    "name": "云剪贴板",
+    "description": "在局域网内互传纯文本和文件的云剪贴板，即开即用的网页版，无须安装 APP",
+    "short_name": "云剪贴板",
+    "start_url": "./",
+    "scope": ".",
+    "display": "standalone",
+    "icons": [
+        {
+            "sizes": "any",
+            "type": "image/svg+xml",
+            "src": "favicon.svg"
+        },
+        {
+            "sizes": "32x32",
+            "src": "favicon.ico"
+        }
+    ]
+}
