@@ -27,6 +27,11 @@ router.get('/push', async (/** @type {koaWebsocket.MiddlewareContext<Koa.Default
                 data: {},
             }), resolve));
             ctx.websocket.close();
+            const remoteAddress = ctx.request.header['x-real-ip']
+                ?? ctx.request.header['x-forwarded-for']?.split(',').pop()?.trim()
+                ?? ctx.req.socket.remoteAddress;
+
+            console.log(new Date().toISOString(), '-', remoteAddress, "auth failed: ", ctx.query.auth);
             return;
         }
     }
