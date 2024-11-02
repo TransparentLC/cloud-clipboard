@@ -264,7 +264,8 @@ if (fs.existsSync(historyPath)) {
     const history = JSON.parse(fs.readFileSync(historyPath, {encoding: 'utf-8'}));
     const currentTime = Math.round(Date.now() / 1000);
     history.file.forEach(e => {
-        if (!fs.existsSync(path.join(storageFolder, e.uuid)) || e.expireTime < currentTime) return;
+        if (!fs.existsSync(path.join(storageFolder, e.uuid))) return;
+        if (e.expireTime < currentTime) return fs.rmSync(path.join(storageFolder, e.uuid));
         const f = new UploadedFile(e.name);
         f.uuid = e.uuid;
         f.path = path.join(storageFolder, f.uuid);
