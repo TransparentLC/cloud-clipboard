@@ -34,7 +34,7 @@
                                     v-on="on"
                                     icon
                                     color="grey"
-                                    :href="expired ? null : `/file/${meta.cache}`"
+                                    :href="expired ? null : `file/${meta.cache}`"
                                     :download="expired ? null : meta.name"
                                 >
                                     <v-icon>{{expired ? mdiDownloadOff : mdiDownload}}</v-icon>
