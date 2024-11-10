@@ -105,7 +105,7 @@
                         <v-icon>{{mdiInformation}}</v-icon>
                     </v-list-item-action>
                     <v-list-item-content>
-                        <v-list-item-title>关于</v-list-item-title>
+                        <v-list-item-title>关于 {{ $t('greeting') }}</v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
             </v-list>

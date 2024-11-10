@@ -7,6 +7,10 @@ import axios from 'axios';
 import VueAxios from 'vue-axios';
 import linkify from 'vue-linkify';
 
+import VueI18n from 'vue-i18n';
+import zhCN from './locales/zh-CN.json';
+import en from './locales/en.json';
+
 import {
     prettyFileSize,
     percentage,
@@ -17,14 +21,28 @@ import 'typeface-roboto/index.css';
 
 Vue.config.productionTip = false;
 
+Vue.use(VueI18n);
 Vue.use(VueAxios, axios);
 Vue.directive('linkified', linkify);
 Vue.filter('prettyFileSize', prettyFileSize);
 Vue.filter('percentage', percentage);
 Vue.filter('formatTimestamp', formatTimestamp);
 
+const messages = {
+    'zh-CN': zhCN,
+    'en': en
+};
+
+const i18n = new VueI18n({
+    locale: 'zh-CN', // set default locale
+    fallbackLocale: 'en', // set fallback locale
+    messages // set locale messages
+});
+
+
 new Vue({
     mixins: [websocket],
+    i18n,
     data() {
         return {
             date: new Date,
@@ -61,6 +79,7 @@ new Vue({
             // this.$root.language = newval;
             localStorage.setItem('language', newval);
             console.log('save_language:', newval)
+            this.$i18n.locale = newval;
         },
     },
     computed: {
