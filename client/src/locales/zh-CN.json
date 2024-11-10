@@ -40,5 +40,10 @@
     "mobileDevice": "移动端设备",
     "otherTypeDevice": "其他类型设备",
     "aboutDescription1": "在局域网内互传纯文本和文件的云剪贴板",
-    "aboutDescription2": "即开即用的网页版，无须安装 APP"
+    "aboutDescription2": "即开即用的网页版，无须安装 APP",
+    "send": "发送",
+    "sendSuccess": "发送成功",
+    "sendFailed": "发送失败：{msg}",
+    "sendFailedNoMsg": "发送失败",
+    "enterTextToSend": "请输入需要发送的文本"
 }

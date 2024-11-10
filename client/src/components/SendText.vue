@@ -1,13 +1,13 @@
 <template>
     <div>
-        <div class="headline text--primary mb-4">发送文本</div>
+        <div class="headline text--primary mb-4">{{ $t('sendText') }}</div>
         <v-textarea
             no-resize
             outlined
             dense
             rows="6"
             :counter="$root.config.text.limit"
-            placeholder="请输入需要发送的文本"
+            :placeholder="$t('enterTextToSend')"
             v-model="$root.send.text"
         ></v-textarea>
         <div class="text-right">
@@ -16,7 +16,7 @@
                 :block="$vuetify.breakpoint.smAndDown"
                 :disabled="!$root.send.text || !$root.websocket || $root.send.text.length > $root.config.text.limit"
                 @click="send"
-            >发送</v-btn>
+            >{{ $t('send') }}</v-btn>
         </div>
     </div>
 </template>
@@ -36,13 +36,13 @@ export default {
                     },
                 },
             ).then(response => {
-                this.$toast('发送成功');
+                this.$toast(this.$t('sendSuccess'));
                 this.$root.send.text = '';
             }).catch(error => {
                 if (error.response && error.response.data.msg) {
-                    this.$toast(`发送失败：${error.response.data.msg}`);
+                    this.$toast(this.$t('sendFailed', { msg: error.response.data.msg }));
                 } else {
-                    this.$toast('发送失败');
+                    this.$toast(this.$t('sendFailedNoMsg'));
                 }
             });
         },

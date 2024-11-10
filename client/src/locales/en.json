@@ -40,5 +40,10 @@
     "mobileDevice": "Mobile Device",
     "otherTypeDevice": "Other Type Device",
     "aboutDescription1": "Cloud clipboard for sharing plain text and files within a local network",
-    "aboutDescription2": "Instant web version, no app installation required"
+    "aboutDescription2": "Instant web version, no app installation required",
+    "send": "Send",
+    "sendSuccess": "Send success",
+    "sendFailed": "Send failed: {msg}",
+    "sendFailedNoMsg": "Send failed",
+    "enterTextToSend": "Enter text to send"
 }
