@@ -56,6 +56,14 @@
     "delete": "Delete",
     "copySuccess": "Copy success",
     "textMessageDeleted": "Text message deleted",
-    "messageDeleteFailed": "Message delete failed: {msg}",
-    "messageDeleteFailedNoMsg": "Message delete failed"
+    "messageDeleteFailed": "Message delete failed",
+    "messageDeleteFailedNoMsg": "Message delete failed",
+    "expired": "Expired",
+    "AlreadyExpired": "Expired at {time}",
+    "willExpireAt":   "Will expire {time}",
+    "download": "Download",
+    "preview": "Preview",
+    "fileFetchFailed": "File fetch failed",
+    "fileDeleted": "File deleted",
+    "fileDeleteFailed": "File delete failed"
 }

@@ -56,6 +56,14 @@
     "delete": "删除",
     "copySuccess": "复制成功",
     "textMessageDeleted": "已删除文本消息",
-    "messageDeleteFailed": "消息删除失败：{msg}",
-    "messageDeleteFailedNoMsg": "消息删除失败"
+    "messageDeleteFailed": "消息删除失败",
+    "messageDeleteFailedNoMsg": "消息删除失败",
+    "expired": "已过期",
+    "AlreadyExpired": "已于 {time} 过期",
+    "willExpireAt": "将于 {time} 过期",
+    "download": "下载",
+    "preview": "预览",
+    "fileFetchFailed": "文件获取失败",
+    "fileDeleted": "已删除文件",
+    "fileDeleteFailed": "文件删除失败"
 }
