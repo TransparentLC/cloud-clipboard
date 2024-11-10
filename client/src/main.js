@@ -29,6 +29,7 @@ new Vue({
         return {
             date: new Date,
             dark: null,
+            language: null,
             config: {
                 version: '',
                 text: {
@@ -55,6 +56,11 @@ new Vue({
         dark(newval) {
             this.$vuetify.theme.dark = this.useDark;
             localStorage.setItem('darkmode', newval);
+        },
+        language(newval) {
+            // this.$root.language = newval;
+            localStorage.setItem('language', newval);
+            console.log('save_language:', newval)
         },
     },
     computed: {
@@ -84,5 +90,10 @@ new Vue({
             this.date = new Date;
             this.$vuetify.theme.dark = this.useDark;
         }, 1000);
+
+        this.language = localStorage.getItem('language') || 'zh-CN';
+        this.$root.language = this.language;
+        console.log('load_language:', this.language)
+        // this.$vuetify.lang.current = this.language;
     },
 }).$mount('#app');

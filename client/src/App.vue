@@ -66,6 +66,40 @@
                         </v-list-item-group>
                     </v-list>
                 </v-menu>
+
+                <v-menu
+                    offset-x
+                    transition="slide-x-transition"
+                    open-on-click
+                    open-on-hover
+                    :close-on-content-click="false"
+                >
+                    <template v-slot:activator="{ on }">
+                        <v-list-item link v-on="on">
+                            <v-list-item-action>
+                                <v-icon>{{ mdiTranslate }}</v-icon>
+                            </v-list-item-action>
+                            <v-list-item-content>
+                                <v-list-item-title>语言</v-list-item-title>
+                            </v-list-item-content>
+                        </v-list-item>
+                    </template>
+                    <v-list two-line>
+                        <v-list-item-group v-model="$root.language" color="primary" mandatory>
+                            <v-list-item link value="zh-CN">
+                                <v-list-item-content>
+                                    <v-list-item-title>简体中文</v-list-item-title>
+                                </v-list-item-content>
+                            </v-list-item>
+                            <v-list-item link value="en">
+                                <v-list-item-content>
+                                    <v-list-item-title>English</v-list-item-title>
+                                </v-list-item-content>
+                            </v-list-item>
+                        </v-list-item-group>
+                    </v-list>
+                </v-menu>
+
                 <v-list-item link href="#/about">
                     <v-list-item-action>
                         <v-icon>{{mdiInformation}}</v-icon>
@@ -185,6 +219,7 @@ import {
     mdiLanConnect,
     mdiLanDisconnect,
     mdiLanPending,
+    mdiTranslate,
     mdiBrightness4,
     mdiBulletinBoard,
     mdiDiceMultiple,
@@ -200,6 +235,7 @@ export default {
             mdiLanConnect,
             mdiLanDisconnect,
             mdiLanPending,
+            mdiTranslate,
             mdiBrightness4,
             mdiBulletinBoard,
             mdiDiceMultiple,
