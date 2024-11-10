@@ -38,5 +38,7 @@
     "notConnectedToServer": "Not connected to the server",
     "desktopDevice": "Desktop Device",
     "mobileDevice": "Mobile Device",
-    "otherTypeDevice": "Other Type Device"
+    "otherTypeDevice": "Other Type Device",
+    "aboutDescription1": "Cloud clipboard for sharing plain text and files within a local network",
+    "aboutDescription2": "Instant web version, no app installation required"
 }

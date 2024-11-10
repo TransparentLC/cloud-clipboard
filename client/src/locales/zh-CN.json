@@ -38,5 +38,7 @@
     "notConnectedToServer": "未连接到服务器",
     "desktopDevice": "桌面端设备",
     "mobileDevice": "移动端设备",
-    "otherTypeDevice": "其他类型设备"
+    "otherTypeDevice": "其他类型设备",
+    "aboutDescription1": "在局域网内互传纯文本和文件的云剪贴板",
+    "aboutDescription2": "即开即用的网页版，无须安装 APP"
 }
