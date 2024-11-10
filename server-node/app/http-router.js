@@ -150,7 +150,7 @@ router.post('/upload/finish/:uuid([0-9a-f]{32})', async ctx => {
         const message = {
             event: 'receive',
             data: {
-                id: messageQueue.counter,
+                id: -1, // 在生成缩略图之后进队列之前再设定
                 type: 'file',
                 room: ctx.query.room,
                 name: file.name,
@@ -175,6 +175,7 @@ router.post('/upload/finish/:uuid([0-9a-f]{32})', async ctx => {
                 optimizeScans: true,
             }).toBuffer()).toString('base64');
         } catch {}
+        message.data.id = messageQueue.counter;
         messageQueue.enqueue(message);
 
         /** @type {koaWebsocket.App<Koa.DefaultState, Koa.DefaultContext>} */
