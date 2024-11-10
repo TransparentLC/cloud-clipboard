@@ -9,7 +9,7 @@
     "keepEnabled": "Keep Enabled",
     "keepDisabled": "Keep Disabled",
     "language": "Language",
-    "switchByNavigator": "Switch by Browser Settings",
+    "switchByNavigator": "Use Browser Language",
     "useNavigatorLanguage": "Use navigator.language detection",
     "simplifiedChinese": "Simplified Chinese",
     "english": "English",

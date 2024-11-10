@@ -79,7 +79,27 @@ new Vue({
             // this.$root.language = newval;
             localStorage.setItem('language', newval);
             console.log('save_language:', newval)
-            this.$i18n.locale = newval;
+            if (newval === 'browser') {
+                // seems no change event
+                const browserLanguage = navigator.language;
+                const availableLanguages = Object.keys(messages);
+                //1. find by navigator.language
+                const matchedLanguage = availableLanguages.find(lang => lang.startsWith(browserLanguage.split('-')[0]));
+                if (!matchedLanguage){
+                    //2. find by navigator.languages
+                    navigator.languages.forEach(lang => {
+                        const matchedLanguage = availableLanguages.find(availableLang => availableLang.startsWith(lang.split('-')[0]));
+                        if (matchedLanguage) {
+                            this.$i18n.locale = matchedLanguage;
+                            return;
+                        }
+                    });
+                }
+                this.$i18n.locale = matchedLanguage || 'en';
+            } else {
+                this.$i18n.locale = newval;
+            }
+            // this.$i18n.locale = newval;
         },
     },
     computed: {
@@ -110,7 +130,7 @@ new Vue({
             this.$vuetify.theme.dark = this.useDark;
         }, 1000);
 
-        this.language = localStorage.getItem('language') || 'zh-CN';
+        this.language = localStorage.getItem('language') || 'browser';
         this.$root.language = this.language;
         console.log('load_language:', this.language)
         // this.$vuetify.lang.current = this.language;
