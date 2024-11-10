@@ -50,5 +50,12 @@
     "selectFilesToSend": "选择要发送的文件",
     "fileSizeLimit": "文件大小限制",
     "cannotSendEmptyFile": "不能发送空文件",
-    "fileSizeExceedsLimit": "文件大小超过限制"
+    "fileSizeExceedsLimit": "文件大小超过限制",
+    "textMessage": "文本消息",
+    "copy": "复制",
+    "delete": "删除",
+    "copySuccess": "复制成功",
+    "textMessageDeleted": "已删除文本消息",
+    "messageDeleteFailed": "消息删除失败：{msg}",
+    "messageDeleteFailedNoMsg": "消息删除失败"
 }

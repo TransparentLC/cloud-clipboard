@@ -50,5 +50,12 @@
     "selectFilesToSend": "Select files to send",
     "fileSizeLimit": "File size limit",
     "cannotSendEmptyFile": "Cannot send empty file",
-    "fileSizeExceedsLimit": "File size exceeds limit"
+    "fileSizeExceedsLimit": "File size exceeds limit",
+    "textMessage": "Text Message",
+    "copy": "Copy",
+    "delete": "Delete",
+    "copySuccess": "Copy success",
+    "textMessageDeleted": "Text message deleted",
+    "messageDeleteFailed": "Message delete failed: {msg}",
+    "messageDeleteFailedNoMsg": "Message delete failed"
 }
