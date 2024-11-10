@@ -88,12 +88,12 @@
                         <v-list-item-group v-model="$root.language" color="primary" mandatory>
                             <v-list-item link value="zh-CN">
                                 <v-list-item-content>
-                                    <v-list-item-title>{{ $t('simplifiedChinese') }}</v-list-item-title>
+                                    <v-list-item-title>简体中文</v-list-item-title>
                                 </v-list-item-content>
                             </v-list-item>
                             <v-list-item link value="en">
                                 <v-list-item-content>
-                                    <v-list-item-title>{{ $t('english') }}</v-list-item-title>
+                                    <v-list-item-title>English</v-list-item-title>
                                 </v-list-item-content>
                             </v-list-item>
                         </v-list-item-group>
