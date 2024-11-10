@@ -171,6 +171,12 @@
     </v-app>
 </template>
 
+<style scoped>
+.v-navigation-drawer >>> .v-navigation-drawer__border {
+    pointer-events: none;
+}
+</style>
+
 <script>
 import {
     mdiContentPaste,
