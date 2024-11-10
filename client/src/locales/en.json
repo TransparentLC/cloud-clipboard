@@ -26,5 +26,9 @@
     "enterRoomName": "Enter any name to create a new room, or enter an existing room. Leaving it blank means using the default global room.",
     "roomVisibility": "The content sent in the room is only visible within the room, and the number of saved history records will still be subject to the global settings.",
     "roomName": "Room Name",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "endOfList": "End of list",
+    "emptyList": "This list is empty",
+    "sendText": "Send Text",
+    "sendFile": "Send File"
 }

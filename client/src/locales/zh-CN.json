@@ -26,5 +26,9 @@
     "enterRoomName": "输入任意名称创建新房间，或进入已有的房间。留空则表示使用默认的全局房间。",
     "roomVisibility": "在房间中发送的内容仅限房间内可见，保存的历史记录数量仍然会受到全局设定的限制。",
     "roomName": "房间名称",
-    "cancel": "取消"
+    "cancel": "取消",
+    "endOfList": "已经到底了哦～",
+    "emptyList": "这里空空的",
+    "sendText": "发送文本",
+    "sendFile": "发送文件"
 }
