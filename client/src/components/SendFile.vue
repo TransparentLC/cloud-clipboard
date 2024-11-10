@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="headline text--primary mb-4">发送文件</div>
+        <div class="headline text--primary mb-4">{{ $t('sendFile') }}</div>
         <v-card
             outlined
             class="pa-3 mb-6 d-flex flex-row align-center"
@@ -50,10 +50,10 @@
                     class="d-block mx-auto"
                     @click="$refs.selectFile.click()"
                 >
-                    <div title="支持拖拽和 Ctrl+V 粘贴截图">
-                        选择要发送的文件<span class="d-none d-xl-inline">（支持拖拽和 Ctrl+V 粘贴截图）</span>
+                    <div :title="$t('supportDragAndPaste')">
+                        {{ $t('selectFilesToSend') }}<span class="d-none d-xl-inline">（{{ $t('supportDragAndPaste') }}）</span>
                         <br>
-                        <small class="text--secondary">文件大小限制：{{$root.config.file.limit | prettyFileSize}}</small>
+                        <small class="text--secondary">{{ $t('fileSizeLimit') }}: {{ $root.config.file.limit | prettyFileSize }}</small>
                     </div>
                 </v-btn>
                 <input
@@ -71,7 +71,7 @@
                 :block="$vuetify.breakpoint.smAndDown"
                 :disabled="!$root.send.files.length || !$root.websocket || progress"
                 @click="send"
-            >发送</v-btn>
+            >{{ $t('send') }}</v-btn>
         </div>
     </div>
 </template>
@@ -115,9 +115,9 @@ export default {
          */
         handleSelectFiles(files) {
             if (files.some(e => !e.size)) {
-                this.$toast('不能发送空文件');
+                this.$toast(this.$t('cannotSendEmptyFile'));
             } else if (files.some(e => e.size > this.$root.config.file.limit)) {
-                this.$toast(`文件大小超过限制（${prettyFileSize(this.$root.config.file.limit)}）`);
+                this.$toast(`${this.$t('fileSizeExceedsLimit')}（${prettyFileSize(this.$root.config.file.limit)}）`);
             } else {
                 this.$root.send.files.splice(0);
                 this.$root.send.files.push(...files);
@@ -150,13 +150,13 @@ export default {
                         params: new URLSearchParams([['room', this.$root.room]]),
                     });
                 }));
-                this.$toast('发送成功');
+                this.$toast(this.$t('sendSuccess'));
                 this.$root.send.files.splice(0);
             } catch (error) {
                 if (error.response && error.response.data.msg) {
-                    this.$toast(`发送失败：${error.response.data.msg}`);
+                    this.$toast(`${this.$t('sendFailed')}: ${error.response.data.msg}`);
                 } else {
-                    this.$toast('发送失败');
+                    this.$toast(this.$t('sendFailedNoMsg'));
                 }
             } finally {
                 this.progress = false;

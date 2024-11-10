@@ -45,5 +45,10 @@
     "sendSuccess": "发送成功",
     "sendFailed": "发送失败：{msg}",
     "sendFailedNoMsg": "发送失败",
-    "enterTextToSend": "请输入需要发送的文本"
+    "enterTextToSend": "请输入需要发送的文本",
+    "supportDragAndPaste": "支持拖拽和 Ctrl+V 粘贴截图",
+    "selectFilesToSend": "选择要发送的文件",
+    "fileSizeLimit": "文件大小限制",
+    "cannotSendEmptyFile": "不能发送空文件",
+    "fileSizeExceedsLimit": "文件大小超过限制"
 }
