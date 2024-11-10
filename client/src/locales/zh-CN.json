@@ -30,5 +30,13 @@
     "endOfList": "已经到底了哦～",
     "emptyList": "这里空空的",
     "sendText": "发送文本",
-    "sendFile": "发送文件"
+    "sendFile": "发送文件",
+    "connectedDeviceList": "已连接的设备列表",
+    "connectedDevicesCount": "已有 {count} 个设备连接",
+    "desktopDevicesCount": "桌面端设备 {count} 个",
+    "mobileDevicesCount": "移动端设备 {count} 个",
+    "notConnectedToServer": "未连接到服务器",
+    "desktopDevice": "桌面端设备",
+    "mobileDevice": "移动端设备",
+    "otherTypeDevice": "其他类型设备"
 }

@@ -30,5 +30,13 @@
     "endOfList": "End of list",
     "emptyList": "This list is empty",
     "sendText": "Send Text",
-    "sendFile": "Send File"
+    "sendFile": "Send File",
+    "connectedDeviceList": "Connected Device List",
+    "connectedDevicesCount": "There are {count} devices connected",
+    "desktopDevicesCount": "{count} desktop devices",
+    "mobileDevicesCount": "{count} mobile devices",
+    "notConnectedToServer": "Not connected to the server",
+    "desktopDevice": "Desktop Device",
+    "mobileDevice": "Mobile Device",
+    "otherTypeDevice": "Other Type Device"
 }
