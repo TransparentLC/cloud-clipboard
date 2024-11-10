@@ -86,6 +86,12 @@
                     </template>
                     <v-list two-line>
                         <v-list-item-group v-model="$root.language" color="primary" mandatory>
+                            <v-list-item link value="browser">
+                                <v-list-item-content>
+                                    <v-list-item-title>{{ $t('switchByNavigator') }}</v-list-item-title>
+                                    <v-list-item-subtitle>{{ $t('useNavigatorLanguage') }}</v-list-item-subtitle>
+                                </v-list-item-content>
+                            </v-list-item>
                             <v-list-item link value="zh-CN">
                                 <v-list-item-content>
                                     <v-list-item-title>简体中文</v-list-item-title>

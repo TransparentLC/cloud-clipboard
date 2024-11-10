@@ -9,6 +9,8 @@
     "keepEnabled": "保持启用",
     "keepDisabled": "保持禁用",
     "language": "语言",
+    "switchByNavigator": "根据浏览器设置切换",
+    "useNavigatorLanguage": "使用 navigator.language 检测",
     "simplifiedChinese": "简体中文",
     "english": "English",
     "about": "关于",
