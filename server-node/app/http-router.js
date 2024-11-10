@@ -170,9 +170,9 @@ router.post('/upload/finish/:uuid([0-9a-f]{32})', async ctx => {
                     withoutEnlargement: true,
                 });
             }
-            message.data.thumbnail = 'data:image/jpeg;base64,' + (await img.toFormat('jpg', {
+            message.data.thumbnail = 'data:image/webp;base64,' + (await img.toFormat('webp', {
                 quality: 70,
-                optimizeScans: true,
+                smartSubsample: true,
             }).toBuffer()).toString('base64');
         } catch {}
         message.data.id = messageQueue.counter;
