@@ -48,7 +48,7 @@
                     color="primary"
                     large
                     class="d-block mx-auto"
-                    @click="$refs.selectFile.click()"
+                    @click="focus"
                 >
                     <div title="支持拖拽和 Ctrl+V 粘贴截图">
                         选择要发送的文件<span class="d-none d-xl-inline">（支持拖拽和 Ctrl+V 粘贴截图）</span>
@@ -110,6 +110,9 @@ export default {
         },
     },
     methods: {
+        focus() {
+            this.$refs.selectFile.click();
+        },
         /**
          * @param {File[]} files
          */

@@ -2,6 +2,7 @@
     <div>
         <div class="headline text--primary mb-4">发送文本</div>
         <v-textarea
+            ref="textarea"
             no-resize
             outlined
             dense
@@ -25,6 +26,9 @@
 export default {
     name: 'send-text',
     methods: {
+        focus() {
+            this.$refs.textarea.focus();
+        },
         send() {
             this.$http.post(
                 'text',
