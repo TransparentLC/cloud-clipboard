@@ -34,10 +34,10 @@
                     <v-icon>{{mdiPlus}}</v-icon>
                 </v-btn>
             </template>
-            <v-btn fab dark small color="primary" @click="dialog = true; mode = 'file'; $nextTick(() => $refs.dialogFile.focus())">
+            <v-btn fab dark small color="primary" @click="dialog = true; mode = 'file'; setTimeout(() => $refs.dialogFile.focus(), 300)">
                 <v-icon>{{mdiFileDocumentOutline}}</v-icon>
             </v-btn>
-            <v-btn fab dark small color="primary" @click="dialog = true; mode = 'text'; $nextTick(() => $refs.dialogText.focus())">
+            <v-btn fab dark small color="primary" @click="dialog = true; mode = 'text'; setTimeout(() => $refs.dialogText.focus(), 300)">
                 <v-icon>{{mdiText}}</v-icon>
             </v-btn>
         </v-speed-dial>
@@ -101,6 +101,9 @@ export default {
     methods: {
         closeDialog() {
             this.dialog = false;
+        },
+        setTimeout(f, t) {
+            return setTimeout(f, t);
         },
     },
     watch: {
