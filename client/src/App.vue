@@ -11,7 +11,7 @@
                         <v-icon>{{mdiContentPaste}}</v-icon>
                     </v-list-item-action>
                     <v-list-item-content>
-                        <v-list-item-title>剪贴板</v-list-item-title>
+                        <v-list-item-title>{{ $t('clipboard') }}</v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
                 <v-list-item link href="#/device">
@@ -19,7 +19,7 @@
                         <v-icon>{{mdiDevices}}</v-icon>
                     </v-list-item-action>
                     <v-list-item-content>
-                        <v-list-item-title>设备列表</v-list-item-title>
+                        <v-list-item-title>{{ $t('deviceList') }}</v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
                 <v-menu
@@ -35,7 +35,7 @@
                                 <v-icon>{{mdiBrightness4}}</v-icon>
                             </v-list-item-action>
                             <v-list-item-content>
-                                <v-list-item-title>深色模式</v-list-item-title>
+                                <v-list-item-title>{{ $t('darkMode') }}</v-list-item-title>
                             </v-list-item-content>
                         </v-list-item>
                     </template>
@@ -43,35 +43,75 @@
                         <v-list-item-group v-model="$root.dark" color="primary" mandatory>
                             <v-list-item link value="time">
                                 <v-list-item-content>
-                                    <v-list-item-title>根据时间切换</v-list-item-title>
-                                    <v-list-item-subtitle>在 19:00 到次日 7:00 期间启用</v-list-item-subtitle>
+                                    <v-list-item-title>{{ $t('switchByTime') }}</v-list-item-title>
+                                    <v-list-item-subtitle>{{ $t('timeRange') }}</v-list-item-subtitle>
                                 </v-list-item-content>
                             </v-list-item>
                             <v-list-item link value="prefer">
                                 <v-list-item-content>
-                                    <v-list-item-title>根据系统设置切换</v-list-item-title>
-                                    <v-list-item-subtitle>使用 <code>prefers-color-scheme</code> 检测</v-list-item-subtitle>
+                                    <v-list-item-title>{{ $t('switchBySystem') }}</v-list-item-title>
+                                    <v-list-item-subtitle>{{ $t('usePrefersColorScheme') }}</v-list-item-subtitle>
                                 </v-list-item-content>
                             </v-list-item>
                             <v-list-item link value="enable">
                                 <v-list-item-content>
-                                    <v-list-item-title>保持启用</v-list-item-title>
+                                    <v-list-item-title>{{ $t('keepEnabled') }}</v-list-item-title>
                                 </v-list-item-content>
                             </v-list-item>
                             <v-list-item link value="disable">
                                 <v-list-item-content>
-                                    <v-list-item-title>保持禁用</v-list-item-title>
+                                    <v-list-item-title>{{ $t('keepDisabled') }}</v-list-item-title>
                                 </v-list-item-content>
                             </v-list-item>
                         </v-list-item-group>
                     </v-list>
                 </v-menu>
+
+                <v-menu
+                    offset-x
+                    transition="slide-x-transition"
+                    open-on-click
+                    open-on-hover
+                    :close-on-content-click="false"
+                >
+                    <template v-slot:activator="{ on }">
+                        <v-list-item link v-on="on">
+                            <v-list-item-action>
+                                <v-icon>{{ mdiTranslate }}</v-icon>
+                            </v-list-item-action>
+                            <v-list-item-content>
+                                <v-list-item-title>{{ $t('language') }}</v-list-item-title>
+                            </v-list-item-content>
+                        </v-list-item>
+                    </template>
+                    <v-list two-line>
+                        <v-list-item-group v-model="$root.language" color="primary" mandatory>
+                            <v-list-item link value="browser">
+                                <v-list-item-content>
+                                    <v-list-item-title>{{ $t('switchByNavigator') }}</v-list-item-title>
+                                    <v-list-item-subtitle>{{ $t('useNavigatorLanguage') }}</v-list-item-subtitle>
+                                </v-list-item-content>
+                            </v-list-item>
+                            <v-list-item link value="zh-CN">
+                                <v-list-item-content>
+                                    <v-list-item-title>简体中文</v-list-item-title>
+                                </v-list-item-content>
+                            </v-list-item>
+                            <v-list-item link value="en">
+                                <v-list-item-content>
+                                    <v-list-item-title>English</v-list-item-title>
+                                </v-list-item-content>
+                            </v-list-item>
+                        </v-list-item-group>
+                    </v-list>
+                </v-menu>
+
                 <v-list-item link href="#/about">
                     <v-list-item-action>
                         <v-icon>{{mdiInformation}}</v-icon>
                     </v-list-item-action>
                     <v-list-item-content>
-                        <v-list-item-title>关于</v-list-item-title>
+                        <v-list-item-title>{{ $t('about') }}</v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
             </v-list>
@@ -83,7 +123,7 @@
             dark
         >
             <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
-            <v-toolbar-title>云剪贴板<span class="d-none d-sm-inline" v-if="$root.room">（房间：<abbr title="点击复制" style="cursor:pointer" @click="navigator.clipboard.writeText($root.room).then(() => $toast(`已复制房间名称：${$root.room}`).catch(err => $toast.error(`复制失败：${err}`)))">{{$root.room}}</abbr>）</span></v-toolbar-title>
+            <v-toolbar-title>{{ $t('cloudClipboard') }}<span class="d-none d-sm-inline" v-if="$root.room">（{{ $t('room') }}：<abbr title="点击复制" style="cursor:pointer" @click="navigator.clipboard.writeText($root.room).then(() => $toast(`已复制房间名称：${$root.room}`).catch(err => $toast.error(`复制失败：${err}`)))">{{$root.room}}</abbr>）</span></v-toolbar-title>
             <v-spacer></v-spacer>
             <v-tooltip left>
                 <template v-slot:activator="{ on }">
@@ -91,7 +131,7 @@
                         <v-icon>{{mdiBulletinBoard}}</v-icon>
                     </v-btn>
                 </template>
-                <span>进入房间</span>
+                <span>{{ $t('enterRoom') }}</span>
             </v-tooltip>
             <v-tooltip left>
                 <template v-slot:activator="{ on }">
@@ -101,9 +141,9 @@
                         <v-icon v-else>{{mdiLanDisconnect}}</v-icon>
                     </v-btn>
                 </template>
-                <span v-if="$root.websocket">已连接</span>
-                <span v-else-if="$root.websocketConnecting">连接中</span>
-                <span v-else>未连接，点击重连</span>
+                <span v-if="$root.websocket">{{ $t('connected') }}</span>
+                <span v-else-if="$root.websocketConnecting">{{ $t('connecting') }}</span>
+                <span v-else>{{ $t('notConnected') }}</span>
             </v-tooltip>
         </v-app-bar>
 
@@ -116,10 +156,10 @@
 
         <v-dialog v-model="$root.authCodeDialog" persistent max-width="360">
             <v-card>
-                <v-card-title class="headline">需要认证</v-card-title>
+                <v-card-title class="headline">{{ $t('needAuthentication') }}</v-card-title>
                 <v-card-text>
-                    <p>这个剪贴板服务并不是公开的，请输入密码以继续连接。</p>
-                    <v-text-field v-model="$root.authCode" label="密码"></v-text-field>
+                    <p>{{ $t('clipboardServiceNotPublic') }}</p>
+                    <v-text-field v-model="$root.authCode" :label="$t('password')"></v-text-field>
                 </v-card-text>
                 <v-card-actions>
                     <v-spacer></v-spacer>
@@ -130,20 +170,20 @@
                             $root.authCodeDialog = false;
                             $root.connect();
                         "
-                    >提交</v-btn>
+                    >{{ $t('submit') }}</v-btn>
                 </v-card-actions>
             </v-card>
         </v-dialog>
 
         <v-dialog v-model="$root.roomDialog" persistent max-width="360">
             <v-card>
-                <v-card-title class="headline">剪贴板房间</v-card-title>
+                <v-card-title class="headline">{{ $t('clipboardRoom') }}</v-card-title>
                 <v-card-text>
-                    <p>输入任意名称创建新房间，或进入已有的房间。留空则表示使用默认的全局房间。</p>
-                    <p>在房间中发送的内容仅限房间内可见，保存的历史记录数量仍然会受到全局设定的限制。</p>
+                    <p>{{ $t('enterRoomName') }}</p>
+                    <p>{{ $t('roomVisibility') }}</p>
                     <v-text-field
                         v-model="$root.roomInput"
-                        label="房间名称"
+                        :label="$t('roomName')"
                         :append-icon="mdiDiceMultiple"
                         @click:append="$root.roomInput = ['reimu', 'marisa', 'rumia', 'cirno', 'meiling', 'patchouli', 'sakuya', 'remilia', 'flandre', 'letty', 'chen', 'lyrica', 'lunasa', 'merlin', 'youmu', 'yuyuko', 'ran', 'yukari', 'suika', 'mystia', 'keine', 'tewi', 'reisen', 'eirin', 'kaguya', 'mokou'][Math.floor(Math.random() * 26)] + '-' + Math.random().toString(16).substring(2, 6)"
                     ></v-text-field>
@@ -154,7 +194,7 @@
                         color="primary darken-1"
                         text
                         @click="$root.roomDialog = false"
-                    >取消</v-btn>
+                    >{{ $t('cancel') }}</v-btn>
                     <v-btn
                         color="primary darken-1"
                         text
@@ -164,7 +204,7 @@
                             $root.disconnect();
                             $root.connect();
                         "
-                    >进入房间</v-btn>
+                    >{{ $t('enterRoom') }}</v-btn>
                 </v-card-actions>
             </v-card>
         </v-dialog>
@@ -185,6 +225,7 @@ import {
     mdiLanConnect,
     mdiLanDisconnect,
     mdiLanPending,
+    mdiTranslate,
     mdiBrightness4,
     mdiBulletinBoard,
     mdiDiceMultiple,
@@ -200,6 +241,7 @@ export default {
             mdiLanConnect,
             mdiLanDisconnect,
             mdiLanPending,
+            mdiTranslate,
             mdiBrightness4,
             mdiBulletinBoard,
             mdiDiceMultiple,

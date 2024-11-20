@@ -10,7 +10,7 @@
                 <v-fade-transition group>
                     <div :is="`received-${item.type}`" v-for="item in $root.received" :key="item.id" :meta="item"></div>
                 </v-fade-transition>
-                <div class="text-center caption text--secondary py-2">{{$root.received.length ? '已经到底了哦～' : '这里空空的'}}</div>
+                <div class="text-center caption text--secondary py-2">{{ $root.received.length ? $t('endOfList') : $t('emptyList') }}</div>
             </v-col>
         </v-row>
 
@@ -53,8 +53,8 @@
                     <v-btn icon @click="dialog = false">
                         <v-icon>{{mdiClose}}</v-icon>
                     </v-btn>
-                    <v-toolbar-title v-if="mode === 'text'">发送文本</v-toolbar-title>
-                    <v-toolbar-title v-if="mode === 'file'">发送文件</v-toolbar-title>
+                    <v-toolbar-title v-if="mode === 'text'">{{ $t('sendText') }}</v-toolbar-title>
+                    <v-toolbar-title v-if="mode === 'file'">{{ $t('sendFile') }}</v-toolbar-title>
                     <v-spacer></v-spacer>
                 </v-toolbar>
                 <v-card-text class="px-4">

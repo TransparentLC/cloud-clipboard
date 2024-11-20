@@ -7,7 +7,7 @@
                 <div class="d-flex flex-row align-center">
                     <div class="flex-grow-1 mr-2" style="min-width: 0">
                         <div class="title text-truncate text--primary" @click="expand = !expand">
-                            文本消息<v-icon>{{expand ? mdiChevronUp : mdiChevronDown}}</v-icon>
+                            {{ $t('textMessage') }}<v-icon>{{expand ? mdiChevronUp : mdiChevronDown}}</v-icon>
                         </div>
                         <div class="text-truncate" @click="expand = !expand" v-html="meta.content.trim()" v-linkified></div>
                     </div>
@@ -19,7 +19,7 @@
                                     <v-icon>{{mdiContentCopy}}</v-icon>
                                 </v-btn>
                             </template>
-                            <span>复制</span>
+                            <span>{{ $t('copy') }}</span>
                         </v-tooltip>
                         <v-tooltip bottom>
                             <template v-slot:activator="{ on }">
@@ -27,7 +27,7 @@
                                     <v-icon>{{mdiClose}}</v-icon>
                                 </v-btn>
                             </template>
-                            <span>删除</span>
+                            <span>{{ $t('delete') }}</span>
                         </v-tooltip>
                     </div>
                 </div>
@@ -79,18 +79,18 @@ export default {
             el.select();
             document.execCommand('copy');
             document.body.removeChild(el);
-            this.$toast('复制成功');
+            this.$toast(this.$t('copySuccess'));
         },
         deleteItem() {
             this.$http.delete(`revoke/${this.meta.id}`, {
                 params: new URLSearchParams([['room', this.$root.room]]),
             }).then(() => {
-                this.$toast('已删除文本消息');
+                this.$toast(this.$t('textMessageDeleted'));
             }).catch(error => {
                 if (error.response && error.response.data.msg) {
-                    this.$toast(`消息删除失败：${error.response.data.msg}`);
+                    this.$toast(`${this.$t('messageDeleteFailed')}: ${error.response.data.msg}`);
                 } else {
-                    this.$toast('消息删除失败');
+                    this.$toast(this.$t('messageDeleteFailedNoMsg'));
                 }
             });
         },

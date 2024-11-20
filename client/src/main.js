@@ -7,6 +7,10 @@ import axios from 'axios';
 import VueAxios from 'vue-axios';
 import linkify from 'vue-linkify';
 
+import VueI18n from 'vue-i18n';
+import zhCN from './locales/zh-CN.json';
+import en from './locales/en.json';
+
 import {
     prettyFileSize,
     percentage,
@@ -17,18 +21,33 @@ import 'typeface-roboto/index.css';
 
 Vue.config.productionTip = false;
 
+Vue.use(VueI18n);
 Vue.use(VueAxios, axios);
 Vue.directive('linkified', linkify);
 Vue.filter('prettyFileSize', prettyFileSize);
 Vue.filter('percentage', percentage);
 Vue.filter('formatTimestamp', formatTimestamp);
 
+const messages = {
+    'zh-CN': zhCN,
+    'en': en
+};
+
+const i18n = new VueI18n({
+    locale: 'zh-CN', // set default locale
+    fallbackLocale: 'en', // set fallback locale
+    messages // set locale messages
+});
+
+
 new Vue({
     mixins: [websocket],
+    i18n,
     data() {
         return {
             date: new Date,
             dark: null,
+            language: null,
             config: {
                 version: '',
                 text: {
@@ -55,6 +74,32 @@ new Vue({
         dark(newval) {
             this.$vuetify.theme.dark = this.useDark;
             localStorage.setItem('darkmode', newval);
+        },
+        language(newval) {
+            // this.$root.language = newval;
+            localStorage.setItem('language', newval);
+            console.log('save_language:', newval)
+            if (newval === 'browser') {
+                // seems no change event
+                const browserLanguage = navigator.language;
+                const availableLanguages = Object.keys(messages);
+                //1. find by navigator.language
+                const matchedLanguage = availableLanguages.find(lang => lang.startsWith(browserLanguage.split('-')[0]));
+                if (!matchedLanguage){
+                    //2. find by navigator.languages
+                    navigator.languages.forEach(lang => {
+                        const matchedLanguage = availableLanguages.find(availableLang => availableLang.startsWith(lang.split('-')[0]));
+                        if (matchedLanguage) {
+                            this.$i18n.locale = matchedLanguage;
+                            return;
+                        }
+                    });
+                }
+                this.$i18n.locale = matchedLanguage || 'en';
+            } else {
+                this.$i18n.locale = newval;
+            }
+            // this.$i18n.locale = newval;
         },
     },
     computed: {
@@ -84,5 +129,10 @@ new Vue({
             this.date = new Date;
             this.$vuetify.theme.dark = this.useDark;
         }, 1000);
+
+        this.language = localStorage.getItem('language') || 'browser';
+        this.$root.language = this.language;
+        console.log('load_language:', this.language)
+        // this.$vuetify.lang.current = this.language;
     },
 }).$mount('#app');

@@ -23,7 +23,7 @@
                             {{meta.size | prettyFileSize}}
                             <template v-if="$vuetify.breakpoint.smAndDown"><br></template>
                             <template v-else>|</template>
-                            {{expired ? '已' : '将'}}于 {{meta.expire | formatTimestamp}} 过期
+                            {{ $t( expired ? 'AlreadyExpired' : 'willExpireAt', { time: $options.filters.formatTimestamp(meta.expire) }) }}
                         </div>
                     </div>
 
@@ -40,7 +40,7 @@
                                     <v-icon>{{expired ? mdiDownloadOff : mdiDownload}}</v-icon>
                                 </v-btn>
                             </template>
-                            <span>{{expired ? '已过期' : '下载'}}</span>
+                            <span>{{expired ? $t('expired') : $t('download')}}</span>
                         </v-tooltip>
                         <template v-if="meta.thumbnail || isPreviewableVideo || isPreviewableAudio">
                             <v-progress-circular
@@ -54,7 +54,7 @@
                                         <v-icon>{{(isPreviewableVideo || isPreviewableAudio) ? mdiMovieSearchOutline : mdiImageSearchOutline}}</v-icon>
                                     </v-btn>
                                 </template>
-                                <span>预览</span>
+                                <span>{{$t('preview')}}</span>
                             </v-tooltip>
                         </template>
                         <v-tooltip bottom>
@@ -63,7 +63,7 @@
                                     <v-icon>{{mdiClose}}</v-icon>
                                 </v-btn>
                             </template>
-                            <span>删除</span>
+                            <span>{{$t('delete')}}</span>
                         </v-tooltip>
                     </div>
                 </div>
@@ -166,9 +166,9 @@ export default {
                     this.srcPreview = URL.createObjectURL(new Blob([response.data]));
                 }).catch(error => {
                     if (error.response && error.response.data.msg) {
-                        this.$toast(`文件获取失败：${error.response.data.msg}`);
+                        this.$toast(`${this.$t('fileFetchFailed')}: ${error.response.data.msg}`);
                     } else {
-                        this.$toast('文件获取失败');
+                        this.$toast(this.$t('fileFetchFailed'));
                     }
                 }).finally(() => {
                     this.loadingPreview = false;
@@ -181,19 +181,19 @@ export default {
             }).then(() => {
                 if (this.expired) return;
                 this.$http.delete(`file/${this.meta.cache}`).then(() => {
-                    this.$toast(`已删除文件 ${this.meta.name}`);
+                    this.$toast(`${this.$t('fileDeleted')} ${this.meta.name}`);
                 }).catch(error => {
                     if (error.response && error.response.data.msg) {
-                        this.$toast(`文件删除失败：${error.response.data.msg}`);
+                        this.$toast(`${this.$t('fileDeleteFailed')}: ${error.response.data.msg}`);
                     } else {
-                        this.$toast('文件删除失败');
+                        this.$toast(this.$t('fileDeleteFailed'));
                     }
                 });
             }).catch(error => {
                 if (error.response && error.response.data.msg) {
-                    this.$toast(`消息删除失败：${error.response.data.msg}`);
+                    this.$toast(`${this.$t('messageDeleteFailed')}: ${error.response.data.msg}`);
                 } else {
-                    this.$toast('消息删除失败');
+                    this.$toast(this.$t('messageDeleteFailedNoMsg'));
                 }
             });
         },
