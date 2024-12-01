@@ -68,12 +68,12 @@
                 </v-menu>
 
                 <!-- customize primary color -->
-                <v-list-item link @click="colorDialog = true">
+                <v-list-item link @click="colorDialog = true; drawer=false;">
                     <v-list-item-action>
                         <v-icon>{{mdiPalette}}</v-icon>
                     </v-list-item-action>
                     <v-list-item-content>
-                        <v-list-item-title>更改主题颜色</v-list-item-title>
+                        <v-list-item-title>更改主题色</v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
 
@@ -125,7 +125,7 @@
             <router-view v-else />
         </v-main>
 
-        <v-dialog v-model="colorDialog" max-width="300">
+        <v-dialog v-model="colorDialog" max-width="300" hide-overlay>
             <v-card>
                 <v-card-title>选择主题颜色</v-card-title>
                 <v-card-text>
