@@ -129,7 +129,7 @@
             <v-card>
                 <v-card-title>选择主题颜色</v-card-title>
                 <v-card-text>
-                    <!-- 
+                    <!--
                     <v-color-picker v-model=" $vuetify.theme.dark? $vuetify.theme.themes.dark.primary: $vuetify.theme.themes.light.primary" hide-inputs></v-color-picker>
                      -->
 
@@ -238,5 +238,27 @@ export default {
             navigator,
         };
     },
+    mounted() { // primary color <==> localStorage
+
+        // theme colors <== localStorage
+        const darkPrimary = localStorage.getItem('darkPrimary');
+        const lightPrimary = localStorage.getItem('lightPrimary');
+        if (darkPrimary) {
+            this.$vuetify.theme.themes.dark.primary = darkPrimary;
+        }
+        if (lightPrimary) {
+            this.$vuetify.theme.themes.light.primary = lightPrimary;
+        }
+
+        // theme colors ==> localStorage
+        this.$watch('$vuetify.theme.themes.dark.primary', (newVal) => {
+            localStorage.setItem('darkPrimary', newVal);
+        });
+        this.$watch('$vuetify.theme.themes.light.primary', (newVal) => {
+            localStorage.setItem('lightPrimary', newVal);
+        });
+    },
 };
+
+
 </script>
