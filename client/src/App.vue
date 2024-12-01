@@ -66,6 +66,17 @@
                         </v-list-item-group>
                     </v-list>
                 </v-menu>
+
+                <!-- customize primary color -->
+                <v-list-item link @click="colorDialog = true">
+                    <v-list-item-action>
+                        <v-icon>{{mdiPalette}}</v-icon>
+                    </v-list-item-action>
+                    <v-list-item-content>
+                        <v-list-item-title>更改主题颜色</v-list-item-title>
+                    </v-list-item-content>
+                </v-list-item>
+
                 <v-list-item link href="#/about">
                     <v-list-item-action>
                         <v-icon>{{mdiInformation}}</v-icon>
@@ -113,6 +124,24 @@
             </template>
             <router-view v-else />
         </v-main>
+
+        <v-dialog v-model="colorDialog" max-width="300">
+            <v-card>
+                <v-card-title>选择主题颜色</v-card-title>
+                <v-card-text>
+                    <!-- 
+                    <v-color-picker v-model=" $vuetify.theme.dark? $vuetify.theme.themes.dark.primary: $vuetify.theme.themes.light.primary" hide-inputs></v-color-picker>
+                     -->
+
+                    <v-color-picker v-if="$vuetify.theme.dark" v-model=" $vuetify.theme.themes.dark.primary " show-swatches hide-inputs></v-color-picker>
+                    <v-color-picker v-else                     v-model=" $vuetify.theme.themes.light.primary" show-swatches hide-inputs></v-color-picker>
+                </v-card-text>
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="primary" text @click="colorDialog = false">确定</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
 
         <v-dialog v-model="$root.authCodeDialog" persistent max-width="360">
             <v-card>
@@ -188,12 +217,14 @@ import {
     mdiBrightness4,
     mdiBulletinBoard,
     mdiDiceMultiple,
+    mdiPalette,
 } from '@mdi/js';
 
 export default {
     data() {
         return {
             drawer: false,
+            colorDialog: false,
             mdiContentPaste,
             mdiDevices,
             mdiInformation,
@@ -203,6 +234,7 @@ export default {
             mdiBrightness4,
             mdiBulletinBoard,
             mdiDiceMultiple,
+            mdiPalette,
             navigator,
         };
     },
