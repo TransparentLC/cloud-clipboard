@@ -98,6 +98,14 @@
             <v-spacer></v-spacer>
             <v-tooltip left>
                 <template v-slot:activator="{ on }">
+                    <v-btn icon v-on="on" @click="clearAll">
+                        <v-icon>{{mdiNotificationClearAll }}</v-icon>
+                    </v-btn>
+                </template>
+                <span>清空剪贴板</span>
+            </v-tooltip>
+            <v-tooltip left>
+                <template v-slot:activator="{ on }">
                     <v-btn icon v-on="on" @click="$root.roomInput = $root.room; $root.roomDialog = true">
                         <v-icon>{{mdiBulletinBoard}}</v-icon>
                     </v-btn>
@@ -129,12 +137,8 @@
             <v-card>
                 <v-card-title>选择主题颜色</v-card-title>
                 <v-card-text>
-                    <!--
-                    <v-color-picker v-model=" $vuetify.theme.dark? $vuetify.theme.themes.dark.primary: $vuetify.theme.themes.light.primary" hide-inputs></v-color-picker>
-                     -->
-
-                    <v-color-picker v-if="$vuetify.theme.dark" v-model=" $vuetify.theme.themes.dark.primary " show-swatches hide-inputs></v-color-picker>
-                    <v-color-picker v-else                     v-model=" $vuetify.theme.themes.light.primary" show-swatches hide-inputs></v-color-picker>
+                    <v-color-picker v-if="$vuetify.theme.dark" v-model="$vuetify.theme.themes.dark.primary " show-swatches hide-inputs></v-color-picker>
+                    <v-color-picker v-else                     v-model="$vuetify.theme.themes.light.primary" show-swatches hide-inputs></v-color-picker>
                 </v-card-text>
                 <v-card-actions>
                     <v-spacer></v-spacer>
@@ -218,6 +222,7 @@ import {
     mdiBulletinBoard,
     mdiDiceMultiple,
     mdiPalette,
+    mdiNotificationClearAll,
 } from '@mdi/js';
 
 export default {
@@ -235,11 +240,32 @@ export default {
             mdiBulletinBoard,
             mdiDiceMultiple,
             mdiPalette,
+            mdiNotificationClearAll,
             navigator,
         };
     },
-    mounted() { // primary color <==> localStorage
-
+    methods: {
+        async clearAll() {
+            try {
+                const files = this.$root.received.filter(e => e.type === 'file');
+                await this.$http.delete('revoke/all', {
+                    params: { room: this.$root.room },
+                });
+                for (const file of files) {
+                    await this.$http.delete(`file/${file.cache}`);
+                }
+            } catch (error) {
+                console.log(error);
+                if (error.response && error.response.data.msg) {
+                    this.$toast(`清空剪贴板失败：${error.response.data.msg}`);
+                } else {
+                    this.$toast('清空剪贴板失败');
+                }
+            }
+        },
+    },
+    mounted() {
+        // primary color <==> localStorage
         // theme colors <== localStorage
         const darkPrimary = localStorage.getItem('darkPrimary');
         const lightPrimary = localStorage.getItem('lightPrimary');
