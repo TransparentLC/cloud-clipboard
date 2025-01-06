@@ -17,7 +17,7 @@ import {
     wsBoardcast,
 } from './util.js';
 
-const historyPath = path.join(process.cwd(), 'history.json');
+const historyPath = path.join(config.server.historyDir || process.cwd(), 'history.json');
 
 const saveHistory = () => fs.promises.writeFile(historyPath, JSON.stringify({
     file: Array.from(uploadFileMap.values()).filter(e => e.expireTime > Date.now() / 1e3).map(e => ({
