@@ -17,8 +17,8 @@ if (!process.argv[2] && !fs.existsSync(defaultConfigPath)) {
             cert: null,
             history: 10,
             auth: false,
-            historyPath: null,
-            storagePath: null,
+            historyDir: null,
+            storageDir: null,
         },
         text: {
             limit: 4096,
