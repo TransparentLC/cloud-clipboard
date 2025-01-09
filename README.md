@@ -184,8 +184,8 @@ php build-phar.php
         "cert": "localhost.pem", // HTTPS 证书路径
         "history": 10, // 消息历史记录的数量
         "auth": false, // 是否在连接时要求使用密码认证，falsy 值表示不使用
-        "historyDir": false, // 自定义文本历史存储目录
-        "storageDir": false // 自定义文件历史存储目录
+        "historyFile": null, // 自定义历史记录存储路径，默认为当前目录的 history.json
+        "storageDir": null // 自定义文件存储目录，默认为临时文件夹的.cloud-clipboard-storage目录
     },
     "text": {
         "limit": 4096 // 文本的长度限制
