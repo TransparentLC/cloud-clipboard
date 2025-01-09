@@ -1,11 +1,11 @@
-FROM node:21.7.1-alpine3.19 AS builder
+FROM node:22.12-alpine3.21 AS builder
 ENV NODE_OPTIONS=--openssl-legacy-provider
 COPY . /app
 WORKDIR /app/client
 RUN npm install
 RUN npm run build
 
-FROM node:21.7.1-alpine3.19
+FROM node:22.12-alpine3.21
 ENV NODE_OPTIONS=--openssl-legacy-provider
 COPY . /app
 COPY --from=builder /app/client/dist/ /app/server-node/static/
