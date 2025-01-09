@@ -56,6 +56,7 @@ export default {
                 return new Promise((resolve, reject) => {
                     const wsUrl = new URL(response.data.server);
                     wsUrl.protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+                    wsUrl.port = location.port;
                     if (response.data.auth) {
                         if (this.authCode) {
                             wsUrl.searchParams.set('auth', this.authCode);
