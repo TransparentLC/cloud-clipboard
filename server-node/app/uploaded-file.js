@@ -5,7 +5,7 @@ import path from 'node:path';
 
 import config from './config.js';
 
-const storageFolder = path.join(os.tmpdir(), '.cloud-clipboard-storage');
+const storageFolder = path.join(config.server.storageDir || os.tmpdir(), '.cloud-clipboard-storage');
 
 class UploadedFile {
     /**

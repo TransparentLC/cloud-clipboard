@@ -14,7 +14,7 @@ import config from './app/config.js';
 import httpRouter from './app/http-router.js';
 import wsRouter from './app/ws-router.js';
 
-const storagePath = path.join(os.tmpdir(), '.cloud-clipboard-storage');
+const storagePath = path.join(config.server.storageDir || os.tmpdir(), '.cloud-clipboard-storage');
 if (!fs.existsSync(storagePath)) {
     fs.mkdirSync(storagePath);
 }

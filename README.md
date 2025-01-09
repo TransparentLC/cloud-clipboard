@@ -103,6 +103,7 @@ docker container run -d -p 9501:9501 ***
 
 * [chenqiyux/lan-clip](https://hub.docker.com/r/chenqiyux/lan-clip) amd64
 * [shuaigekda123/myclip](https://hub.docker.com/r/shuaigekda123/myclip) amd64/arm64
+* [jonnyan404/cloud-clipboard](https://hub.docker.com/r/jonnyan404/cloud-clipboard) amd64/arm64 2025年01月06日更新
 
 然后访问 http://127.0.0.1:9501
 
@@ -182,7 +183,9 @@ php build-phar.php
         "key": "localhost-key.pem", // HTTPS 私钥路径
         "cert": "localhost.pem", // HTTPS 证书路径
         "history": 10, // 消息历史记录的数量
-        "auth": false // 是否在连接时要求使用密码认证，falsy 值表示不使用
+        "auth": false, // 是否在连接时要求使用密码认证，falsy 值表示不使用
+        "historyDir": false, // 自定义文本历史存储目录
+        "storageDir": false // 自定义文件历史存储目录
     },
     "text": {
         "limit": 4096 // 文本的长度限制
