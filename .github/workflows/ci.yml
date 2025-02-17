@@ -19,9 +19,9 @@ jobs:
           - ubuntu-latest
           # - macos-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Setup node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: latest
           architecture: x64
@@ -52,12 +52,12 @@ jobs:
               "{{caxa}}/node_modules/.bin/node" \
               "{{caxa}}/main.js"
       - name: Upload result (server)
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: cloud-clipboard-${{ runner.os }}
           path: dist
       - name: Upload result (frontend static files)
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: static-${{ runner.os }}
           path: server-node/static
