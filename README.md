@@ -110,7 +110,7 @@ docker container run -d -p 9501:9501 ***
 
 * [chenqiyux/lan-clip](https://hub.docker.com/r/chenqiyux/lan-clip) amd64
 * [shuaigekda123/myclip](https://hub.docker.com/r/shuaigekda123/myclip) amd64/arm64
-* [jonnyan404/cloud-clipboard](https://hub.docker.com/r/jonnyan404/cloud-clipboard) amd64/arm64 2025年01月06日更新
+* [jonnyan404/cloud-clipboard](https://hub.docker.com/r/jonnyan404/cloud-clipboard) amd64/arm64/armv7  -->2025年01月06日更新
 
 然后访问 http://127.0.0.1:9501
 
