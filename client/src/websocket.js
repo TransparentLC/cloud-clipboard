@@ -13,6 +13,9 @@ export default {
                 receive: data => {
                     this.$root.received.unshift(data);
                 },
+                receiveMulti: data => {
+                    this.$root.received.unshift(...Array.from(data).reverse());
+                },
                 revoke: data => {
                     let index = this.$root.received.findIndex(e => e.id === data.id);
                     if (index === -1) return;
@@ -56,6 +59,7 @@ export default {
                 return new Promise((resolve, reject) => {
                     const wsUrl = new URL(response.data.server);
                     wsUrl.protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+                    wsUrl.port = location.port;
                     if (response.data.auth) {
                         if (this.authCode) {
                             wsUrl.searchParams.set('auth', this.authCode);

@@ -83,10 +83,10 @@ router.get('/push', async (/** @type {koaWebsocket.MiddlewareContext<Koa.Default
         },
     }), resolve));
 
-    messageQueue.queue.reduce(
-        (acc, cur) => acc.then(() => new Promise(resolve => cur.data.room === ctx.query.room ? ctx.websocket.send(JSON.stringify(cur), resolve) : resolve())),
-        Promise.resolve()
-    );
+    ctx.websocket.send(JSON.stringify({
+        event: 'receiveMulti',
+        data: messageQueue.queue.filter(e => e.data.room === ctx.query.room).map(e => e.data),
+    }));
 });
 
 export default router;

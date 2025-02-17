@@ -14,11 +14,6 @@ import config from './app/config.js';
 import httpRouter from './app/http-router.js';
 import wsRouter from './app/ws-router.js';
 
-const storagePath = path.join(config.server.storageDir || os.tmpdir(), '.cloud-clipboard-storage');
-if (!fs.existsSync(storagePath)) {
-    fs.mkdirSync(storagePath);
-}
-
 process.env.VERSION = `node-${JSON.parse(fs.readFileSync(path.join(path.dirname(url.fileURLToPath(import.meta.url)), 'package.json'))).version}`;
 
 const app = koaWebsocket(new Koa);
