@@ -5,7 +5,7 @@ export default {
             websocketConnecting: false,
             authCode: localStorage.getItem('auth') || '',
             authCodeDialog: false,
-            room: localStorage.getItem('room') || '',
+            room: this.$router.currentRoute.query.room || '',
             roomInput: '',
             roomDialog: false,
             retry: 0,
@@ -44,6 +44,12 @@ export default {
             },
         };
     },
+    watch: {
+        room() {
+            this.disconnect();
+            this.connect();
+        },
+    },
     methods: {
         connect() {
             this.websocketConnecting = true;
@@ -54,8 +60,6 @@ export default {
             });
             this.$http.get('server').then(response => {
                 if (this.authCode) localStorage.setItem('auth', this.authCode);
-                this.room = this.room.trim();
-                localStorage.setItem('room', this.room);
                 return new Promise((resolve, reject) => {
                     const wsUrl = new URL(response.data.server);
                     wsUrl.protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
@@ -95,9 +99,11 @@ export default {
         },
         disconnect() {
             this.websocketConnecting = false;
-            this.websocket.onclose = () => {};
-            this.websocket.close();
-            this.websocket = null;
+            if (this.websocket) {
+                this.websocket.onclose = () => {};
+                this.websocket.close();
+                this.websocket = null;
+            }
             this.$root.device = [];
         },
         failure() {
