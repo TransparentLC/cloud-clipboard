@@ -98,8 +98,8 @@
             <v-spacer></v-spacer>
             <v-tooltip left>
                 <template v-slot:activator="{ on }">
-                    <v-btn icon v-on="on" @click="clearAll">
-                        <v-icon>{{mdiNotificationClearAll }}</v-icon>
+                    <v-btn icon v-on="on" @click="clearAllDialog = true">
+                        <v-icon>{{mdiNotificationClearAll}}</v-icon>
                     </v-btn>
                 </template>
                 <span>清空剪贴板</span>
@@ -199,6 +199,28 @@
                 </v-card-actions>
             </v-card>
         </v-dialog>
+
+        <v-dialog v-model="clearAllDialog" max-width="360">
+            <v-card>
+                <v-card-title class="headline">清空剪贴板</v-card-title>
+                <v-card-text>
+                    <p>是否要清空当前房间的所有剪贴板内容？</p>
+                </v-card-text>
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn
+                        color="primary darken-1"
+                        text
+                        @click="clearAllDialog = false"
+                    >取消</v-btn>
+                    <v-btn
+                        color="primary darken-1"
+                        text
+                        @click="clearAllDialog = false; clearAll()"
+                    >确定</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
     </v-app>
 </template>
 
@@ -228,6 +250,7 @@ export default {
         return {
             drawer: false,
             colorDialog: false,
+            clearAllDialog: false,
             mdiContentPaste,
             mdiDevices,
             mdiInformation,
