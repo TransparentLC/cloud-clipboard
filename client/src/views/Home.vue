@@ -117,10 +117,10 @@ export default {
         },
     },
     beforeRouteEnter(to, from, next) {
-        next(vm => vm.$root.room = to.query.room);
+        next(vm => vm.$root.room = to.query.room || '');
     },
     beforeRouteUpdate(to, from, next) {
-        this.$root.room = to.query.room;
+        this.$root.room = to.query.room || '';
         next();
     },
 }
