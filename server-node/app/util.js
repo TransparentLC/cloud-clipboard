@@ -1,5 +1,6 @@
 import Koa from 'koa';
 import koaWebsocket from 'koa-websocket';
+import sharp from 'sharp';
 
 /**
  * @param {Koa.ParameterizedContext<Koa.DefaultState, Koa.DefaultContext, any>} ctx
@@ -81,4 +82,24 @@ export const murmurHash = (str, seed) => {
     h1 ^= h1 >>> 16;
 
     return h1 >>> 0;
+};
+
+/**
+ * @param {String} file
+ * @returns {Promise<String>}
+ */
+export const createThumbnail = async file => {
+    const img = sharp(file);
+    const { width, height } = await img.metadata();
+    if (Math.min(width, height) > 64) {
+        const ratio = 64 / Math.min(width, height);
+        img.resize(Math.round(width * ratio), Math.round(height * ratio), {
+            kernel: sharp.kernel.lanczos3,
+            withoutEnlargement: true,
+        });
+    }
+    return 'data:image/webp;base64,' + (await img.toFormat('webp', {
+        quality: 70,
+        smartSubsample: true,
+    }).toBuffer()).toString('base64');
 };

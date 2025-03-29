@@ -7,6 +7,7 @@
 * 使用 WebSocket 实现实时通知
 * 前端使用 [Vue 2](https://cn.vuejs.org) 和 [Vuetify](https://vuetifyjs.com/zh-Hans/) 构建
 * 后端使用 ~~[Swoole](https://www.swoole.com) 或~~ [Node.js](https://nodejs.org) ([Koa](https://github.com/koajs/koa)) 构建 ~~（两种服务端实现任选一种即可）~~
+* 除网页以外，也可以[通过 HTTP API 使用](#http-api)
 
 > [!TIP]
 >
@@ -214,3 +215,66 @@ php build-phar.php
 >
 > 如果启用“密码认证”，只有输入正确的密码才能连接到服务端并查看剪贴板内容。
 > 可以将 `server.auth` 字段设为 `true`（随机生成六位密码）或字符串（自定义密码）来启用这个功能，启动服务端后终端会以 `Authorization code: ******` 的格式输出当前使用的密码。
+
+### HTTP API
+
+#### 发送文本
+
+```console
+$ curl -H "Content-Type: text/plain" --data-binary "foobar" http://localhost:9501/text
+{"code":200,"msg":"","result":{"url":"http://localhost:9501/content/1"}}
+
+$ curl http://localhost:9501/content/1
+foobar
+```
+
+注意：请求头中不能缺少 `Content-Type: text/plain`
+
+#### 发送文件
+
+```console
+$ curl -F file=@image.png http://localhost:9501/upload
+{"code":200,"msg":"","result":{"url":"http://localhost:9501/content/2"}}
+
+$ curl http://localhost:9501/content/2
+Redirecting to <a href="http://localhost:9501/file/xxxx">http://localhost:9501/file/xxxx</a>.
+
+$ curl -L http://localhost:9501/content/2
+Warning: Binary output can mess up your terminal. Use "--output -" to tell curl to output it to your terminal anyway,
+Warning: or consider "--output <FILE>" to save to a file.
+```
+
+#### 在设定房间的情况下发送文本或文件
+
+```console
+$ curl -H "Content-Type: text/plain" --data-binary @package.json http://localhost:9501/text?room=reisen-8fce
+{"code":200,"msg":"","result":{"url":"http://localhost:9501/content/3?room=reisen-8fce"}}
+
+$ curl http://localhost:9501/content/3
+Not Found
+
+$ curl http://localhost:9501/content/3?room=suika-51ba
+Not Found
+
+$ curl http://localhost:9501/content/3?room=reisen-8fce
+{
+  "name": "cloud-clipboard-server-node",
+  ...
+}
+```
+
+#### 密码认证
+
+```console
+$ curl -H "Content-Type: text/plain" --data-binary "foobar" http://localhost:9501/text
+Forbidden
+
+$ curl -H "Authorization: Bearer xxxx" -H "Content-Type: text/plain" --data-binary "foobar" http://localhost:9501/text
+{"code":200,"msg":"","result":{"url":"http://localhost:9501/content/1"}}
+
+$ curl http://localhost:9501/content/1
+Forbidden
+
+$ curl -H "Authorization: Bearer xxxx" http://localhost:9501/content/1
+foobar
+```

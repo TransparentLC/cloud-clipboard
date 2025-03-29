@@ -136,22 +136,32 @@ export default {
                 this.uploadedSizes.splice(0);
                 this.uploadedSizes.push(...Array(this.$root.send.files.length).fill(0));
                 await Promise.all(this.$root.send.files.map(async (file, i) => {
-                    let response = await this.$http.post('upload', file.name, {headers: {'Content-Type': 'text/plain'}});
-                    let uuid = response.data.result.uuid;
-
-                    let uploadedSize = 0;
-                    this.progress = true;
-                    while (uploadedSize < file.size) {
-                        let chunk = file.slice(uploadedSize, uploadedSize + chunkSize);
-                        await this.$http.post(`upload/chunk/${uuid}`, chunk, {
-                            headers: {'Content-Type': 'application/octet-stream'},
-                            onUploadProgress: e => this.$set(this.uploadedSizes, i, uploadedSize + e.loaded),
+                    if (file.size < chunkSize) {
+                        const fd = new FormData;
+                        fd.set('file', file);
+                        this.progress = true;
+                        await this.$http.postForm('upload', fd, {
+                            params: new URLSearchParams([['room', this.$root.room]]),
+                            onUploadProgress: e => this.$set(this.uploadedSizes, i, e.loaded),
                         });
-                        uploadedSize += chunkSize;
+                    } else {
+                        const response = await this.$http.post('upload/chunk', file.name, {headers: {'Content-Type': 'text/plain'}});
+                        const uuid = response.data.result.uuid;
+
+                        let uploadedSize = 0;
+                        this.progress = true;
+                        while (uploadedSize < file.size) {
+                            const chunk = file.slice(uploadedSize, uploadedSize + chunkSize);
+                            await this.$http.post(`upload/chunk/${uuid}`, chunk, {
+                                headers: {'Content-Type': 'application/octet-stream'},
+                                onUploadProgress: e => this.$set(this.uploadedSizes, i, uploadedSize + e.loaded),
+                            });
+                            uploadedSize += chunkSize;
+                        }
+                        await this.$http.post(`upload/finish/${uuid}`, null, {
+                            params: new URLSearchParams([['room', this.$root.room]]),
+                        });
                     }
-                    await this.$http.post(`upload/finish/${uuid}`, null, {
-                        params: new URLSearchParams([['room', this.$root.room]]),
-                    });
                 }));
                 this.$toast('发送成功');
                 this.$root.send.files.splice(0);

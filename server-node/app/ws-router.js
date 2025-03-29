@@ -20,7 +20,6 @@ const router = new KoaRouter({
 
 router.get('/push', async (/** @type {koaWebsocket.MiddlewareContext<Koa.DefaultState>} */ ctx) => {
     if (config.server.auth) {
-        await new Promise(resolve => setTimeout(resolve, crypto.randomInt(50, 200)));
         if (ctx.query.auth !== config.server.auth) {
             await new Promise(resolve => ctx.websocket.send(JSON.stringify({
                 event: 'forbidden',

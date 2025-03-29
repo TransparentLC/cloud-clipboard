@@ -23,7 +23,7 @@ Vue.filter('prettyFileSize', prettyFileSize);
 Vue.filter('percentage', percentage);
 Vue.filter('formatTimestamp', formatTimestamp);
 
-new Vue({
+const app = new Vue({
     mixins: [websocket],
     data() {
         return {
@@ -85,4 +85,13 @@ new Vue({
             this.$vuetify.theme.dark = this.useDark;
         }, 1000);
     },
-}).$mount('#app');
+})
+
+axios.interceptors.request.use(config => {
+    if (app.authCode) {
+        config.headers.Authorization = `Bearer ${app.authCode}`;
+    }
+    return config;
+});
+
+app.$mount('#app');
