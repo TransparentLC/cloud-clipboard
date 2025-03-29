@@ -19,7 +19,15 @@
                                     <v-icon>{{mdiContentCopy}}</v-icon>
                                 </v-btn>
                             </template>
-                            <span>复制</span>
+                            <span>复制文本</span>
+                        </v-tooltip>
+                        <v-tooltip bottom>
+                            <template v-slot:activator="{ on }">
+                                <v-btn v-on="on" icon color="grey" @click="copyLink">
+                                    <v-icon>{{mdiLinkVariant}}</v-icon>
+                                </v-btn>
+                            </template>
+                            <span>复制链接</span>
                         </v-tooltip>
                         <v-tooltip bottom>
                             <template v-slot:activator="{ on }">
@@ -48,7 +56,10 @@ import {
     mdiChevronDown,
     mdiContentCopy,
     mdiClose,
+    mdiLinkVariant,
 } from '@mdi/js';
+
+const dp = new DOMParser;
 
 export default {
     name: 'received-text',
@@ -67,19 +78,19 @@ export default {
             mdiChevronDown,
             mdiContentCopy,
             mdiClose,
+            mdiLinkVariant,
         };
     },
     methods: {
         copyText() {
-            let el = document.createElement('textarea');
-            el.value = new DOMParser().parseFromString(this.meta.content, 'text/html').documentElement.textContent;
-            el.style.cssText = 'top:0;left:0;position:fixed';
-            document.body.appendChild(el);
-            el.focus();
-            el.select();
-            document.execCommand('copy');
-            document.body.removeChild(el);
-            this.$toast('复制成功');
+            navigator.clipboard
+                .writeText(dp.parseFromString(this.meta.content, 'text/html').documentElement.textContent)
+                .then(() => this.$toast('复制成功'));
+        },
+        copyLink() {
+            navigator.clipboard
+                .writeText(`${location.protocol}//${location.host}/content/${this.meta.id}${this.$root.room ? `?room=${this.$root.room}` : ''}`)
+                .then(() => this.$toast('复制成功'));
         },
         deleteItem() {
             this.$http.delete(`revoke/${this.meta.id}`, {

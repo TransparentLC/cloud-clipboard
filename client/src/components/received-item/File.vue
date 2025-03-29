@@ -59,6 +59,14 @@
                         </template>
                         <v-tooltip bottom>
                             <template v-slot:activator="{ on }">
+                                <v-btn v-on="on" icon color="grey" @click="copyLink">
+                                    <v-icon>{{mdiLinkVariant}}</v-icon>
+                                </v-btn>
+                            </template>
+                            <span>复制链接</span>
+                        </v-tooltip>
+                        <v-tooltip bottom>
+                            <template v-slot:activator="{ on }">
                                 <v-btn v-on="on" icon color="grey" @click="deleteItem" :disabled="loadingPreview">
                                     <v-icon>{{mdiClose}}</v-icon>
                                 </v-btn>
@@ -106,6 +114,7 @@ import {
     mdiDownloadOff,
     mdiClose,
     mdiImageSearchOutline,
+    mdiLinkVariant,
     mdiMovieSearchOutline,
 } from '@mdi/js';
 
@@ -130,6 +139,7 @@ export default {
             mdiDownloadOff,
             mdiClose,
             mdiImageSearchOutline,
+            mdiLinkVariant,
             mdiMovieSearchOutline,
         };
     },
@@ -174,6 +184,11 @@ export default {
                     this.loadingPreview = false;
                 });
             }
+        },
+        copyLink() {
+            navigator.clipboard
+                .writeText(`${location.protocol}//${location.host}/content/${this.meta.id}${this.$root.room ? `?room=${this.$root.room}` : ''}`)
+                .then(() => this.$toast('复制成功'));
         },
         deleteItem() {
             this.$http.delete(`revoke/${this.meta.id}`, {
