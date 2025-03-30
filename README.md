@@ -59,6 +59,7 @@
 * 和可执行文件放在同一目录的 `config.json`
 * 在命令行中指定：`cloud-clipboard /path/to/config.json`
 
+
 #### 从源代码运行
 
 需要安装 [Node.js](https://nodejs.org)。
@@ -82,6 +83,24 @@ node main.js
 * 在命令行中指定：`node main.js /path/to/config.json`
 
 服务端默认会监听本机所有网卡的 IP 地址（也可以自己设定），并在终端中显示前端界面所在的网址，使用浏览器打开即可使用。
+
+#### 从 Homebrew 运行
+
+- 依赖 [go版服务端](https://github.com/Jonnyan404/cloud-clipboard-go)
+
+```
+#安装
+brew install Jonnyan404/tap/cloud-clipboard-go
+# 启动服务
+brew services start cloud-clipboard-go
+# 查看服务状态
+brew services info cloud-clipboard-go
+# 停止服务
+brew services stop cloud-clipboard-go
+# 重启服务
+brew services restart cloud-clipboard-go
+```
+
 
 #### 使用 Docker 运行
 
@@ -112,8 +131,10 @@ docker container run -d -p 9501:9501 ***
 * [chenqiyux/lan-clip](https://hub.docker.com/r/chenqiyux/lan-clip) amd64
 * [shuaigekda123/myclip](https://hub.docker.com/r/shuaigekda123/myclip) amd64/arm64
 * [jonnyan404/cloud-clipboard](https://hub.docker.com/r/jonnyan404/cloud-clipboard) amd64/arm64/armv7  -->2025年01月06日更新
+* [jonnyan404/cloud-clipboard-go](https://hub.docker.com/r/jonnyan404/cloud-clipboard-go) amd64/arm64/armv7  -->go版服务端
 
 然后访问 http://127.0.0.1:9501
+
 
 ### C 版服务端
 
