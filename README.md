@@ -59,6 +59,9 @@
 * 和可执行文件放在同一目录的 `config.json`
 * 在命令行中指定：`cloud-clipboard /path/to/config.json`
 
+#### 傻瓜式运行(图形界面,适合小白用户们)
+
+只需要鼠标点点点,下载地址:[点击下载](https://github.com/Jonnyan404/cloud-clipboard-go-launcher/releases)
 
 #### 从源代码运行
 
