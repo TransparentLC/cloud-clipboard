@@ -59,11 +59,6 @@
 * 和可执行文件放在同一目录的 `config.json`
 * 在命令行中指定：`cloud-clipboard /path/to/config.json`
 
-#### 傻瓜式运行(图形界面,适合小白用户们)
-
-只需要鼠标点点点,下载地址:[点击下载](https://github.com/Jonnyan404/cloud-clipboard-go-launcher/releases)
-
-
 #### 使用 Docker 运行
 
 ##### 自己打包
@@ -97,31 +92,6 @@ docker container run -d -p 9501:9501 ***
 
 然后访问 http://127.0.0.1:9501
 
-
-#### 从 Homebrew 运行
-
-- 依赖 [go版服务端](https://github.com/Jonnyan404/cloud-clipboard-go)
-
-```
-#安装
-brew install Jonnyan404/tap/cloud-clipboard-go
-# 启动服务
-brew services start cloud-clipboard-go
-# 查看服务状态
-brew services info cloud-clipboard-go
-# 停止服务
-brew services stop cloud-clipboard-go
-# 重启服务
-brew services restart cloud-clipboard-go
-```
-
-#### 从 OpenWrt 运行
-
-下载地址:https://github.com/Jonnyan404/cloud-clipboard-go/releases/tag/v1.0.9
-
-`luci-app*.ipk` 暂无法正常运行(待学习后修复或者有能力的PR),其它IPK文件都可正常运行. 
-
-
 #### 从源代码运行
 
 需要安装 [Node.js](https://nodejs.org)。
@@ -145,6 +115,16 @@ node main.js
 * 在命令行中指定：`node main.js /path/to/config.json`
 
 服务端默认会监听本机所有网卡的 IP 地址（也可以自己设定），并在终端中显示前端界面所在的网址，使用浏览器打开即可使用。
+
+### GO 版服务端
+
+https://github.com/Jonnyan404/cloud-clipboard-go
+
+-  ✅ homebrew 支持
+-  ✅ openwrt 支持
+-  ✅ docker 支持
+-  ✅ 图形化UI 支持
+-  ✅ 二进制 支持
 
 ### C 版服务端
 
