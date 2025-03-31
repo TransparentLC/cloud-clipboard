@@ -59,52 +59,6 @@
 * 和可执行文件放在同一目录的 `config.json`
 * 在命令行中指定：`cloud-clipboard /path/to/config.json`
 
-#### 傻瓜式运行(图形界面,适合小白用户们)
-
-只需要鼠标点点点,下载地址:[点击下载](https://github.com/Jonnyan404/cloud-clipboard-go-launcher/releases)
-
-#### 从源代码运行
-
-需要安装 [Node.js](https://nodejs.org)。
-
-```bash
-# 构建前端资源，只需要执行一次
-# 也可以直接从 Actions 下载构建好的压缩包（static），解压到 server-node/static
-cd client
-npm install
-npm run build
-
-# 运行服务端
-cd ../server-node
-npm install
-node main.js
-```
-
-配置文件是按照以下顺序尝试读取的：
-
-* 和 `main.js` 放在同一目录的 `config.json`
-* 在命令行中指定：`node main.js /path/to/config.json`
-
-服务端默认会监听本机所有网卡的 IP 地址（也可以自己设定），并在终端中显示前端界面所在的网址，使用浏览器打开即可使用。
-
-#### 从 Homebrew 运行
-
-- 依赖 [go版服务端](https://github.com/Jonnyan404/cloud-clipboard-go)
-
-```
-#安装
-brew install Jonnyan404/tap/cloud-clipboard-go
-# 启动服务
-brew services start cloud-clipboard-go
-# 查看服务状态
-brew services info cloud-clipboard-go
-# 停止服务
-brew services stop cloud-clipboard-go
-# 重启服务
-brew services restart cloud-clipboard-go
-```
-
-
 #### 使用 Docker 运行
 
 ##### 自己打包
@@ -138,6 +92,39 @@ docker container run -d -p 9501:9501 ***
 
 然后访问 http://127.0.0.1:9501
 
+#### 从源代码运行
+
+需要安装 [Node.js](https://nodejs.org)。
+
+```bash
+# 构建前端资源，只需要执行一次
+# 也可以直接从 Actions 下载构建好的压缩包（static），解压到 server-node/static
+cd client
+npm install
+npm run build
+
+# 运行服务端
+cd ../server-node
+npm install
+node main.js
+```
+
+配置文件是按照以下顺序尝试读取的：
+
+* 和 `main.js` 放在同一目录的 `config.json`
+* 在命令行中指定：`node main.js /path/to/config.json`
+
+服务端默认会监听本机所有网卡的 IP 地址（也可以自己设定），并在终端中显示前端界面所在的网址，使用浏览器打开即可使用。
+
+### GO 版服务端
+
+https://github.com/Jonnyan404/cloud-clipboard-go
+
+-  ✅ homebrew 支持
+-  ✅ openwrt 支持
+-  ✅ docker 支持
+-  ✅ 图形化UI 支持
+-  ✅ 二进制 支持
 
 ### C 版服务端
 
