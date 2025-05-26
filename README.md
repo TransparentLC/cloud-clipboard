@@ -116,6 +116,14 @@ node main.js
 
 服务端默认会监听本机所有网卡的 IP 地址（也可以自己设定），并在终端中显示前端界面所在的网址，使用浏览器打开即可使用。
 
+### Python 版服务端
+
+基于 python3 sanic, 较少的依赖 (几十 MB 以内)  
+https://github.com/yurenchen000/cloud-clipboard/tree/py3/server-py3  
+
+同时也有个 go 版 server (包含捆绑的前端文件, 10MB 以内)  
+https://github.com/yurenchen000/cloud-clipboard/tree/golang/server-go
+
 ### GO 版服务端
 
 https://github.com/Jonnyan404/cloud-clipboard-go
