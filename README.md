@@ -130,7 +130,8 @@ https://github.com/Jonnyan404/cloud-clipboard-go
 
 -  ✅ 多国语言
 -  ✅ Android 快捷指令
--  🔘 iOS 快捷指令 
+-  🔘 iOS 快捷指令
+-  ✅ 扫码下载 
 -  ✅ homebrew
 -  ✅ openwrt
 -  ✅ docker
