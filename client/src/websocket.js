@@ -56,7 +56,7 @@ export default {
             this.$toast(this.retry ? `未能连接到服务器，正在尝试第 ${this.retry} 次重连……` : '正在连接服务器……', {
                 showClose: false,
                 dismissable: false,
-                timeout: 0,
+                timeout: -1,
             });
             this.$http.get('server').then(response => {
                 if (this.authCode) localStorage.setItem('auth', this.authCode);
@@ -118,7 +118,7 @@ export default {
                 this.$toast.error('连接服务器失败，请点击工具栏上的“连接”图标重试', {
                     showClose: false,
                     dismissable: false,
-                    timeout: 0,
+                    timeout: -1,
                 });
             }
         },
